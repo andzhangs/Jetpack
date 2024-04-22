@@ -16,7 +16,6 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Jetpack"
 include ':app'
-include ':module_bluetooth'
 include ':biometric'
 include ':heifwriter'
 include ':hilt'
