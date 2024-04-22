@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="data"
+            type="com.dongnao.paging.bean.DataX" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:cardCornerRadius="10dp"
+        android:layout_margin="5dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp">
+
+            <androidx.constraintlayout.utils.widget.ImageFilterView
+                android:id="@+id/acIv_icon"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:scaleType="centerCrop"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/acTv_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="@{data.title}"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                android:maxLines="2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/acIv_icon"
+                app:layout_constraintTop_toTopOf="@id/acIv_icon"
+                tools:text="可能是东半球更简洁的玩安卓客户端" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/acTv_desc"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="5dp"
+                android:ellipsize="end"
+                android:text="@{data.desc}"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="12sp"
+                android:maxLines="2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/acTv_title"
+                app:layout_constraintTop_toBottomOf="@id/acTv_title"
+                tools:text="WanAndroid基础款（MVVM+Kotlin+Jetpack+组件化）" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+</layout>

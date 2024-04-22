@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <application
+        android:name=".app.WMApplication"
+        android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_config"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning" >
+        <receiver
+            android:name="com.android.jetpack.workmanager.works.NotificationBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="notification_cancelled" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+            android:name=".video.MyWorkActivity"
+            android:exported="false" />
+        <activity
+            android:name=".demo.works.WorkActivity"
+            android:exported="false" />
+        <activity
+            android:name=".demo.jobs.MainJobActivity"
+            android:exported="false" >
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.android.jetpack.workmanager.MainActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.android.jetpack.workmanager.WorkActivity"
+            android:exported="true" >
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
+    </application>
+
+</manifest>

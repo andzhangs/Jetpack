@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="modelScore"
+            type="io.dushu.databinding.demo.TeamScoreViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".demo.Main3Activity">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/acTvTeamA"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Team A"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toStartOf="@id/guideline2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/acTvTeamB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Team B"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline2"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/acTvNumberA"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="@{modelScore.AScore.toString()}"
+            android:textColor="@android:color/holo_red_light"
+            android:textSize="78sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/guideline2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/acTvTeamA"
+            tools:text="100" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/acTvNumberB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="@{modelScore.BScore.toString()}"
+            android:textColor="@android:color/holo_blue_light"
+            android:textSize="78sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline2"
+            app:layout_constraintTop_toBottomOf="@id/acTvTeamB"
+            tools:text="120" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/acBtnAdd1TeamA"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:background="@android:color/holo_purple"
+            android:onClick="@{()->modelScore.setAScore(1)}"
+            android:text="+1"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toStartOf="@id/guideline2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/acTvNumberA" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/acBtnAdd1TeamB"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:background="@android:color/holo_purple"
+            android:onClick="@{()->modelScore.setBScore(1)}"
+            android:text="+1"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline2"
+            app:layout_constraintTop_toBottomOf="@id/acTvNumberB" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/acBtnAdd2TeamA"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:background="@android:color/holo_purple"
+            android:onClick="@{()->modelScore.setAScore(2)}"
+            android:text="+2"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toStartOf="@id/guideline2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/acBtnAdd1TeamA" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/acBtnAdd2TeamB"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:background="@android:color/holo_purple"
+            android:onClick="@{()->modelScore.setBScore(2)}"
+            android:text="+2"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline2"
+            app:layout_constraintTop_toBottomOf="@id/acBtnAdd1TeamB" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/acBtnAdd3TeamA"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:background="@android:color/holo_purple"
+            android:onClick="@{()->modelScore.setAScore(3)}"
+            android:text="+3"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toStartOf="@id/guideline2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/acBtnAdd2TeamA" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/acBtnAdd3TeamB"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:background="@android:color/holo_purple"
+            android:onClick="@{()->modelScore.setBScore(3)}"
+            android:text="+3"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline2"
+            app:layout_constraintTop_toBottomOf="@id/acBtnAdd2TeamB" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/acTvUnDo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:onClick="@{()->modelScore.undo()}"
+            android:text="撤销"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toStartOf="@id/guideline2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/acBtnAdd3TeamA" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/acTvReset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:onClick="@{()->modelScore.reset()}"
+            android:text="重置"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline2"
+            app:layout_constraintTop_toBottomOf="@id/acBtnAdd3TeamB" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

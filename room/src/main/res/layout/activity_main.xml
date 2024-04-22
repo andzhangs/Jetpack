@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/acEt_id"
+            android:layout_width="150dp"
+            android:layout_height="?android:attr/actionBarSize"
+            android:inputType="number"
+            android:hint="输入id号"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:onClick="JumpClick"
+            android:text="跳转"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/acTvInsert"
+            android:layout_width="0dp"
+            android:layout_height="?android:actionBarSize"
+            android:layout_margin="10dp"
+            android:background="@color/colorAccent"
+            android:gravity="center"
+            android:onClick="InsertClick"
+            android:text="增 加"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/acEt_id"
+            tools:ignore="OnClick" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/acTvDelete"
+            android:layout_width="0dp"
+            android:layout_height="?android:actionBarSize"
+            android:layout_margin="10dp"
+            android:background="@color/colorAccent"
+            android:gravity="center"
+            android:onClick="DeleteClick"
+            android:text="删 除"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/acTvInsert"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline"
+            app:layout_constraintTop_toTopOf="@id/acTvInsert" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/acTvUpdate"
+            android:layout_width="0dp"
+            android:layout_height="?android:actionBarSize"
+            android:layout_margin="10dp"
+            android:background="@color/colorAccent"
+            android:gravity="center"
+            android:onClick="UpdateClick"
+            android:text="修 改"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/acTvInsert" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/acTvQuery"
+            android:layout_width="0dp"
+            android:layout_height="?android:actionBarSize"
+            android:layout_margin="10dp"
+            android:background="@color/colorAccent"
+            android:gravity="center"
+            android:onClick="QueryClick"
+            android:text="查 询"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/guideline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/acTvDelete" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycleView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/acTvUpdate"
+            tools:itemCount="5"
+            tools:listitem="@layout/layout_item" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

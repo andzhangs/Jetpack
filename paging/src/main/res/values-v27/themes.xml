@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Base.Theme.Jetpackandroid" parent="Theme.Material3.DayNight.NoActionBar">
+
+        <!--    方式一：代码设置状态栏/导航栏的透明度    -->
+
+        <!--
+           单独使用导航栏背景为半透明黑色
+           文案为白色
+       -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+
+        <!--
+            如果您希望在 Android 10（API 级别 29）或更高版本中停用自动内容保护
+            同statusBarColor效果
+         -->
+        <!--        <item name="android:enforceStatusBarContrast" tools:targetApi="q">false</item>-->
+
+        <!--   方式二：xml方式,设置一个带有深色内容的浅色状态栏     -->
+        <!--    文案为深色  -->
+        <item name="android:windowLightStatusBar">true</item>
+
+        <!--
+            单独使用导航栏背景为半透明黑色
+            优先级最低
+        -->
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+
+        <!--
+            navigationBarColor和android:enforceNavigationBarContrast一起使用，导航栏背景为透明色
+            优先级最高
+         -->
+        <!--        <item name="android:enforceNavigationBarContrast" tools:targetApi="q">false</item>-->
+
+        <!--
+            navigationBarColor和android:windowLightNavigationBar，导航栏背景为半透明白色
+            优先级其次
+        -->
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+
+    </style>
+</resources>

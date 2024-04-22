@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Jetpack-WorkerManager</string>
+    <string name="action_notification_cancelled">notification_cancelled</string>
+</resources>

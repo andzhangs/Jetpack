@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">sharing</string>
+
+    <string-array name="package_name_to_uri">
+        <item>com.tencent.mm</item>
+        <item>com.tencent.wework</item>
+        <item>com.tencent.mobileqq</item>
+        <item>com.qzone</item>
+        <item>com.sina.weibo</item>
+        <item>com.alibaba.android.rimet</item>
+        <item>com.eg.android.AlipayGphone</item>
+    </string-array>
+
+</resources>

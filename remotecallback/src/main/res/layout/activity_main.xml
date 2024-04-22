@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".MainActivity">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/acBtn_click"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="普通方式"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/acBtn_bind"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="绑定"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/acBtn_call_server"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="发送信息到服务端"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/acBtn_unbind"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="解绑"/>
+
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

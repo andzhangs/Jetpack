@@ -1,0 +1,36 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+
+        maven { url'https://jitpack.io'; 'https://maven.google.com'}
+    }
+}
+rootProject.name = "Jetpack"
+include ':app'
+include ':module_bluetooth'
+include ':biometric'
+include ':heifwriter'
+include ':hilt'
+include ':lifcycle'
+include ':livedata'
+include ':livedata_fragment'
+include ':loader'
+include ':navigation'
+include ':paging'
+include ':remotecallback'
+include ':room'
+include ':security'
+include ':sharing'
+include ':viewmodel'
+include ':versionedparcelable'
+include ':workmanager'
+include ':databinding'
