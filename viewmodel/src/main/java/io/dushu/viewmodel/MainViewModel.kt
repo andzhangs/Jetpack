@@ -12,7 +12,7 @@ import androidx.lifecycle.AndroidViewModel
  *  若需要是Context,请使用AndroidViewModel
  *  反之使用ViewModel
  */
-class MyViewModel(application: Application) : AndroidViewModel(application) {
+class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     var number: Int = 0
 

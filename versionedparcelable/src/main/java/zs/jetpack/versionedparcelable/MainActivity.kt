@@ -43,11 +43,11 @@ class MainActivity : AppCompatActivity() {
     
     
     private fun response(){
-        val data = ParcelUtils.getVersionedParcelable<UserBean>(bundle,"hello")
-            Log.i("print_logs", "response-1: ${data?.name}")
+        ParcelUtils.getVersionedParcelable<UserBean>(bundle,"hello")?.also {
+            Log.i("print_logs", "response-1: ${it.name}")
+        }
 
-        val datas = ParcelUtils.getVersionedParcelableList<UserBean>(bundle,"lists")
-        datas?.forEach {
+        ParcelUtils.getVersionedParcelableList<UserBean>(bundle,"lists")?.forEach {
                 Log.i("print_logs", "response-2: ${it?.name}")
         }
     }
