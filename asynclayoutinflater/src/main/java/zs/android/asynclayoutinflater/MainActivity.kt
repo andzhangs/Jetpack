@@ -2,7 +2,8 @@ package zs.android.asynclayoutinflater
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.widget.Toast
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.asynclayoutinflater.view.AsyncLayoutInflater
 
@@ -19,8 +20,30 @@ class MainActivity : AppCompatActivity() {
         val parentView=findViewById<LinearLayoutCompat>(R.id.ll_root)
 
         val inflater = AsyncLayoutInflater(this)
-        inflater.inflate(R.layout.layout_child_view, null) { view, resid, parent ->
-            Log.i("print_logs", "onCreate: ${Thread.currentThread().name}")
+
+
+        inflater.inflate(R.layout.layout_child_view, null) { view, _, _ ->
+            view.findViewById<AppCompatImageView>(R.id.acIv).setOnClickListener {
+                Toast.makeText(this, "点击我了", Toast.LENGTH_SHORT).show()
+            }
+            parentView.addView(view)
+        }
+        inflater.inflate(R.layout.layout_child_view1, null) { view, _, _ ->
+            parentView.addView(view)
+        }
+        inflater.inflate(R.layout.layout_child_view2, null) { view, _, _ ->
+            parentView.addView(view)
+        }
+        inflater.inflate(R.layout.layout_child_view3, null) { view, _, _ ->
+            parentView.addView(view)
+        }
+        inflater.inflate(R.layout.layout_child_view4, null) { view, _, _ ->
+            parentView.addView(view)
+        }
+        inflater.inflate(R.layout.layout_child_view5, null) { view, _, _ ->
+            parentView.addView(view)
+        }
+        inflater.inflate(R.layout.layout_child_view6, null) { view, _, _ ->
             parentView.addView(view)
         }
     }
