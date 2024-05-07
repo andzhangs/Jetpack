@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
-    <files-path
-        name="myimages"
-        path="images/" />
 
-    <external-files-path
-        name="media_1"
-        path="media/" />
+    <!--  Context.getFilesDir().  -->
+    <files-path name="myimages" path="images/" />
 
+    <!--  getCacheDir().  -->
+    <cache-path name="myimages_1" path="images/"/>
+
+    <!--  Environment.getExternalStorageDirectory().  -->
+    <external-path name="myimages_2" path="image/" />
+
+    <!--  Context.getExternalFilesDir(null)  -->
+    <external-files-path name="media_1" path="media/" />
+
+    <!--  Context.getExternalCacheDir().  -->
+    <external-cache-path name="myimage_3" path="image/"/>
+
+    <!--  Context.getExternalMediaDirs().  -->
+    <external-media-path name="myimage_4" path="image/" />
+    
 </paths>
