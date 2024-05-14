@@ -23,15 +23,12 @@ data class Student constructor(
     @ColumnInfo(name = "age", typeAffinity = ColumnInfo.INTEGER)
     var age: Int = 0,
 
-//    @ColumnInfo(name = "sex", typeAffinity = ColumnInfo.INTEGER)
-//    var sex: Int = 0,
+    @ColumnInfo(name = "sex", typeAffinity = ColumnInfo.INTEGER)
+    var sex: Int = 0,
 
-//    @ColumnInfo(name = "mark", typeAffinity = ColumnInfo.INTEGER)
-//    var mark: Int = 0,
-
-//    @ColumnInfo(name = "mark", typeAffinity = ColumnInfo.TEXT)
-//    var mark: String? = ""
-
+    //用户会员图标
+    @ColumnInfo(name = "level_url")
+    var levelUrl: String = ""
 ) {
     @Ignore
     constructor() : this(0)

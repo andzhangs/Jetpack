@@ -62,6 +62,12 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
+    implementation 'androidx.activity:activity-ktx:1.7.2'
+    implementation 'androidx.fragment:fragment-ktx:1.6.2'
+
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2'
+
+
     def room_version = "2.5.1"
 
     implementation("androidx.room:room-runtime:$room_version")
@@ -83,8 +89,15 @@ dependencies {
     // optional - Paging 3 Integration
     implementation "androidx.room:room-paging:$room_version"
 
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2'
 
-    implementation 'androidx.activity:activity-ktx:1.7.2'
-    implementation 'androidx.fragment:fragment-ktx:1.6.2'
+
+
+    //Debug数据库 https://github.com/amitshekhariitbhu/Android-Debug-Database
+    //Step-1：terminal：adb forward tcp:8080 tcp:8080
+    //Step-2：open http://localhost:8080
+//    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
+//    debugImplementation 'com.amitshekhar.android:debug-db-encrypt:1.0.6'
+
+    //加密库：https://github.com/sqlcipher/android-database-sqlcipher
+    implementation 'net.zetetic:android-database-sqlcipher:4.5.3'
 }
