@@ -2,8 +2,9 @@ package io.dushu.room.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import io.dushu.room.entity.Student
-import kotlinx.coroutines.flow.Flow
+import io.dushu.room.entity.CourseEntity
+import io.dushu.room.entity.StudentEntity
+import io.dushu.room.entity.relation.StudentWithCourseEntity
 
 /**
  * author: zhangshuai 6/27/21 8:55 PM
@@ -13,38 +14,33 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface StudentDao {
 
+    @Transaction
     @Insert
-    fun insert(vararg student: Student)
+    fun insert(student: StudentEntity?, courseEntity: CourseEntity?)
 
-    @Query("DELETE FROM student WHERE id=:id")
+    @Query("DELETE FROM table_student WHERE id=:id")
     fun deleteById(id: Int)
 
-    @Delete
-    fun delete(student: Student)
-
-    @Query("DELETE FROM student")
+    @Query("DELETE FROM table_student")
     fun clearAll()
 
+    @Transaction
     @Update
-    fun update(student: Student)
+    fun update(student: StudentEntity?, courseEntity: CourseEntity?)
 
+    //    @RewriteQueriesToDropUnusedColumns
+    @Transaction
+    @Query("SELECT * FROM table_student WHERE id =:id")
+    fun getById(id: Int): StudentWithCourseEntity?
+
+    @Transaction
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
-//    @RewriteQueriesToDropUnusedColumns
-    @Query("SELECT * FROM student ORDER BY id")
-    fun getAllStudent(): MutableList<Student>
+    @Query("SELECT * FROM table_student WHERE id =:id")
+    fun getStudentByIdLiveData(id: Int): LiveData<List<StudentWithCourseEntity>>
 
+    @Transaction
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
-//    @RewriteQueriesToDropUnusedColumns
-    @Query("SELECT * FROM student WHERE id =:id")
-    fun getStudentById(id: Int): LiveData<List<Student>>
-
-
-    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
-//    @RewriteQueriesToDropUnusedColumns
-    @Query("SELECT * FROM student ORDER BY id")
-    fun getAllStudent2(): LiveData<List<Student>>
-
-    @Query("SELECT * FROM student ORDER BY id")
-    fun getAllStudent3(): Flow<List<Student>>
+    @Query("SELECT * FROM table_student ORDER BY id")
+    fun getAllLiveData(): LiveData<List<StudentWithCourseEntity>>
 
 }

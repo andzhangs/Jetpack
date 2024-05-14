@@ -2,16 +2,20 @@ package io.dushu.room.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Ignore
+import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.google.gson.Gson
 
 /**
  * author: zhangshuai 6/27/21 7:14 PM
  * email: zhangshuai@dushu365.com
  * mark:
  */
-@Entity(tableName = "student")
-data class Student constructor(
+@Entity(
+    tableName = "table_student",
+    indices = [Index(value = ["name"], unique = true)]
+)
+data class StudentEntity constructor(
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id", typeAffinity = ColumnInfo.INTEGER)
@@ -23,13 +27,12 @@ data class Student constructor(
     @ColumnInfo(name = "age", typeAffinity = ColumnInfo.INTEGER)
     var age: Int = 0,
 
-    @ColumnInfo(name = "sex", typeAffinity = ColumnInfo.INTEGER)
-    var sex: Int = 0,
-
     //用户会员图标
-    @ColumnInfo(name = "level_url")
-    var levelUrl: String = ""
+//    @ColumnInfo(name = "level_url")
+//    var levelUrl: String = ""
 ) {
-    @Ignore
-    constructor() : this(0)
+//    @Ignore
+//    constructor() : this(0)
+
+    override fun toString(): String = Gson().toJson(this)
 }

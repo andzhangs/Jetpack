@@ -7,8 +7,10 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import io.dushu.room.BuildConfig
+import io.dushu.room.dao.CourseDao
 import io.dushu.room.dao.StudentDao
-import io.dushu.room.entity.Student
+import io.dushu.room.entity.CourseEntity
+import io.dushu.room.entity.StudentEntity
 import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SupportFactory
 
@@ -17,7 +19,13 @@ import net.sqlcipher.database.SupportFactory
  * email: zhangshuai@dushu365.com
  * mark:
  */
-@Database(entities = [Student::class], version = 2)
+@Database(
+    entities = [
+        StudentEntity::class,
+        CourseEntity::class
+    ],
+    version = 1
+)
 abstract class StudentDataBase : RoomDatabase() {
 
     companion object {
@@ -34,7 +42,7 @@ abstract class StudentDataBase : RoomDatabase() {
                     )
                         .fallbackToDestructiveMigration() //在升级异常时，重建数据表，同时数据也会丢失
                         .addCallback(CALLBACK)
-                        .addMigrations(*DbHelper.createMigration())
+//                        .addMigrations(*DbHelper.createMigration())
                         .apply {
                             if (!BuildConfig.DEBUG) {  //加密
                                 val secret = "attr_20230418".toCharArray()
@@ -80,5 +88,6 @@ abstract class StudentDataBase : RoomDatabase() {
 
     abstract fun getStudentDao(): StudentDao
 
+    abstract fun getCourseDao(): CourseDao
 
 }

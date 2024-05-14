@@ -3,7 +3,7 @@
     <data>
         <variable
             name="data"
-            type="io.dushu.room.entity.Student" />
+            type="io.dushu.room.entity.relation.StudentWithCourseEntity" />
     </data>
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -17,7 +17,8 @@
         tools:text="0"
         android:textSize="18sp"
         android:textAllCaps="false"
-        android:text="@{String.valueOf(data.id)}"/>
+        android:text="@{String.valueOf(data.student.id)}"/>
+
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -26,14 +27,32 @@
         android:textAllCaps="false"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="@{data.name}"/>
+        android:text="@{data.student.name}"/>
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="0"
+        android:layout_weight="1"
+        android:textSize="18sp"
+        android:textAllCaps="false"
+        android:text="@{String.valueOf(data.student.age)}"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="0"
+        android:layout_weight="1"
+        android:textSize="18sp"
+        android:textAllCaps="false"
+        android:text="@{data.course.courseName}"/>
+
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="0"
         android:textSize="18sp"
         android:textAllCaps="false"
-        android:text="@{String.valueOf(data.age)}"/>
+        android:text="@{String.valueOf(data.course.score)}"/>
 </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>
 

@@ -20,14 +20,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:onClick="JumpClick"
-            android:text="跳转"/>
-
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/acTvInsert"
             android:layout_width="0dp"
@@ -111,7 +103,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/acTvUpdate"
             tools:itemCount="5"
-            tools:listitem="@layout/layout_item" />
+            tools:listitem="@layout/item_mvvm" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

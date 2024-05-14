@@ -1,22 +1,18 @@
 package io.dushu.room
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.dushu.room.databinding.ActivityMainBinding
-import io.dushu.room.entity.Student
+import io.dushu.room.entity.CourseEntity
+import io.dushu.room.entity.StudentEntity
+import io.dushu.room.entity.relation.StudentWithCourseEntity
 import io.dushu.room.viewmodel.StudentViewModel
-import kotlinx.coroutines.launch
 import java.util.Random
 
 /**
@@ -27,7 +23,6 @@ import java.util.Random
 class MvvmActivity : AppCompatActivity() {
 
     private lateinit var mDataBinding: ActivityMainBinding
-    private val list = arrayListOf<Student>()
     private lateinit var mAdapter: MyAdapter
 
     private val mStudentViewModel: StudentViewModel by viewModels()
@@ -38,41 +33,35 @@ class MvvmActivity : AppCompatActivity() {
         mDataBinding = DataBindingUtil.setContentView(this@MvvmActivity, R.layout.activity_main)
         mDataBinding.lifecycleOwner = this
 
-        mAdapter = MyAdapter(list)
+        mAdapter = MyAdapter()
         mDataBinding.recycleView.apply {
             layoutManager = LinearLayoutManager(this@MvvmActivity, RecyclerView.VERTICAL, false)
             adapter = mAdapter
         }
 
         getAll()
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED){
-                mStudentViewModel.getAllStudent3().collect {
-                    Log.i("print_logs", "getAllStudent3: ${it.size}")
-                }
-            }
-        }
     }
 
     private fun getAll() {
         mStudentViewModel.getAllStudent2().observe(this) {
-            Log.i("print_logs", "getAllStudent2: ${it.size}")
-            list.clear()
             if (it.isNotEmpty()) {
-                list.addAll(it)
-                mDataBinding.recycleView.smoothScrollToPosition(list.size - 1)
+                mAdapter.setData(it)
+                mDataBinding.recycleView.smoothScrollToPosition(it.size - 1)
             }
-            mAdapter.notifyDataSetChanged()
         }
     }
 
-    fun JumpClick(view: View) {
-        startActivity(Intent(this, MainActivity::class.java))
-    }
-
     fun InsertClick(view: View) {
-        mStudentViewModel.insert(Student(0, "Hello", Random().nextInt(100)))
+        val index = System.currentTimeMillis().toInt()
+        val entity = StudentWithCourseEntity(
+            student = StudentEntity(name = "用户-$index", age = Random().nextInt(100)),
+            course = CourseEntity(
+                userName = "用户-$index",
+                courseName = "数学",
+                score = Random().nextInt(100)
+            )
+        )
+        mStudentViewModel.insert(entity)
     }
 
 
@@ -86,7 +75,7 @@ class MvvmActivity : AppCompatActivity() {
     fun UpdateClick(view: View) {
         val inputText = mDataBinding.acEtId.text.toString()
         if (inputText.isNotEmpty()) {
-            mStudentViewModel.update(Student(inputText.toInt(), "Tom", Random().nextInt(100)))
+            mStudentViewModel.update(inputText.toInt())
         }
     }
 
@@ -94,10 +83,10 @@ class MvvmActivity : AppCompatActivity() {
         val inputText = mDataBinding.acEtId.text.toString()
         if (inputText.isNotEmpty()) {
             mStudentViewModel.getStudentById(inputText.toInt()).observe(this) {
-                list.clear()
-                list.addAll(it)
-                mAdapter.notifyDataSetChanged()
+                mAdapter.setData(it)
             }
+        }else{
+            getAll()
         }
     }
 

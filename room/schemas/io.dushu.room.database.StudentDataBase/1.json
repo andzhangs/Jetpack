@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "84fb235f8062b0a6b0c8d1a6d1035c4f",
+    "identityHash": "47e39d6efd4a6c29cccbd1797d6002ba",
     "entities": [
       {
-        "tableName": "student",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `age` INTEGER NOT NULL, `sex` INTEGER NOT NULL)",
+        "tableName": "table_student",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `age` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -25,12 +25,6 @@
             "columnName": "age",
             "affinity": "INTEGER",
             "notNull": true
-          },
-          {
-            "fieldPath": "sex",
-            "columnName": "sex",
-            "affinity": "INTEGER",
-            "notNull": true
           }
         ],
         "primaryKey": {
@@ -39,14 +33,68 @@
             "id"
           ]
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_table_student_name",
+            "unique": true,
+            "columnNames": [
+              "name"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_table_student_name` ON `${TABLE_NAME}` (`name`)"
+          }
+        ],
         "foreignKeys": []
+      },
+      {
+        "tableName": "table_course",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_name` TEXT NOT NULL, `course_name` TEXT NOT NULL, `score` INTEGER NOT NULL, PRIMARY KEY(`user_name`), FOREIGN KEY(`user_name`) REFERENCES `table_student`(`name`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "userName",
+            "columnName": "user_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "courseName",
+            "columnName": "course_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "score",
+            "columnName": "score",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "user_name"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "table_student",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "user_name"
+            ],
+            "referencedColumns": [
+              "name"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '84fb235f8062b0a6b0c8d1a6d1035c4f')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '47e39d6efd4a6c29cccbd1797d6002ba')"
     ]
   }
 }

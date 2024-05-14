@@ -2,12 +2,11 @@ package io.dushu.room.repository
 
 import android.content.Context
 import androidx.lifecycle.LiveData
-import io.dushu.room.dao.StudentDao
 import io.dushu.room.database.StudentDataBase
-import io.dushu.room.entity.Student
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOn
+import io.dushu.room.entity.CourseEntity
+import io.dushu.room.entity.StudentEntity
+import io.dushu.room.entity.relation.StudentWithCourseEntity
+import java.util.Random
 
 /**
  * @author zhangshuai
@@ -16,15 +15,28 @@ import kotlinx.coroutines.flow.flowOn
  */
 class StudentRepository(private val context: Context) {
 
-    private val mStudentDao: StudentDao by lazy {
-        StudentDataBase.getInstance(context).getStudentDao()
-    }
+    private val mDataBase = StudentDataBase.getInstance(context)
 
+    private val mStudentDao = mDataBase.getStudentDao()
+    private val mCourseDao = mDataBase.getCourseDao()
+
+    /**
+     * 精确查找
+     */
+    fun selectStudentById(id: Int): LiveData<List<StudentWithCourseEntity>> =
+        mStudentDao.getStudentByIdLiveData(id)
+
+    /**
+     * 查询全部
+     */
+    fun getAll(): LiveData<List<StudentWithCourseEntity>> = mStudentDao.getAllLiveData()
+
+    //----------------------------------------------------------------------------------------------
     /**
      * 添加
      */
-    fun insertStudent(student: Student) {
-        mStudentDao.insert(student)
+    fun insertStudent(entity: StudentWithCourseEntity) {
+        mStudentDao.insert(entity.student, entity.course)
     }
 
     /**
@@ -35,42 +47,37 @@ class StudentRepository(private val context: Context) {
     }
 
     /**
-     * 删除
-     */
-    fun deleteStudent(student: Student?) {
-        student?.apply {
-            mStudentDao.delete(this)
-        }
-    }
-
-    /**
      * 清空
      */
     fun clearAll() {
         mStudentDao.clearAll()
+//        mCourseDao.clearAll()
     }
 
 
     /**
      * 修改
      */
-    fun updateStudent(student: Student?) {
-        student?.apply {
-            mStudentDao.update(student)
+    fun updateStudent(id: Int) {
+        mStudentDao.getById(id = id)?.also { entity ->
+            getEntity(entity,
+                studentBlock = {
+                    it.age = Random().nextInt(100)
+                }, courseBlock = {
+                    it.score = Random().nextInt(100)
+                    it.courseName = "化学"
+                }
+            )
+            mStudentDao.update(entity.student, entity.course)
         }
     }
 
-
-    /**
-     * 精确查找
-     */
-    fun selectStudentById(id: Int): LiveData<List<Student>> = mStudentDao.getStudentById(id)
-
-    /**
-     * 查询全部
-     */
-    fun getAll(): LiveData<List<Student>> = mStudentDao.getAllStudent2()
-
-    fun getAllFlow(): Flow<List<Student>> = mStudentDao.getAllStudent3().flowOn(Dispatchers.IO)
-
+    private fun getEntity(
+        entity: StudentWithCourseEntity?,
+        studentBlock: (StudentEntity) -> Unit,
+        courseBlock: (CourseEntity) -> Unit
+    ) {
+        entity?.student?.let { studentBlock(it) }
+        entity?.course?.let { courseBlock(it) }
+    }
 }

@@ -4,12 +4,10 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import io.dushu.room.entity.Student
+import io.dushu.room.entity.relation.StudentWithCourseEntity
 import io.dushu.room.repository.StudentRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
  * @author zhangshuai
@@ -18,59 +16,32 @@ import kotlinx.coroutines.withContext
  */
 class StudentViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val mStudentRepository: StudentRepository by lazy { StudentRepository(application) }
+    private val mStudentRepository = StudentRepository(application)
 
-    fun insert(student: Student) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                mStudentRepository.insertStudent(student)
-            }
-        }
-    }
-
-    fun delete(student: Student) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                mStudentRepository.deleteStudent(student)
-            }
-        }
-    }
-
-    fun deleteById(id: Int) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                mStudentRepository.deleteById(id)
-            }
-        }
-    }
-
-    fun update(student: Student) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                mStudentRepository.updateStudent(student)
-            }
-        }
-    }
-
-    fun getStudentById(id: Int): LiveData<List<Student>> {
-//        var data = arrayListOf<Student>()
-//        viewModelScope.async {
-//            withContext(Dispatchers.IO) {
-//                data = mStudentRepository.selectStudentById(id) as ArrayList<Student>
-//            }
-//        }
-//        return data
+    fun getStudentById(id: Int): LiveData<List<StudentWithCourseEntity>> {
         return mStudentRepository.selectStudentById(id)
     }
 
 
-    fun getAllStudent2(): LiveData<List<Student>> {
+    fun getAllStudent2(): LiveData<List<StudentWithCourseEntity>> {
         return mStudentRepository.getAll()
     }
 
-
-    fun getAllStudent3(): Flow<List<Student>> {
-        return mStudentRepository.getAllFlow()
+    fun insert(student: StudentWithCourseEntity) {
+        viewModelScope.launch(Dispatchers.IO) {
+            mStudentRepository.insertStudent(student)
+        }
     }
 
+    fun deleteById(id: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            mStudentRepository.deleteById(id)
+        }
+    }
+
+    fun update(id:Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            mStudentRepository.updateStudent(id)
+        }
+    }
 }
