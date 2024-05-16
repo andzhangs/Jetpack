@@ -1,11 +1,12 @@
 package io.dushu.room
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -16,6 +17,7 @@ import io.dushu.room.entity.CourseEntity
 import io.dushu.room.entity.StudentEntity
 import io.dushu.room.entity.relation.StudentWithCourseEntity
 import io.dushu.room.viewmodel.StudentViewModel
+import java.util.Date
 import java.util.Random
 
 /**
@@ -23,6 +25,7 @@ import java.util.Random
  * @date 2022/3/14 22:32
  * @description
  */
+@RequiresApi(Build.VERSION_CODES.N)
 class MvvmActivity : AppCompatActivity() {
 
     private lateinit var mDataBinding: ActivityMainBinding
@@ -38,15 +41,16 @@ class MvvmActivity : AppCompatActivity() {
         mDataBinding.vm = mStudentViewModel
 
         mAdapter = MyAdapter().apply {
-            setOnItemClickListener(object :MyAdapter.OnItemClickListener{
+            setOnItemClickListener(object : MyAdapter.OnItemClickListener {
                 override fun onItemClick(position: Int, data: StudentWithCourseEntity) {
                     Toast.makeText(this@MvvmActivity, "${data.student}", Toast.LENGTH_SHORT).show()
+                    mStudentViewModel.getAllCourseByUser(data.student?.name)
                 }
             })
         }
         mDataBinding.recycleView.apply {
             layoutManager = LinearLayoutManager(this@MvvmActivity, RecyclerView.VERTICAL, false)
-            addItemDecoration(DividerItemDecoration(this@MvvmActivity,RecyclerView.VERTICAL))
+            addItemDecoration(DividerItemDecoration(this@MvvmActivity, RecyclerView.VERTICAL))
             adapter = mAdapter
         }
 
@@ -55,9 +59,6 @@ class MvvmActivity : AppCompatActivity() {
 
     private fun getAll() {
         mStudentViewModel.getAllStudent().observe(this) {
-            if (BuildConfig.DEBUG) {
-                Log.i("print_logs", "MvvmActivity::getAll: ${it.size}")
-            }
             mAdapter.setData(it)
             if (it.isNotEmpty()) {
                 mDataBinding.recycleView.smoothScrollToPosition(it.size - 1)
@@ -66,11 +67,16 @@ class MvvmActivity : AppCompatActivity() {
     }
 
     fun InsertClick(view: View) {
-        val index = System.currentTimeMillis().toInt()
+        val index = System.currentTimeMillis()
+        val studentName = "用户$index"
         val entity = StudentWithCourseEntity(
-            student = StudentEntity(name = "用户-$index", age = Random().nextInt(100)),
+            student = StudentEntity(
+                name = studentName,
+                age = Random().nextInt(100),
+                createTime = Date(System.currentTimeMillis())
+            ),
             course = CourseEntity(
-                userName = "用户-$index",
+                userName = studentName,
                 courseName = "数学",
                 score = Random().nextInt(100)
             )

@@ -4,7 +4,10 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
 import com.google.gson.Gson
+import io.dushu.room.database.converters.DateConverter
+import java.util.Date
 
 /**
  * author: zhangshuai 6/27/21 7:14 PM
@@ -13,7 +16,7 @@ import com.google.gson.Gson
  */
 @Entity(
     tableName = "table_student",
-    indices = [Index(value = ["name"], unique = true)]
+    indices = [Index(value = ["name"], unique = true)] //设置了unique = true，表示"title"列的值必须是唯一的。
 )
 data class StudentEntity constructor(
 
@@ -21,11 +24,17 @@ data class StudentEntity constructor(
     @ColumnInfo(name = "id", typeAffinity = ColumnInfo.INTEGER)
     var id: Int = 0,
 
+    //学生名
     @ColumnInfo(name = "name", typeAffinity = ColumnInfo.TEXT)
     var name: String? = "",
 
+    //年纪
     @ColumnInfo(name = "age", typeAffinity = ColumnInfo.INTEGER)
     var age: Int = 0,
+
+    @TypeConverters(DateConverter::class)
+    @ColumnInfo(name = "create_time")
+    var createTime: Date
 
     //用户会员图标
 //    @ColumnInfo(name = "level_url")

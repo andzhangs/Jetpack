@@ -1,13 +1,18 @@
 package io.dushu.room.viewmodel
 
 import android.app.Application
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.databinding.ObservableField
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import io.dushu.room.BuildConfig
 import io.dushu.room.entity.relation.StudentWithCourseEntity
 import io.dushu.room.repository.StudentRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 /**
@@ -15,16 +20,38 @@ import kotlinx.coroutines.launch
  * @date 2022/3/14 21:55
  * @description
  */
+@RequiresApi(Build.VERSION_CODES.N)
 class StudentViewModel(application: Application) : AndroidViewModel(application) {
 
     private val mStudentRepository = StudentRepository(application)
 
-    val mCountField=ObservableField("总数：0")
+    val mCountField = ObservableField("总数：0")
 
     init {
-        viewModelScope.launch(Dispatchers.IO) {
-            mStudentRepository.getCountFlow().collect{
-                mCountField.set("总数：$it")
+        viewModelScope.launch {
+            launch(Dispatchers.IO) {
+                mStudentRepository.getCountFlow().collectLatest {
+                    mCountField.set("总数：$it")
+                }
+            }
+
+            launch(Dispatchers.IO) {
+                mStudentRepository.getAllViewFlow().collect {
+                    it.forEachIndexed { index, item ->
+
+                        if (index == 0) {
+                            mStudentRepository.getStudentByDate(item.createTime)?.also {entity->
+                                if (BuildConfig.DEBUG) {
+                                    Log.d("print_logs", "$entity")
+                                }
+                            }
+                        }
+
+                        if (BuildConfig.DEBUG) {
+                            Log.i("print_logs", "$item")
+                        }
+                    }
+                }
             }
         }
     }
@@ -33,7 +60,8 @@ class StudentViewModel(application: Application) : AndroidViewModel(application)
         return mStudentRepository.selectStudentById(id)
     }
 
-    fun getAllStudent(): LiveData<List<StudentWithCourseEntity>> =  mStudentRepository.getAllLiveData()
+    fun getAllStudent(): LiveData<List<StudentWithCourseEntity>> =
+        mStudentRepository.getAllLiveData()
 
     fun insert(student: StudentWithCourseEntity) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -47,15 +75,27 @@ class StudentViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun update(id:Int) {
+    fun update(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             mStudentRepository.updateStudent(id)
         }
     }
 
-    fun clearAll(){
+    fun clearAll() {
         viewModelScope.launch(Dispatchers.IO) {
             mStudentRepository.clearAll()
+        }
+    }
+
+    //----------------------------------------------------------------------------------------------
+
+    fun getAllCourseByUser(userName: String?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            mStudentRepository.getAllCourseByUser(userName).forEach { (t, u) ->
+                if (BuildConfig.DEBUG) {
+                    Log.i("print_logs", "$t, $u")
+                }
+            }
         }
     }
 }

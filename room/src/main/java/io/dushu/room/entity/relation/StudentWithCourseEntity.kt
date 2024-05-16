@@ -17,7 +17,13 @@ data class StudentWithCourseEntity(
 
     @Relation(
         parentColumn = "name",
-        entityColumn = "user_name"
+        entity = CourseEntity::class,
+        entityColumn = "user_name",
+//        associateBy = Junction(
+//            value = StudentCourseJoin::class,
+//            parentColumn = "name",
+//            entityColumn = "user_name"
+//        )
     )
     val course: CourseEntity?
 )

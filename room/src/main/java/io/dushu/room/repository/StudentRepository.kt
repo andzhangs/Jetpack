@@ -6,6 +6,7 @@ import io.dushu.room.database.StudentDataBase
 import io.dushu.room.entity.CourseEntity
 import io.dushu.room.entity.StudentEntity
 import io.dushu.room.entity.relation.StudentWithCourseEntity
+import java.util.Date
 import java.util.Random
 
 /**
@@ -19,6 +20,16 @@ class StudentRepository(private val context: Context) {
 
     private val mStudentDao = mDataBase.getStudentDao()
     private val mCourseDao = mDataBase.getCourseDao()
+
+    private fun getEntity(
+        entity: StudentWithCourseEntity?,
+        studentBlock: (StudentEntity) -> Unit,
+        courseBlock: (CourseEntity) -> Unit
+    ) {
+        entity?.student?.let { studentBlock(it) }
+        entity?.course?.let { courseBlock(it) }
+    }
+
 
     /**
      * 精确查找
@@ -38,7 +49,7 @@ class StudentRepository(private val context: Context) {
      * 添加
      */
     suspend fun insertStudent(entity: StudentWithCourseEntity) {
-        mStudentDao.insert(entity.student, entity.course)
+        mStudentDao.insert(entity.student,entity.course)
     }
 
     /**
@@ -54,7 +65,6 @@ class StudentRepository(private val context: Context) {
     suspend fun clearAll() {
         mStudentDao.clearAndReset()
     }
-
 
     /**
      * 修改
@@ -73,12 +83,16 @@ class StudentRepository(private val context: Context) {
         }
     }
 
-    private fun getEntity(
-        entity: StudentWithCourseEntity?,
-        studentBlock: (StudentEntity) -> Unit,
-        courseBlock: (CourseEntity) -> Unit
-    ) {
-        entity?.student?.let { studentBlock(it) }
-        entity?.course?.let { courseBlock(it) }
-    }
+    //----------------------------------------------------------------------------------------------
+
+    suspend fun getAllCourseByUser(userName: String?) = mStudentDao.getAllCourseByUser(userName)
+
+    //----------------------------------------------------------------------------------------------
+
+    fun getAllViewFlow() = mStudentDao.getAllViewFlow()
+
+    //----------------------------------------------------------------------------------------------
+
+    suspend fun getStudentByDate(date: Date) = mStudentDao.getStudentByDate(date)
+
 }

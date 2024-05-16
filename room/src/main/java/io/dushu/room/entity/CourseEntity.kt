@@ -3,6 +3,7 @@ package io.dushu.room.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.google.gson.Gson
 
@@ -14,6 +15,7 @@ import com.google.gson.Gson
  */
 @Entity(
     tableName = "table_course",
+    indices = [Index(value = ["user_name"], unique = true)],
     foreignKeys =
     [
         ForeignKey(
@@ -37,7 +39,7 @@ data class CourseEntity(
 
     //分数
     @ColumnInfo(name = "score")
-    var score: Int
+    var score: Int,
 ) {
     override fun toString(): String = Gson().toJson(this)
 }
