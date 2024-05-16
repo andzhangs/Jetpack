@@ -31,36 +31,35 @@ class StudentRepository(private val context: Context) {
      */
     fun getAllLiveData() = mStudentDao.getAllLiveData()
 
-    suspend fun getCountFlow() = mStudentDao.getCountFlow()
+    fun getCountFlow() = mStudentDao.getCountFlow()
 
     //----------------------------------------------------------------------------------------------
     /**
      * 添加
      */
-    fun insertStudent(entity: StudentWithCourseEntity) {
+    suspend fun insertStudent(entity: StudentWithCourseEntity) {
         mStudentDao.insert(entity.student, entity.course)
     }
 
     /**
      * 删除
      */
-    fun deleteById(id: Int) {
+    suspend fun deleteById(id: Int) {
         mStudentDao.deleteById(id)
     }
 
     /**
      * 清空
      */
-    fun clearAll() {
-        mStudentDao.clearAll()
-//        mCourseDao.clearAll()
+    suspend fun clearAll() {
+        mStudentDao.clearAndReset()
     }
 
 
     /**
      * 修改
      */
-    fun updateStudent(id: Int) {
+    suspend fun updateStudent(id: Int) {
         mStudentDao.getById(id = id)?.also { entity ->
             getEntity(entity,
                 studentBlock = {

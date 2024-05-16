@@ -2,10 +2,13 @@ package io.dushu.room
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.dushu.room.databinding.ActivityMainBinding
@@ -34,9 +37,16 @@ class MvvmActivity : AppCompatActivity() {
         mDataBinding.lifecycleOwner = this
         mDataBinding.vm = mStudentViewModel
 
-        mAdapter = MyAdapter()
+        mAdapter = MyAdapter().apply {
+            setOnItemClickListener(object :MyAdapter.OnItemClickListener{
+                override fun onItemClick(position: Int, data: StudentWithCourseEntity) {
+                    Toast.makeText(this@MvvmActivity, "${data.student}", Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
         mDataBinding.recycleView.apply {
             layoutManager = LinearLayoutManager(this@MvvmActivity, RecyclerView.VERTICAL, false)
+            addItemDecoration(DividerItemDecoration(this@MvvmActivity,RecyclerView.VERTICAL))
             adapter = mAdapter
         }
 
@@ -45,8 +55,11 @@ class MvvmActivity : AppCompatActivity() {
 
     private fun getAll() {
         mStudentViewModel.getAllStudent().observe(this) {
+            if (BuildConfig.DEBUG) {
+                Log.i("print_logs", "MvvmActivity::getAll: ${it.size}")
+            }
+            mAdapter.setData(it)
             if (it.isNotEmpty()) {
-                mAdapter.setData(it)
                 mDataBinding.recycleView.smoothScrollToPosition(it.size - 1)
             }
         }
@@ -91,8 +104,13 @@ class MvvmActivity : AppCompatActivity() {
         }
     }
 
+    fun ClearClick(view: View) {
+        mStudentViewModel.clearAll()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         mDataBinding.unbind()
     }
+
 }

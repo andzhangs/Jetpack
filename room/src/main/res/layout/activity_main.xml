@@ -2,6 +2,7 @@
 <layout>
 
     <data>
+
         <variable
             name="vm"
             type="io.dushu.room.viewmodel.StudentViewModel" />
@@ -13,38 +14,52 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".MainActivity">
+
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/acEt_id"
             android:layout_width="150dp"
             android:layout_height="?android:attr/actionBarSize"
-            android:inputType="number"
             android:hint="输入id号"
+            android:inputType="number"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="清空"
+            android:textColor="@android:color/holo_red_light"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:onClick="ClearClick"
+            app:layout_constraintBottom_toBottomOf="@id/acEt_id"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/acEt_id" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="15dp"
-            android:textSize="14sp"
-            tools:text="总数：0"
             android:text="@{vm.mCountField}"
             android:textColor="@android:color/black"
-            app:layout_constraintTop_toTopOf="@id/acEt_id"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@id/acEt_id"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/acEt_id" />
+            app:layout_constraintTop_toTopOf="@id/acEt_id"
+            tools:text="总数：0" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/acTvInsert"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="30dp"
             android:layout_margin="10dp"
             android:background="@color/colorAccent"
             android:gravity="center"
             android:onClick="InsertClick"
             android:text="增 加"
             android:textAllCaps="false"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@id/guideline"
             app:layout_constraintStart_toStartOf="parent"
@@ -54,14 +69,14 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/acTvDelete"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="30dp"
             android:layout_margin="10dp"
             android:background="@color/colorAccent"
             android:gravity="center"
             android:onClick="DeleteClick"
             android:text="删 除"
             android:textAllCaps="false"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@id/acTvInsert"
             app:layout_constraintEnd_toEndOf="parent"
@@ -71,14 +86,14 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/acTvUpdate"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="30dp"
             android:layout_margin="10dp"
             android:background="@color/colorAccent"
             android:gravity="center"
             android:onClick="UpdateClick"
             android:text="修 改"
             android:textAllCaps="false"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@id/guideline"
             app:layout_constraintStart_toStartOf="parent"
@@ -87,17 +102,17 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/acTvQuery"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="30dp"
             android:layout_margin="10dp"
             android:background="@color/colorAccent"
             android:gravity="center"
             android:onClick="QueryClick"
             android:text="查 询"
             android:textAllCaps="false"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@id/guideline"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline"
             app:layout_constraintTop_toBottomOf="@id/acTvDelete" />
 
         <androidx.constraintlayout.widget.Guideline

@@ -52,4 +52,10 @@ class StudentViewModel(application: Application) : AndroidViewModel(application)
             mStudentRepository.updateStudent(id)
         }
     }
+
+    fun clearAll(){
+        viewModelScope.launch(Dispatchers.IO) {
+            mStudentRepository.clearAll()
+        }
+    }
 }

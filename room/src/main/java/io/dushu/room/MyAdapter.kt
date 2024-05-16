@@ -30,8 +30,13 @@ class MyAdapter(private var mList: ArrayList<StudentWithCourseEntity> = arrayLis
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        if (mList.size > 0) {
-            holder.dataBinding.data = mList[position]
+        if (mList.isNotEmpty()) {
+            val result = mList[position]
+
+            holder.itemView.setOnClickListener {
+                this.mItemClickListener?.onItemClick(position, result)
+            }
+            holder.dataBinding.data = result
         }
     }
 
@@ -41,11 +46,17 @@ class MyAdapter(private var mList: ArrayList<StudentWithCourseEntity> = arrayLis
 
     private val mItemCallback by lazy {
         object : DiffUtil.ItemCallback<StudentWithCourseEntity>() {
-            override fun areItemsTheSame(oldItem: StudentWithCourseEntity, newItem: StudentWithCourseEntity): Boolean {
+            override fun areItemsTheSame(
+                oldItem: StudentWithCourseEntity,
+                newItem: StudentWithCourseEntity
+            ): Boolean {
                 return oldItem.student?.name == newItem.student?.name
             }
 
-            override fun areContentsTheSame(oldItem: StudentWithCourseEntity, newItem: StudentWithCourseEntity): Boolean {
+            override fun areContentsTheSame(
+                oldItem: StudentWithCourseEntity,
+                newItem: StudentWithCourseEntity
+            ): Boolean {
                 return oldItem == newItem
             }
         }
@@ -59,18 +70,40 @@ class MyAdapter(private var mList: ArrayList<StudentWithCourseEntity> = arrayLis
                 override fun getNewListSize() = newList.size
 
                 override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                    return mItemCallback.areItemsTheSame(this@MyAdapter.getItem(oldItemPosition), newList[newItemPosition])
+                    return mItemCallback.areItemsTheSame(
+                        this@MyAdapter.getItem(oldItemPosition),
+                        newList[newItemPosition]
+                    )
                 }
 
-                override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-                    return mItemCallback.areContentsTheSame(this@MyAdapter.getItem(oldItemPosition), newList[newItemPosition])
+                override fun areContentsTheSame(
+                    oldItemPosition: Int,
+                    newItemPosition: Int
+                ): Boolean {
+                    return mItemCallback.areContentsTheSame(
+                        this@MyAdapter.getItem(oldItemPosition),
+                        newList[newItemPosition]
+                    )
                 }
             })
 
             mList.clear()
             mList.addAll(newList)
             diffResult.dispatchUpdatesTo(this)
+        } else {
+            if (mList.isNotEmpty()) {
+                notifyItemRangeRemoved(0, mList.size)
+            }
+            mList.clear()
         }
     }
 
+    private var mItemClickListener: OnItemClickListener? = null
+    fun setOnItemClickListener(listener: OnItemClickListener) {
+        this.mItemClickListener = listener
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(position: Int, data: StudentWithCourseEntity)
+    }
 }

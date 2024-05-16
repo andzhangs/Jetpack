@@ -17,22 +17,19 @@ interface StudentDao {
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(student: StudentEntity?, courseEntity: CourseEntity?)
+    suspend fun insert(student: StudentEntity?, courseEntity: CourseEntity?)
 
     @Query("DELETE FROM table_student WHERE id=:id")
-    fun deleteById(id: Int)
-
-    @Query("DELETE FROM table_student")
-    fun clearAll()
+    suspend fun deleteById(id: Int)
 
     @Transaction
     @Update
-    fun update(student: StudentEntity?, courseEntity: CourseEntity?)
+    suspend fun update(student: StudentEntity?, courseEntity: CourseEntity?)
 
-    //    @RewriteQueriesToDropUnusedColumns
+    //@RewriteQueriesToDropUnusedColumns
     @Transaction
     @Query("SELECT * FROM table_student WHERE id =:id")
-    fun getById(id: Int): StudentWithCourseEntity?
+    suspend fun getById(id: Int): StudentWithCourseEntity?
 
     @Transaction
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
@@ -46,4 +43,18 @@ interface StudentDao {
 
     @Query("SELECT COUNT(*) FROM table_student ORDER BY id")
     fun getCountFlow(): Flow<Int>
+
+
+
+    @Query("DELETE FROM table_student")
+    suspend fun clearAll()
+
+    @Query("DELETE FROM sqlite_sequence WHERE name='table_student'")
+    suspend fun resetAutoIncrement()
+
+    @Transaction
+    suspend fun clearAndReset(){
+        clearAll()
+        resetAutoIncrement()
+    }
 }
