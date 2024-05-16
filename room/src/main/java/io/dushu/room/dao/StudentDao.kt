@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.Flow
 interface StudentDao {
 
     @Transaction
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(student: StudentEntity?, courseEntity: CourseEntity?)
 
     @Query("DELETE FROM table_student WHERE id=:id")
