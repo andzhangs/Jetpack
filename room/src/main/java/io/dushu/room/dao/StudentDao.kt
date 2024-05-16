@@ -5,6 +5,7 @@ import androidx.room.*
 import io.dushu.room.entity.CourseEntity
 import io.dushu.room.entity.StudentEntity
 import io.dushu.room.entity.relation.StudentWithCourseEntity
+import kotlinx.coroutines.flow.Flow
 
 /**
  * author: zhangshuai 6/27/21 8:55 PM
@@ -43,4 +44,6 @@ interface StudentDao {
     @Query("SELECT * FROM table_student ORDER BY id")
     fun getAllLiveData(): LiveData<List<StudentWithCourseEntity>>
 
+    @Query("SELECT COUNT(*) FROM table_student ORDER BY id")
+    fun getCountFlow(): Flow<Int>
 }

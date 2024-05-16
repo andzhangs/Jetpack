@@ -2,7 +2,9 @@
 <layout>
 
     <data>
-
+        <variable
+            name="vm"
+            type="io.dushu.room.viewmodel.StudentViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -21,9 +23,21 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:textSize="14sp"
+            tools:text="总数：0"
+            android:text="@{vm.mCountField}"
+            android:textColor="@android:color/black"
+            app:layout_constraintTop_toTopOf="@id/acEt_id"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/acEt_id" />
+
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/acTvInsert"
             android:layout_width="0dp"
-            android:layout_height="?android:actionBarSize"
+            android:layout_height="40dp"
             android:layout_margin="10dp"
             android:background="@color/colorAccent"
             android:gravity="center"
@@ -40,7 +54,7 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/acTvDelete"
             android:layout_width="0dp"
-            android:layout_height="?android:actionBarSize"
+            android:layout_height="40dp"
             android:layout_margin="10dp"
             android:background="@color/colorAccent"
             android:gravity="center"
@@ -57,7 +71,7 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/acTvUpdate"
             android:layout_width="0dp"
-            android:layout_height="?android:actionBarSize"
+            android:layout_height="40dp"
             android:layout_margin="10dp"
             android:background="@color/colorAccent"
             android:gravity="center"
@@ -73,7 +87,7 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/acTvQuery"
             android:layout_width="0dp"
-            android:layout_height="?android:actionBarSize"
+            android:layout_height="40dp"
             android:layout_margin="10dp"
             android:background="@color/colorAccent"
             android:gravity="center"

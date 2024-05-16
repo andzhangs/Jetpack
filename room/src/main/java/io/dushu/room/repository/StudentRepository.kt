@@ -29,7 +29,9 @@ class StudentRepository(private val context: Context) {
     /**
      * 查询全部
      */
-    fun getAll(): LiveData<List<StudentWithCourseEntity>> = mStudentDao.getAllLiveData()
+    fun getAllLiveData() = mStudentDao.getAllLiveData()
+
+    suspend fun getCountFlow() = mStudentDao.getCountFlow()
 
     //----------------------------------------------------------------------------------------------
     /**

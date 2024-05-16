@@ -32,6 +32,7 @@ class MvvmActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         mDataBinding = DataBindingUtil.setContentView(this@MvvmActivity, R.layout.activity_main)
         mDataBinding.lifecycleOwner = this
+        mDataBinding.vm = mStudentViewModel
 
         mAdapter = MyAdapter()
         mDataBinding.recycleView.apply {
@@ -43,7 +44,7 @@ class MvvmActivity : AppCompatActivity() {
     }
 
     private fun getAll() {
-        mStudentViewModel.getAllStudent2().observe(this) {
+        mStudentViewModel.getAllStudent().observe(this) {
             if (it.isNotEmpty()) {
                 mAdapter.setData(it)
                 mDataBinding.recycleView.smoothScrollToPosition(it.size - 1)
@@ -85,7 +86,7 @@ class MvvmActivity : AppCompatActivity() {
             mStudentViewModel.getStudentById(inputText.toInt()).observe(this) {
                 mAdapter.setData(it)
             }
-        }else{
+        } else {
             getAll()
         }
     }
