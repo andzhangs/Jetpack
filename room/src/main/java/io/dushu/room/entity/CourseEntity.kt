@@ -28,6 +28,7 @@ import com.google.gson.Gson
     ]
 )
 data class CourseEntity(
+
     //学生名
     @PrimaryKey
     @ColumnInfo(name = "user_name")

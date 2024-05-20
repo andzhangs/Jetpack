@@ -21,13 +21,16 @@ interface StudentDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(student: StudentEntity?, courseEntity: CourseEntity?)
 
-
-    @Query("DELETE FROM TABLE_STUDENT WHERE id=:id")
-    suspend fun deleteById(id: Int)
-
     @Transaction
     @Update
     suspend fun update(student: StudentEntity?, courseEntity: CourseEntity?)
+
+    @Transaction
+    @Upsert
+    suspend fun insertOrUpdate(student: StudentEntity?, courseEntity: CourseEntity?)
+
+    @Query("DELETE FROM TABLE_STUDENT WHERE id=:id")
+    suspend fun deleteById(id: Int)
 
     //@RewriteQueriesToDropUnusedColumns 和 @Transaction 二选一
     @Transaction
@@ -55,10 +58,15 @@ interface StudentDao {
     @Query("DELETE FROM sqlite_sequence WHERE name='table_student'")
     suspend fun resetAutoIncrement()
 
+    @Query("UPDATE sqlite_sequence SET seq = 0 WHERE name='table_student'")
+    suspend fun setIndexZero()
+
+
     @Transaction
     suspend fun clearAndReset() {
         clearAll()
         resetAutoIncrement()
+        setIndexZero()
     }
 
     //----------------------------------------------------------------------------------------------

@@ -12,7 +12,7 @@ import io.dushu.room.entity.CourseEntity
  */
 class CourseJsonConverter {
 
-    private val mGson = Gson()
+    private val mGson by lazy { Gson() }
 
     @TypeConverter
     fun entityToString(courseEntity: CourseEntity): String {

@@ -39,13 +39,13 @@ class StudentViewModel(application: Application) : AndroidViewModel(application)
                 mStudentRepository.getAllViewFlow().collect {
                     it.forEachIndexed { index, item ->
 
-                        if (index == 0) {
-                            mStudentRepository.getStudentByDate(item.createTime)?.also {entity->
-                                if (BuildConfig.DEBUG) {
-                                    Log.d("print_logs", "$entity")
-                                }
-                            }
-                        }
+//                        if (index == 0) {
+//                            mStudentRepository.getStudentByDate(item.createTime)?.also {entity->
+//                                if (BuildConfig.DEBUG) {
+//                                    Log.d("print_logs", "$entity")
+//                                }
+//                            }
+//                        }
 
                         if (BuildConfig.DEBUG) {
                             Log.i("print_logs", "$item")

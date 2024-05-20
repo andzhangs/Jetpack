@@ -17,7 +17,6 @@ import io.dushu.room.entity.CourseEntity
 import io.dushu.room.entity.StudentEntity
 import io.dushu.room.entity.relation.StudentWithCourseEntity
 import io.dushu.room.viewmodel.StudentViewModel
-import java.util.Date
 import java.util.Random
 
 /**
@@ -72,8 +71,8 @@ class MvvmActivity : AppCompatActivity() {
         val entity = StudentWithCourseEntity(
             student = StudentEntity(
                 name = studentName,
-                age = Random().nextInt(100),
-                createTime = Date(System.currentTimeMillis())
+                age = Random().nextInt(100)
+//                createTime = Date()
             ),
             course = CourseEntity(
                 userName = studentName,

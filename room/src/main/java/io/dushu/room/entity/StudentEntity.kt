@@ -4,9 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
 import com.google.gson.Gson
-import io.dushu.room.database.converters.DateConverter
 import java.util.Date
 
 /**
@@ -32,9 +30,9 @@ data class StudentEntity constructor(
     @ColumnInfo(name = "age", typeAffinity = ColumnInfo.INTEGER)
     var age: Int = 0,
 
-    @TypeConverters(DateConverter::class)
+//    @TypeConverters(DateConverter::class)
     @ColumnInfo(name = "create_time")
-    var createTime: Date
+    var createTime: Date = Date()
 
     //用户会员图标
 //    @ColumnInfo(name = "level_url")

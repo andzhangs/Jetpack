@@ -17,7 +17,6 @@ import java.util.Random
 class StudentRepository(private val context: Context) {
 
     private val mDataBase = StudentDataBase.getInstance(context)
-
     private val mStudentDao = mDataBase.getStudentDao()
     private val mCourseDao = mDataBase.getCourseDao()
 
@@ -50,6 +49,7 @@ class StudentRepository(private val context: Context) {
      */
     suspend fun insertStudent(entity: StudentWithCourseEntity) {
         mStudentDao.insert(entity.student,entity.course)
+//        mStudentDao.insertOrUpdate(entity.student,entity.course)
     }
 
     /**
@@ -69,6 +69,7 @@ class StudentRepository(private val context: Context) {
     /**
      * 修改
      */
+    private val courseNameArray= arrayOf("语文","英语","化学","物理","生物","体育","政治","地理","历史")
     suspend fun updateStudent(id: Int) {
         mStudentDao.getById(id = id)?.also { entity ->
             getEntity(entity,
@@ -76,7 +77,7 @@ class StudentRepository(private val context: Context) {
                     it.age = Random().nextInt(100)
                 }, courseBlock = {
                     it.score = Random().nextInt(100)
-                    it.courseName = "化学"
+                    it.courseName = courseNameArray[Random().nextInt(9)]
                 }
             )
             mStudentDao.update(entity.student, entity.course)
