@@ -1,5 +1,6 @@
 package com.apk.downloadinstall.navigation
 
+import android.Manifest
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -7,6 +8,7 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
@@ -16,12 +18,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatButton
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
-import java.io.DataOutputStream
 
 class HomeFragment : Fragment() {
 
@@ -54,9 +56,12 @@ class HomeFragment : Fragment() {
 
         //Url
         view.findViewById<AppCompatButton>(R.id.acBtnSend_Url).setOnClickListener {
-            Toast.makeText(activity, "请执行 adb 命令", Toast.LENGTH_SHORT).show()
+
             //执行命令
-            // adb shell am start -a android.intent.action.VIEW -d "http://www.dongnaoedu.com/fromWeb"
+            // adb shell am start -a android.intent.action.VIEW -d "https://www.baidu.com/"
+            val result=RootCmd.execRootCmd("adb shell am start -a android.intent.action.VIEW -d 'https://www.baidu.com'")
+
+            Toast.makeText(activity, "请执行 adb 命令：$result", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -110,6 +115,20 @@ class HomeFragment : Fragment() {
                 .setContentIntent(getPendingIntent(view))
                 .build()
             NotificationManagerCompat.from(it).apply {
+                if (ActivityCompat.checkSelfPermission(
+                        it,
+                        Manifest.permission.POST_NOTIFICATIONS
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return
+                }
                 notify(ids++, notification)
             }
         }
@@ -133,7 +152,12 @@ class HomeFragment : Fragment() {
         val clickIntent = Intent(activity, OnNotificationCompatClickReceiver::class.java).apply {
             putExtra("param3", "From：安装成功！")
         }
-        return PendingIntent.getBroadcast(activity?.applicationContext, ids, clickIntent, 0)
+        return PendingIntent.getBroadcast(
+            activity?.applicationContext,
+            ids,
+            clickIntent,
+            PendingIntent.FLAG_IMMUTABLE
+        )
     }
 
     internal class OnNotificationCompatClickReceiver : BroadcastReceiver() {
