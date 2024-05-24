@@ -1,11 +1,17 @@
 package io.jetpack.workmanager.demo.works
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
 import io.jetpack.workmanager.databinding.ActivityWorkBinding
 import io.jetpack.workmanager.utils.viewBinding
@@ -40,12 +46,30 @@ class WorkActivity : AppCompatActivity() {
     private lateinit var mOneTimeWorkRequest: OneTimeWorkRequest
     private val ID_MARK = "first_work"
 
+    private lateinit var launchNotify: ActivityResultLauncher<Array<String>>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        launchNotify=registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){
+            if (!it.values.contains(false)) {
+                startExpeditedWorker()
+
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                    val notify= NotifyHelper.createNotification(this,"1001")
+                    NotificationManagerCompat.from(this).notify(1,notify)
+                }
+            }else{
+                Log.e("print_logs", "WorkActivity::onCreate: 权限申请失败!")
+            }
+        }
+
         mBinding.acBtnStartWork.setOnClickListener {
-            starUploadWork()
-//            startExpeditedWorker()
+//            starUploadWork()
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                launchNotify.launch(arrayOf(Manifest.permission.POST_NOTIFICATIONS,Manifest.permission.VIBRATE))
+            }
         }
 
         mBinding.acBtnCancelWork.setOnClickListener {
@@ -157,21 +181,37 @@ class WorkActivity : AppCompatActivity() {
      */
     private fun startExpeditedWorker() {
         //约束
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .setRequiresCharging(true)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            constraints.setRequiresDeviceIdle(true)
-        }
-        constraints.build()
+//        val constraints = Constraints.Builder()
+//            .setRequiredNetworkType(NetworkType.CONNECTED)
+//            .setRequiresCharging(true)
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            constraints.setRequiresDeviceIdle(true)
+//        }
+//        constraints.build()
 
         val oneTimeWorkRequest = OneTimeWorkRequestBuilder<ExpeditedWorker>()
+            .setExpedited(OutOfQuotaPolicy.DROP_WORK_REQUEST)
              //输入合并器
             .setInputMerger(ArrayCreatingInputMerger::class) // 会尝试合并输入，并在必要时创建数组。
             .setInputMerger(OverwritingInputMerger::class) // 会尝试将所有输入中的所有键添加到输出中。如果发生冲突，它会覆盖先前设置的键
             .build()
+        WorkManager.getInstance(this).enqueue(oneTimeWorkRequest)
+        /**
+         * ExistingWorkPolicy:
+         * REPLACE：用新工作替换现有工作。此选项将取消现有工作。
+         * KEEP：保留现有工作，并忽略新工作。
+         * APPEND：将新工作附加到现有工作的末尾。此政策将导致您的新工作链接到现有工作，在现有工作完成后运行。
+         */
+        //管理工作
+//        WorkManager.getInstance(this).enqueueUniqueWork(
+//            ID_MARK,
+//            ExistingWorkPolicy.APPEND_OR_REPLACE,
+//            oneTimeWorkRequest
+//        )
+    }
 
+    private fun startPeriodicWork(){
         //以下是可在每小时的最后 15 分钟内运行的定期工作的示例
         val periodicWorkRequest =
             PeriodicWorkRequestBuilder<ExpeditedWorker>(1, TimeUnit.HOURS, 15, TimeUnit.SECONDS)
@@ -192,18 +232,7 @@ class WorkActivity : AppCompatActivity() {
         WorkManager.getInstance(this).enqueue(periodicWorkRequest)
 
 
-        /**
-         * ExistingWorkPolicy:
-         * REPLACE：用新工作替换现有工作。此选项将取消现有工作。
-         * KEEP：保留现有工作，并忽略新工作。
-         * APPEND：将新工作附加到现有工作的末尾。此政策将导致您的新工作链接到现有工作，在现有工作完成后运行。
-         */
-        //管理工作
-        WorkManager.getInstance(this).enqueueUniqueWork(
-            ID_MARK,
-            ExistingWorkPolicy.APPEND_OR_REPLACE,
-            oneTimeWorkRequest
-        ) //用户一次性工作
+        //用户一次性工作
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
             ID_MARK,
             ExistingPeriodicWorkPolicy.KEEP,
@@ -222,7 +251,6 @@ class WorkActivity : AppCompatActivity() {
                 val progress=it.progress
                 val value=progress.getInt(ExpeditedWorker.Progress,0)
             }
-
     }
 
 }
