@@ -94,20 +94,38 @@ class WorkActivity : AppCompatActivity() {
 
 
             operation.state.observe(this) {
-                Log.i("print_logs", "WorkActivity::onChanged: $it")
+                Log.d("print_logs", "WorkActivity::onChanged: $it")
             }
 
             // Observing your work
             // After you enqueue your work, WorkManager allows you to check on its status
             WorkManager.getInstance(this).getWorkInfoByIdLiveData(mOneTimeWorkRequest.id)
                 .observe(this) {
-                    if (it.state == WorkInfo.State.SUCCEEDED) {
-                        val data = it.outputData.getString(DemoUploadWorker.OUTPUT_URI)
-                        Log.i(
-                            "print_logs",
-                            "WorkActivity::starWork::mOneTimeWorkRequest work is finished, $data"
-                        )
-                        Toast.makeText(this@WorkActivity, data, Toast.LENGTH_SHORT).show()
+
+                    when (it.state) {
+                        WorkInfo.State.ENQUEUED -> {
+
+                        }
+                        WorkInfo.State.RUNNING -> {
+
+                        }
+                        WorkInfo.State.SUCCEEDED -> {
+                            val data = it.outputData.getString(DemoUploadWorker.OUTPUT_URI)
+                            Log.i(
+                                "print_logs",
+                                "WorkActivity::starWork::mOneTimeWorkRequest work is finished, $data"
+                            )
+                            Toast.makeText(this@WorkActivity, data, Toast.LENGTH_SHORT).show()
+                        }
+                        WorkInfo.State.FAILED -> {
+
+                        }
+                        WorkInfo.State.BLOCKED -> {
+
+                        }
+                        WorkInfo.State.CANCELLED -> {
+
+                        }
                     }
                 }
 

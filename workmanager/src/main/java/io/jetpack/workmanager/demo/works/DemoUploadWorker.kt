@@ -42,5 +42,4 @@ internal class DemoUploadWorker constructor(
     override fun onStopped() {
         Log.i("print_logs", "DemoUploadWorker::onStopped: ")
     }
-
 }

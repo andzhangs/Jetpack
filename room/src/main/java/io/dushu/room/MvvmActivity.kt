@@ -3,6 +3,7 @@ package io.dushu.room
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -17,6 +18,7 @@ import io.dushu.room.entity.CourseEntity
 import io.dushu.room.entity.StudentEntity
 import io.dushu.room.entity.relation.StudentWithCourseEntity
 import io.dushu.room.viewmodel.StudentViewModel
+import java.util.Calendar
 import java.util.Random
 
 /**
@@ -54,6 +56,19 @@ class MvvmActivity : AppCompatActivity() {
         }
 
         getAll()
+
+        val timeStamp=System.currentTimeMillis()
+        val calendar= Calendar.getInstance().apply {
+            timeInMillis=timeStamp
+        }
+
+        val year=calendar.get(Calendar.YEAR)
+        val month=calendar.get(Calendar.MONTH)
+        val day= calendar.get(Calendar.DAY_OF_MONTH)
+
+        if (BuildConfig.DEBUG) {
+            Log.i("print_logs", "onCreate: year = $year, month = $month, day = $day")
+        }
     }
 
     private fun getAll() {

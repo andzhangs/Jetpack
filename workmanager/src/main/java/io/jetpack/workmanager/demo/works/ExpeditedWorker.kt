@@ -25,7 +25,7 @@ import kotlinx.coroutines.withContext
  * @email zhangshuai@dushu365.com
  * @description
  */
-open class ExpeditedWorker(private val mContext: Context, workerParameters: WorkerParameters) :
+open class ExpeditedWorker(private val mContext: Context, private val workerParameters: WorkerParameters) :
     CoroutineWorker(mContext, workerParameters) {
 
     companion object {

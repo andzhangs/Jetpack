@@ -1,7 +1,7 @@
 package zs.android.jetpack
 
 import android.Manifest
-import android.content.pm.PackageManager
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
@@ -9,15 +9,15 @@ import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Spinner
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.AppCompatButton
-import androidx.core.content.ContextCompat
 import com.github.florent37.viewanimator.ViewAnimator
 import zs.android.jetpack.base.BaseActivity
 import zs.android.jetpack.databinding.ActivityMainBinding
+import zs.android.jetpack.service.CompressService
+import zs.android.jetpack.service.DownloadService
+import zs.android.jetpack.service.UploadService
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
 
@@ -52,7 +52,12 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         mDataBinding.counstryside.adapter = adapter3
         mDataBinding.spn.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
 //                Toast.makeText(this@MainActivity, "点击了：${province[position]}", Toast.LENGTH_SHORT).show()
 
                 provinceindex = position
@@ -100,9 +105,74 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
         Looper.myQueue().addIdleHandler {
             //  在这里去处理你想延时加载的东西
-            Toast.makeText(this, "延迟弹出了，${Thread.currentThread().name} ", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "延迟弹出了，${Thread.currentThread().name} ", Toast.LENGTH_SHORT)
+                .show()
             // 最后返回false，后续不用再监听了。
             false
+        }
+        loadService()
+    }
+
+    private var clickType = ""
+    private val CLICK_TYPE_COMPRESS = "click_type_compress"
+    private val CLICK_TYPE_UPLOAD = "click_type_upload"
+    private val CLICK_TYPE_DOWNLOAD = "click_type_download"
+
+    private fun loadService() {
+        val launchNotify = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            if (BuildConfig.DEBUG) {
+                Log.i("print_logs", "launchNotify: $it")
+            }
+            if (it) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val clz=when (clickType) {
+                        CLICK_TYPE_COMPRESS -> {
+                            CompressService::class.java
+                        }
+                        CLICK_TYPE_UPLOAD -> {
+                            UploadService::class.java
+                        }
+                        CLICK_TYPE_DOWNLOAD -> {
+                            DownloadService::class.java
+                        }
+                        else -> {
+                            CompressService::class.java
+                        }
+                    }
+
+                    startForegroundService(Intent(this,clz))
+                }
+
+            }
+        }
+        val launchService = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+            if (BuildConfig.DEBUG) {
+                Log.i("print_logs", "launchService: $it")
+            }
+            if (it) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    launchNotify.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }
+        }
+
+        mDataBinding.acBtnStartCompress.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                clickType = CLICK_TYPE_COMPRESS
+                launchService.launch(Manifest.permission.FOREGROUND_SERVICE)
+            }
+        }
+        mDataBinding.acBtnStartUpload.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                clickType = CLICK_TYPE_UPLOAD
+                launchService.launch(Manifest.permission.FOREGROUND_SERVICE)
+            }
+        }
+        mDataBinding.acBtnStartDownload.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                clickType = CLICK_TYPE_DOWNLOAD
+                launchService.launch(Manifest.permission.FOREGROUND_SERVICE)
+            }
         }
     }
 }

@@ -65,8 +65,6 @@ class MainActivity : AppCompatActivity() {
             addAction(MyHiltReceiver.ACTION_SEND)
         }
         registerReceiver(mReceiver, intentFilter)
-
-
     }
 
 

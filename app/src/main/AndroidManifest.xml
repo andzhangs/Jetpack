@@ -6,10 +6,10 @@
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
-
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
-
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:name=".app.JetpackApplication"
@@ -22,18 +22,41 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Jetpack"
         tools:targetApi="31">
+        <receiver
+            android:name=".receiver.NotificationsReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="action_notification_cancelled" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".service.DownloadService"
+            android:enabled="true"
+            android:exported="false" />
+        <service
+            android:name=".service.UploadService"
+            android:enabled="true"
+            android:exported="false" />
+        <service
+            android:name=".service.CompressService"
+            android:enabled="true"
+            android:exported="false" />
+
         <activity
             android:name=".LaunchActivity"
             android:exported="true"
             android:theme="@style/Theme.SplashScreen.Starting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="false"/>
+            android:exported="false" />
     </application>
 
 </manifest>

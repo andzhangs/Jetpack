@@ -25,6 +25,7 @@ class LaunchActivity : BaseActivity<ActivitySplashBinding>() {
 
     override fun setLayoutResId() = R.layout.activity_splash
 
+
     override fun initView(savedInstanceState: Bundle?) {
         // 每次UI绘制前，会判断 Splash 是否有必要继续展示在屏幕上；直到不再满足条件时，隐藏Splash。
         mSplashScreen.setKeepOnScreenCondition {
