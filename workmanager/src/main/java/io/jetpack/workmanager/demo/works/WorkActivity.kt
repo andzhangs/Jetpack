@@ -2,7 +2,6 @@ package io.jetpack.workmanager.demo.works
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -10,8 +9,6 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
 import io.jetpack.workmanager.databinding.ActivityWorkBinding
 import io.jetpack.workmanager.utils.viewBinding
@@ -55,10 +52,10 @@ class WorkActivity : AppCompatActivity() {
             if (!it.values.contains(false)) {
                 startExpeditedWorker()
 
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-                    val notify= NotifyHelper.createNotification(this,"1001")
-                    NotificationManagerCompat.from(this).notify(1,notify)
-                }
+//                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+//                    val notify= NotifyHelper.createNotification(this,"1002")
+//                    NotificationManagerCompat.from(this).notify(1,notify)
+//                }
             }else{
                 Log.e("print_logs", "WorkActivity::onCreate: 权限申请失败!")
             }
@@ -68,7 +65,7 @@ class WorkActivity : AppCompatActivity() {
 //            starUploadWork()
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                launchNotify.launch(arrayOf(Manifest.permission.POST_NOTIFICATIONS,Manifest.permission.VIBRATE))
+                launchNotify.launch(arrayOf(Manifest.permission.FOREGROUND_SERVICE, Manifest.permission.POST_NOTIFICATIONS,Manifest.permission.VIBRATE))
             }
         }
 

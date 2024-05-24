@@ -1,7 +1,10 @@
 package io.jetpack.workmanager.demo.works
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.util.Log
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
 import kotlinx.coroutines.CoroutineDispatcher
@@ -41,9 +44,11 @@ open class ExpeditedWorker( private val mContext: Context, private val workerPar
      */
     override suspend fun doWork(): Result {
         if (NotificationManagerCompat.from(mContext).areNotificationsEnabled()) {
-            Log.i("print_logs", "ExpeditedWorker::doWork: 显示通知")
             //切换到前台服务状态
             setForeground(getForegroundInfo())
+
+            Log.i("print_logs", "ExpeditedWorker::doWork: 显示通知")
+
         }else{
             Log.e("print_logs", "ExpeditedWorker::doWork: 启动通知失败")
         }
@@ -69,7 +74,13 @@ open class ExpeditedWorker( private val mContext: Context, private val workerPar
      */
     override suspend fun getForegroundInfo(): ForegroundInfo {
         Log.i("print_logs", "ExpeditedWorker::getForegroundInfo: ")
-        return ForegroundInfo(2, NotifyHelper.createNotification(mContext,"1002"))
+
+        if (ActivityCompat.checkSelfPermission(mContext, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+            val notify= NotifyHelper.createNotification(mContext,"1002")
+            NotificationManagerCompat.from(mContext).notify(1,notify)
+        }
+
+        return ForegroundInfo(2, NotifyHelper.createNotification(mContext,"1001"))
     }
 
 }

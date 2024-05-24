@@ -119,11 +119,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     private val CLICK_TYPE_DOWNLOAD = "click_type_download"
 
     private fun loadService() {
-        val launchNotify = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+        val launchNotify = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
             if (BuildConfig.DEBUG) {
                 Log.i("print_logs", "launchNotify: $it")
             }
-            if (it) {
+            if (!it.values.contains(false)) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     val clz=when (clickType) {
                         CLICK_TYPE_COMPRESS -> {
@@ -145,33 +145,23 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
             }
         }
-        val launchService = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            if (BuildConfig.DEBUG) {
-                Log.i("print_logs", "launchService: $it")
-            }
-            if (it) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    launchNotify.launch(Manifest.permission.POST_NOTIFICATIONS)
-                }
-            }
-        }
 
         mDataBinding.acBtnStartCompress.setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                clickType = CLICK_TYPE_COMPRESS
-                launchService.launch(Manifest.permission.FOREGROUND_SERVICE)
+            clickType = CLICK_TYPE_COMPRESS
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                launchNotify.launch(arrayOf(Manifest.permission.POST_NOTIFICATIONS,Manifest.permission.FOREGROUND_SERVICE))
             }
         }
         mDataBinding.acBtnStartUpload.setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                clickType = CLICK_TYPE_UPLOAD
-                launchService.launch(Manifest.permission.FOREGROUND_SERVICE)
+            clickType = CLICK_TYPE_UPLOAD
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                launchNotify.launch(arrayOf(Manifest.permission.POST_NOTIFICATIONS,Manifest.permission.FOREGROUND_SERVICE))
             }
         }
         mDataBinding.acBtnStartDownload.setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                clickType = CLICK_TYPE_DOWNLOAD
-                launchService.launch(Manifest.permission.FOREGROUND_SERVICE)
+            clickType = CLICK_TYPE_DOWNLOAD
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                launchNotify.launch(arrayOf(Manifest.permission.POST_NOTIFICATIONS,Manifest.permission.FOREGROUND_SERVICE))
             }
         }
     }
