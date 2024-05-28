@@ -1,5 +1,6 @@
 package io.jetpack.workmanager.demo.works
 
+import android.app.NotificationManager
 import android.content.Context
 import android.util.Log
 import androidx.annotation.NonNull
@@ -14,9 +15,9 @@ import androidx.work.WorkerParameters
  * @description
  */
 internal class DemoUploadWorker constructor(
-    @NonNull context: Context,
+    @NonNull private val mContext: Context,
     @NonNull workerParams: WorkerParameters
-) : Worker(context, workerParams) {
+) : Worker(mContext, workerParams) {
 
     companion object {
         @JvmStatic
@@ -26,8 +27,10 @@ internal class DemoUploadWorker constructor(
         val OUTPUT_URI = "output_uri"
     }
 
+    private val mNotifyManager by lazy { mContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
+
+
     override fun doWork(): Result {
-        Log.i("print_logs", "UploadWorker::doWork: ${Thread.currentThread().name}")
         //Get input data
         val imageUrl = inputData.getString(INPUT_URI)
         Log.i("print_logs", "UploadWorker::doWork:：INPUT_URI= $imageUrl")
@@ -36,6 +39,8 @@ internal class DemoUploadWorker constructor(
         val dataOutput = Data.Builder().apply {
             putString(OUTPUT_URI, "I'm from DemoUploadWorker")
         }.build()
+
+
         return Result.success(dataOutput)
     }
 

@@ -19,8 +19,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_job);
 
-        findViewById(R.id.acBtnStart_Job).setOnClickListener(v -> DemoJobCreator.scheduleJob(
-                MainActivity.this));
+        findViewById(R.id.acBtnStart_Job).setOnClickListener(v -> DemoJobCreator.scheduleJob(MainActivity.this));
         findViewById(R.id.acBtnCancel_Job).setOnClickListener(v -> DemoJobCreator.cancelByJobId(2));
     }
 }

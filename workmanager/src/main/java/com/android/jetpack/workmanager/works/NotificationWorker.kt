@@ -1,14 +1,17 @@
 package com.android.jetpack.workmanager.works
 
+import android.Manifest
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.work.Constraints
@@ -19,6 +22,8 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import androidx.work.await
+import androidx.work.workDataOf
+import com.evernote.android.job.BuildConfig
 import io.jetpack.workmanager.R
 import io.jetpack.workmanager.base.BaseActivity
 import kotlin.random.Random
@@ -51,6 +56,9 @@ class NotificationWorker(val context: Context, val workerParameters: WorkerParam
         fun start(context: Context) {
             val notificationManagerCompat = NotificationManagerCompat.from(context)
             if (notificationManagerCompat.areNotificationsEnabled()) {
+                if (BuildConfig.DEBUG) {
+                    Log.i("print_logs", "NotificationWorker::start: 13")
+                }
                 //添加约束
                 val constraints = Constraints.Builder()
                     .setRequiresBatteryNotLow(true)   //若为 true，那么当设备处于“电量不足模式”时，工作不会运行。
@@ -58,13 +66,16 @@ class NotificationWorker(val context: Context, val workerParameters: WorkerParam
                     .build()
 
                 //构建任务
-               val request= OneTimeWorkRequest.Builder(NotificationWorker::class.java)
+                val request = OneTimeWorkRequest.Builder(NotificationWorker::class.java)
                     .setConstraints(constraints)
                     .addTag(NotificationWorker::class.java.simpleName)
                     .build()
 
                 WorkManager.getInstance(context).enqueue(request)
             } else {
+                if (BuildConfig.DEBUG) {
+                    Log.e("print_logs", "NotificationWorker::start: 11")
+                }
                 Intent().apply {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     try {
@@ -78,7 +89,7 @@ class NotificationWorker(val context: Context, val workerParameters: WorkerParam
                         putExtra("app_package", context.packageName)
                         putExtra("app_uid", context.applicationInfo.uid)
 
-                        context.startActivity(this)
+//                        context.startActivity(this)
                     } catch (e: Exception) {
                         e.printStackTrace()
 
@@ -88,6 +99,8 @@ class NotificationWorker(val context: Context, val workerParameters: WorkerParam
 
                         //val uri = Uri.fromParts("package", packageName, null)
                         //data = uri
+
+                    }finally {
                         context.startActivity(this)
                     }
                 }
@@ -116,11 +129,11 @@ class NotificationWorker(val context: Context, val workerParameters: WorkerParam
 
     override suspend fun doWork(): Result {
         Log.i("print_logs", "NotificationWorker::doWork: ")
-        foregroundInfoAsync.await()
 
-        //生成Data返回数据
-//        workDataOf("" to "")
-        return Result.success()
+        setForeground(getForegroundInfo())
+        foregroundInfoAsync.await()
+        //生成Data返回数据 workDataOf("" to "")
+        return Result.success( workDataOf("test" to "我是返回的数据：${System.currentTimeMillis()}"))
     }
 
     private var mNotificationManagerCompat: NotificationManagerCompat? = null
@@ -130,6 +143,10 @@ class NotificationWorker(val context: Context, val workerParameters: WorkerParam
     private var mCurrentProgress = 0
 
     override suspend fun getForegroundInfo(): ForegroundInfo {
+
+        if (BuildConfig.DEBUG) {
+            Log.d("print_logs", "NotificationWorker::getForegroundInfo: ")
+        }
 
         mNotificationManagerCompat = NotificationManagerCompat.from(context)
 
@@ -168,7 +185,7 @@ class NotificationWorker(val context: Context, val workerParameters: WorkerParam
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             //通知栏右边内容图标
 //            .setLargeIcon(BitmapFactory.decodeResource(context.resources, R.drawable.ic_launcher_foreground))
-            .setContentTitle("新消息")
+            .setContentTitle("测试消息")
 //            .setContentText("50/100")
             //告知系统该通知应具有的“干扰性”。当发出此类型的通知时，通知会以悬挂的方法显示在屏幕上. 优先级（Android 7.1 及更低版本）
             .setPriority(NotificationCompat.PRIORITY_MAX)
@@ -201,9 +218,24 @@ class NotificationWorker(val context: Context, val workerParameters: WorkerParam
 
         val notification = mNotification!!.build()
 
-        val notifyId=Random.nextInt()
-        mNotificationManagerCompat?.notify(notifyId, notification)
+        val notifyId = Random.nextInt()
 
+        if (BuildConfig.DEBUG) {
+            Log.i("print_logs", "notifyId-1: $notifyId")
+        }
+
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+
+            mNotificationManagerCompat?.notify(notifyId, notification)
+        }
+
+        if (BuildConfig.DEBUG) {
+            Log.i("print_logs", "notifyId-2: $notifyId")
+        }
         return ForegroundInfo(notifyId, notification)
     }
 
@@ -220,7 +252,13 @@ class NotificationWorker(val context: Context, val workerParameters: WorkerParam
                 setAutoCancel(true)
                 setContentTitle("压缩完成：${mProgressMax}张")
                 setProgress(mProgressMax, mCurrentProgress, false)
-                mNotificationManagerCompat?.notify(mNotifyId, build())
+                if (ActivityCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.POST_NOTIFICATIONS
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    mNotificationManagerCompat?.notify(mNotifyId, build())
+                }
             }
         }
     }
@@ -258,7 +296,13 @@ class NotificationWorker(val context: Context, val workerParameters: WorkerParam
             setAutoCancel(false)
             setContentTitle("压缩中：$mCurrentProgress/$mProgressMax")
             setProgress(mProgressMax, mCurrentProgress, false)
-            mNotificationManagerCompat?.notify(mNotifyId, build())
+            if (ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                mNotificationManagerCompat?.notify(mNotifyId, build())
+            }
         }
     }
 

@@ -1,15 +1,19 @@
 package com.android.jetpack.workmanager;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 
 import com.android.jetpack.workmanager.works.NotificationWorker;
 import com.android.jetpack.workmanager.works.UploadWorker;
 
+import java.util.List;
 import java.util.concurrent.Executors;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.work.Constraints;
@@ -53,33 +57,95 @@ public class WorkActivity extends AppCompatActivity {
     private OneTimeWorkRequest oneTimeWorkRequest;
     private String ID_MARK = "First_Work";
 
+    private ActivityResultLauncher<String> mLauncher;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_work);
 
-        findViewById(R.id.acBtn_startWork).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startWork();
-            }
-        });
-        findViewById(R.id.acBtn_cancelWork).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                WorkManager.getInstance()
-                        .cancelWorkById(oneTimeWorkRequest.getId());
+        findViewById(R.id.acBtn_startWork).setOnClickListener(v ->
+                loadNotifyWork()
+//                startWork();
+        );
+
+        findViewById(R.id.acBtn_cancelWork).setOnClickListener(v -> {
+            WorkManager.getInstance()
+                    .cancelWorkById(oneTimeWorkRequest.getId());
 //                WorkManager.getInstance().cancelAllWorkByTag(ID_MARK);
-            }
         });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            WorkManager.getInstance(this).getWorkInfosByTagLiveData(NotificationWorker.class.getSimpleName()).observe(this, new Observer<List<WorkInfo>>() {
+                @Override
+                public void onChanged(List<WorkInfo> workInfos) {
+                    Log.i(TAG, "onChanged: "+workInfos.size());
+                    if (workInfos.size()>0) {
+                        if (workInfos.size()==1) {
+                            getWorkState(workInfos.get(0));
+                        }else {
+                            getWorkState(workInfos.get(1));
+                        }
+                    }
+                }
+            });
+
+            mLauncher=registerForActivityResult(new ActivityResultContracts.RequestPermission(), result -> {
+                if (result) {
+                    Log.i(TAG, "onActivityResult: POST_NOTIFICATIONS");
+                    NotificationWorker.start(WorkActivity.this);
+                }
+            });
+        }
+    }
+
+    private void loadNotifyWork(){
+        mLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+    }
+
+    private void getWorkState(WorkInfo workInfo){
+        switch (workInfo.getState()) {
+            case ENQUEUED:{
+                Log.d(TAG, "onChanged-ENQUEUED: ");
+                break;
+            }
+            case RUNNING:{
+                Log.d(TAG, "onChanged-RUNNING: ");
+                break;
+            }
+            case SUCCEEDED :{
+                Log.i(TAG, "onChanged-SUCCEEDED: "+workInfo.getOutputData().getString("test"));
+                break;
+            }
+            case CANCELLED:{
+                Log.i(TAG, "onChanged-CANCELLED: ");
+                break;
+            }
+            case FAILED:{
+                Log.e(TAG, "onChanged-FAILED: ");
+                break;
+            }
+            case BLOCKED:{
+                Log.i(TAG, "onChanged-BLOCKED: ");
+                break;
+            }
+            default:{
+                Log.i(TAG, "onChanged-default: ");
+            }
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        Log.e(TAG, "onStop: ");
+        WorkManager.getInstance(this).cancelAllWorkByTag(NotificationWorker.class.getSimpleName());
+        super.onStop();
     }
 
     @SuppressLint("IdleBatteryChargingConstraints")
     private void startWork() {
 
-        NotificationWorker.start(this.getApplicationContext());
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
             Constraints constraints = new Constraints.Builder()
                     .setRequiredNetworkType(NetworkType.CONNECTED)
 //                    .setRequiresDeviceIdle(true)
@@ -123,7 +189,7 @@ public class WorkActivity extends AppCompatActivity {
 
             // Observing your work
             // After you enqueue your work, WorkManager allows you to check on its status
-            WorkManager.getInstance()
+            WorkManager.getInstance(this)
                     .getWorkInfoByIdLiveData(oneTimeWorkRequest.getId())
                     .observe(this, new Observer<WorkInfo>() {
                         @Override

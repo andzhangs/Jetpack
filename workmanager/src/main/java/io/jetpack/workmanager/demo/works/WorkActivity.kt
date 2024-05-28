@@ -2,13 +2,18 @@ package io.jetpack.workmanager.demo.works
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.NotificationManager
+import android.content.Context
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
 import io.jetpack.workmanager.databinding.ActivityWorkBinding
 import io.jetpack.workmanager.utils.viewBinding
@@ -43,29 +48,54 @@ class WorkActivity : AppCompatActivity() {
     private lateinit var mOneTimeWorkRequest: OneTimeWorkRequest
     private val ID_MARK = "first_work"
 
-    private lateinit var launchNotify: ActivityResultLauncher<Array<String>>
+    private var launchNotify: ActivityResultLauncher<Array<String>>? = null
+    private val mNotifyManager by lazy{ getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager}
+
+
+    fun isNotificationListenerServiceEnabled(context: Context): Boolean {
+        val enabledServices = Settings.Secure.getString(context.contentResolver, "enabled_notification_listeners")
+        val packageName = context.packageName
+        val componentName = "$packageName/$packageName.MyNotificationListener"
+
+        return enabledServices != null && enabledServices.contains(componentName)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        launchNotify=registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){
-            if (!it.values.contains(false)) {
-                startExpeditedWorker()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            launchNotify =
+                registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+                    if (!it.values.contains(false)) {
+                        Log.i("print_logs", "WorkActivity::onCreate: 权限申请成功.")
 
-//                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-//                    val notify= NotifyHelper.createNotification(this,"1002")
-//                    NotificationManagerCompat.from(this).notify(1,notify)
-//                }
-            }else{
-                Log.e("print_logs", "WorkActivity::onCreate: 权限申请失败!")
-            }
+//                        if (!isNotificationListenerServiceEnabled(this)) {
+//                            startActivity(Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"))
+//                        }
+
+                        if (NotificationManagerCompat.getEnabledListenerPackages(this).contains(packageName)) {
+                            startService(Intent(this,MyNotificationListenerService::class.java))
+                        }else{
+                            startActivity(Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"))
+                        }
+
+                    } else {
+                        Log.e("print_logs", "WorkActivity::onCreate: 权限申请失败!")
+                    }
+                }
+            launchNotify?.launch(
+                arrayOf(
+                    Manifest.permission.POST_NOTIFICATIONS,
+                    Manifest.permission.FOREGROUND_SERVICE
+                )
+            )
         }
 
         mBinding.acBtnStartWork.setOnClickListener {
 //            starUploadWork()
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                launchNotify.launch(arrayOf(Manifest.permission.FOREGROUND_SERVICE, Manifest.permission.POST_NOTIFICATIONS,Manifest.permission.VIBRATE))
+            if (NotificationManagerCompat.from(this).areNotificationsEnabled()) {
+                startExpeditedWorker()
             }
         }
 
@@ -127,9 +157,11 @@ class WorkActivity : AppCompatActivity() {
                         WorkInfo.State.ENQUEUED -> {
 
                         }
+
                         WorkInfo.State.RUNNING -> {
 
                         }
+
                         WorkInfo.State.SUCCEEDED -> {
                             val data = it.outputData.getString(DemoUploadWorker.OUTPUT_URI)
                             Log.i(
@@ -138,12 +170,15 @@ class WorkActivity : AppCompatActivity() {
                             )
                             Toast.makeText(this@WorkActivity, data, Toast.LENGTH_SHORT).show()
                         }
+
                         WorkInfo.State.FAILED -> {
 
                         }
+
                         WorkInfo.State.BLOCKED -> {
 
                         }
+
                         WorkInfo.State.CANCELLED -> {
 
                         }
@@ -177,6 +212,17 @@ class WorkActivity : AppCompatActivity() {
      * 杂项，不可运行
      */
     private fun startExpeditedWorker() {
+        val oneTimeWorkRequest = OneTimeWorkRequest.Builder(ExpeditedWorker::class.java)
+            .setExpedited(OutOfQuotaPolicy.DROP_WORK_REQUEST)
+//            .setInputMerger(ArrayCreatingInputMerger::class) // 会尝试合并输入，并在必要时创建数组。
+//            .setInputMerger(OverwritingInputMerger::class) // 会尝试将所有输入中的所有键添加到输出中。如果发生冲突，它会覆盖先前设置的键
+            .addTag(ExpeditedWorker::class.java.simpleName)
+            .build()
+
+        WorkManager.getInstance(this).enqueue(oneTimeWorkRequest)
+
+
+
         //约束
 //        val constraints = Constraints.Builder()
 //            .setRequiredNetworkType(NetworkType.CONNECTED)
@@ -187,13 +233,51 @@ class WorkActivity : AppCompatActivity() {
 //        }
 //        constraints.build()
 
-        val oneTimeWorkRequest = OneTimeWorkRequestBuilder<ExpeditedWorker>()
-            .setExpedited(OutOfQuotaPolicy.DROP_WORK_REQUEST)
-             //输入合并器
-            .setInputMerger(ArrayCreatingInputMerger::class) // 会尝试合并输入，并在必要时创建数组。
-            .setInputMerger(OverwritingInputMerger::class) // 会尝试将所有输入中的所有键添加到输出中。如果发生冲突，它会覆盖先前设置的键
-            .build()
-        WorkManager.getInstance(this).enqueue(oneTimeWorkRequest)
+//        val oneTimeWorkRequest = OneTimeWorkRequestBuilder<ExpeditedWorker>()
+////            .setExpedited(OutOfQuotaPolicy.DROP_WORK_REQUEST)
+//            //输入合并器
+//            .setInputMerger(ArrayCreatingInputMerger::class) // 会尝试合并输入，并在必要时创建数组。
+//            .setInputMerger(OverwritingInputMerger::class) // 会尝试将所有输入中的所有键添加到输出中。如果发生冲突，它会覆盖先前设置的键
+//            .addTag(ExpeditedWorker::class.java.simpleName)
+//            .build()
+
+//        WorkManager.getInstance(this).getWorkInfosByTagLiveData(ExpeditedWorker::class.java.simpleName).observe(this){
+//            it.forEach {workInfo->
+//                when (workInfo.state) {
+//                    WorkInfo.State.ENQUEUED -> {
+//                        if (BuildConfig.DEBUG) {
+//                            Log.i("print_logs", "startExpeditedWorker: ENQUEUED")
+//                        }
+//                    }
+//                    WorkInfo.State.RUNNING -> {
+//                        if (BuildConfig.DEBUG) {
+//                            Log.i("print_logs", "startExpeditedWorker: RUNNING")
+//                        }
+//                    }
+//                    WorkInfo.State.SUCCEEDED -> {
+//                        if (BuildConfig.DEBUG) {
+//                            Log.i("print_logs", "startExpeditedWorker: SUCCEEDED, ${System.currentTimeMillis()}")
+//                        }
+//                    }
+//                    WorkInfo.State.FAILED -> {
+//                        if (BuildConfig.DEBUG) {
+//                            Log.i("print_logs", "startExpeditedWorker: FAILED")
+//                        }
+//                    }
+//                    WorkInfo.State.BLOCKED -> {
+//                        if (BuildConfig.DEBUG) {
+//                            Log.i("print_logs", "startExpeditedWorker: BLOCKED")
+//                        }
+//                    }
+//                    WorkInfo.State.CANCELLED -> {
+//                        if (BuildConfig.DEBUG) {
+//                            Log.i("print_logs", "startExpeditedWorker: CANCELLED")
+//                        }
+//                    }
+//                }
+//            }
+//        }
+
         /**
          * ExistingWorkPolicy:
          * REPLACE：用新工作替换现有工作。此选项将取消现有工作。
@@ -208,7 +292,7 @@ class WorkActivity : AppCompatActivity() {
 //        )
     }
 
-    private fun startPeriodicWork(){
+    private fun startPeriodicWork() {
         //以下是可在每小时的最后 15 分钟内运行的定期工作的示例
         val periodicWorkRequest =
             PeriodicWorkRequestBuilder<ExpeditedWorker>(1, TimeUnit.HOURS, 15, TimeUnit.SECONDS)
@@ -245,9 +329,16 @@ class WorkActivity : AppCompatActivity() {
 
         WorkManager.getInstance(this).getWorkInfoByIdLiveData(periodicWorkRequest.id)
             .observe(this) {
-                val progress=it.progress
-                val value=progress.getInt(ExpeditedWorker.Progress,0)
+                val value = it.progress.getInt(ExpeditedWorker.Progress, 0)
             }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (NotificationManagerCompat.getEnabledListenerPackages(this).contains(packageName)) {
+            stopService(Intent(this,MyNotificationListenerService::class.java))
+        }
+        launchNotify?.unregister()
     }
 
 }

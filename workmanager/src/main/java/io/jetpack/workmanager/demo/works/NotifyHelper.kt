@@ -4,12 +4,9 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.graphics.Color
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import io.jetpack.workmanager.R
-import java.util.Random
 
 /**
  *
@@ -22,13 +19,13 @@ object NotifyHelper {
     private val CHANNEL_NAME = "后台任务通知"
 
     @JvmStatic
-    fun createNotification(context: Context, channelId: String): Notification {
-        val notificationManager = NotificationManagerCompat.from(context)
+    fun createNotification(context: Context,notificationManager: NotificationManager, channelId: String): NotificationCompat.Builder {
+//        val mNotificationManager = NotificationManagerCompat.from(context)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,
                 //通知类别，在手机设置的应用程序中对应的APP的"通知"中可见
-                "${CHANNEL_NAME}_${Random().nextInt(100)}",
+                "${CHANNEL_NAME}_work",
                 //方式一 重要性（Android 8.0 及更高版本）
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
@@ -72,7 +69,7 @@ object NotifyHelper {
             //设置震动，需要配置权限(android.permission.VIBRATE)
             .setVibrate(longArrayOf(100, 200, 300, 400, 500))
             //设置呼吸灯
-            .setLights(Color.GREEN, 300, 0)
+//            .setLights(Color.GREEN, 300, 0)
             //通知栏首次出现在通知栏，带上动画效果
             .setTicker("通知到达的时候会在状态栏上方直接显示通知")
             .setAllowSystemGeneratedContextualActions(true)
@@ -81,26 +78,6 @@ object NotifyHelper {
             .setShowWhen(true)
             //通知只会在通知首次出现时打断用户（通过声音、振动或视觉提示），而之后更新则不会再打断用户。
             .setOnlyAlertOnce(true)
-
-            //样式一
-//            .setStyle(NotificationCompat.BigTextStyle().bigText("在APP中的开发中会用到提醒，通知类似的功能，之前一篇文章我已经介绍到了[**《Android使用NotificationListenerService监听手机收到的通知》**](https://zhuanlan.zhihu.com/p/62380569)，监听了通知，没有通知的实现"))
-            //样式二
-//            .setStyle(
-//                NotificationCompat.InboxStyle()
-//                    .addLine("1、在APP中的开发中会用到提醒，通知类似的功能")
-//                    .addLine("2、使用NotificationListenerService监听")
-//                    .addLine("3、监听了通知，没有通知的实现")
-//            )
-//            .setStyle(NotificationCompat.DecoratedCustomViewStyle())
-            //方式一
-//                .addAction(R.drawable.ic_launcher_foreground,"点击安装",pendingIntentJump) //设置意图
-            //方式二
-//                .setFullScreenIntent(pendingIntentJump,false)  //不建议使用这个方法，华为小米适配有问题
-            //方式三
-//            .setContentIntent(jumpPendingIntent)
-//            .setDeleteIntent(cancelPendingIntent)
-//            .setProgress(mProgressMax, mCurrentProgress, false)
-
 //        if (ActivityCompat.checkSelfPermission(
 //                this,
 //                Manifest.permission.POST_NOTIFICATIONS
@@ -108,7 +85,7 @@ object NotifyHelper {
 //        ) {
 //            notificationManagerCompat.notify(notifyId, notificationCompat.build())
 //        }
-            .build()
+//            .build()
     }
 
 }
