@@ -5,11 +5,11 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.AppCompatButton
 import com.github.florent37.viewanimator.ViewAnimator
@@ -118,11 +118,11 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     private val CLICK_TYPE_UPLOAD = "click_type_upload"
     private val CLICK_TYPE_DOWNLOAD = "click_type_download"
 
+    private lateinit var launchNotify :ActivityResultLauncher<Array<String>>
+//    private lateinit var customLaunch :ActivityResultLauncher<String>
+
     private fun loadService() {
-        val launchNotify = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-            if (BuildConfig.DEBUG) {
-                Log.i("print_logs", "launchNotify: $it")
-            }
+        launchNotify = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
             if (!it.values.contains(false)) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     val clz=when (clickType) {
@@ -145,7 +145,6 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
             }
         }
-
         mDataBinding.acBtnStartCompress.setOnClickListener {
             clickType = CLICK_TYPE_COMPRESS
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -156,13 +155,46 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
             clickType = CLICK_TYPE_UPLOAD
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 launchNotify.launch(arrayOf(Manifest.permission.POST_NOTIFICATIONS,Manifest.permission.FOREGROUND_SERVICE))
+
             }
         }
+
+
+//        customLaunch=registerForActivityResult(customPermissionContract){
+//            if (BuildConfig.DEBUG) {
+//                Log.i("print_logs", "MainActivity::loadService: $it")
+//            }
+//        }
+
+
         mDataBinding.acBtnStartDownload.setOnClickListener {
             clickType = CLICK_TYPE_DOWNLOAD
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 launchNotify.launch(arrayOf(Manifest.permission.POST_NOTIFICATIONS,Manifest.permission.FOREGROUND_SERVICE))
+//                customLaunch.launch("params_value")
+
+            }else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
+                launchNotify.launch(arrayOf(Manifest.permission.FOREGROUND_SERVICE))
+            }else{
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    startService(Intent(this,DownloadService::class.java))
+                }
             }
         }
+    }
+
+//    private val customPermissionContract=object :ActivityResultContract<String,Boolean>(){
+//        override fun createIntent(context: Context, input: String): Intent {
+//            return Intent(this@MainActivity,LaunchActivity::class.java).putExtra("test",input)
+//        }
+//
+//        override fun parseResult(resultCode: Int, intent: Intent?): Boolean {
+//            return resultCode == Activity.RESULT_OK
+//        }
+//    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        launchNotify.unregister()
     }
 }

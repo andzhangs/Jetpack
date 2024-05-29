@@ -37,9 +37,10 @@ class DownloadService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (BuildConfig.DEBUG) {
-            Log.i("print_logs", "DownloadService::onStartCommand: ")
+            Log.i("print_logs", "DownloadService::onStartCommand: ${notificationManager.areNotificationsEnabled()}")
         }
         if (notificationManager.areNotificationsEnabled()) {
+//
             createNotification()
         }
         return super.onStartCommand(intent, flags, startId)
@@ -143,6 +144,26 @@ class DownloadService : Service() {
 //            .setProgress(mProgressMax, mCurrentProgress, false)
 
         startForeground(NOTIFY_ID, notificationCompat.build())
+
+
+        if (BuildConfig.DEBUG) {
+            Log.i("print_logs", "DownloadService::createNotification: start")
+        }
+        Thread.sleep(3000L)
+        if (BuildConfig.DEBUG) {
+            Log.i("print_logs", "DownloadService::createNotification: end")
+        }
+
+        stopSelf()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        if (BuildConfig.DEBUG) {
+            Log.i("print_logs", "DownloadService::onDestroy: ")
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            stopForeground(STOP_FOREGROUND_REMOVE)
+        }
+    }
 }
