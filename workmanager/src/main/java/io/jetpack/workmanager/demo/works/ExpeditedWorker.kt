@@ -28,7 +28,7 @@ open class ExpeditedWorker(
         val KEY_DATA = "key_data"
 
         const val Progress = "progress"
-        private const val delayDuration = 1000L
+        private const val delayDuration = 10000L
     }
 
     /**
@@ -61,15 +61,15 @@ open class ExpeditedWorker(
             Log.e("print_logs", "显示通知失败!!!")
         }
 
-        repeat(10) {
-            mNotifyManager.notify(2,
-                mNotificationCompat.apply {
-                    setContentTitle("当前进度：$it")
-                    setTicker("哈哈哈：$it")
-                }.build()
-            )
-            delay(1000L)
-        }
+//        repeat(10) {
+//            mNotifyManager.notify(2,
+//                mNotificationCompat.apply {
+//                    setContentTitle("当前进度：$it")
+//                    setTicker("哈哈哈：$it")
+//                }.build()
+//            )
+//            delay(1000L)
+//        }
 
         //观察工作器的中间进度 -> 更新进度
         val firstUpdate = workDataOf(Progress to 0)
@@ -95,7 +95,6 @@ open class ExpeditedWorker(
         }
 
         val outPutData = Data.Builder().putString(KEY_DATA, "I am from ExpeditedWorker").build()
-
 
         return Result.success(outPutData)
     }

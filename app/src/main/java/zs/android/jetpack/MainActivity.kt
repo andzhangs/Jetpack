@@ -181,6 +181,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 }
             }
         }
+
+        mDataBinding.acBtnStopDownload.setOnClickListener {
+            stopService(Intent(this,DownloadService::class.java))
+        }
     }
 
 //    private val customPermissionContract=object :ActivityResultContract<String,Boolean>(){

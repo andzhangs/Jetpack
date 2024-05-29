@@ -146,15 +146,26 @@ class DownloadService : Service() {
         startForeground(NOTIFY_ID, notificationCompat.build())
 
 
-        if (BuildConfig.DEBUG) {
-            Log.i("print_logs", "DownloadService::createNotification: start")
-        }
-        Thread.sleep(3000L)
-        if (BuildConfig.DEBUG) {
-            Log.i("print_logs", "DownloadService::createNotification: end")
-        }
+//        if (BuildConfig.DEBUG) {
+//            Log.i("print_logs", "DownloadService::createNotification: start")
+//        }
+//        Thread.sleep(3000L)
+//        if (BuildConfig.DEBUG) {
+//            Log.i("print_logs", "DownloadService::createNotification: end")
+//        }
+//
+//        stopSelf()
+    }
 
-        stopSelf()
+    /**
+     * 当用户从任务管理器中移除 Service 所在的应用时调用。
+     * 可以在这里执行一些应用退出前的清理工作。
+     */
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        super.onTaskRemoved(rootIntent)
+        if (BuildConfig.DEBUG) {
+            Log.i("print_logs", "DownloadService::onTaskRemoved: ")
+        }
     }
 
     override fun onDestroy() {
