@@ -92,13 +92,18 @@ interface StudentDao {
 
 
     //----------------------------------------------------------------------------------------------
-    @Query("SELECT *, strftime('%Y-%m-%d', create_time/1000, 'unixepoch') as date,COUNT(*) as count FROM TABLE_STUDENT GROUP BY date ORDER BY date DESC")
+    @Query("""
+        SELECT strftime('%Y-%m-%d', create_time/1000, 'unixepoch') as date,COUNT(*) as count 
+        FROM TABLE_STUDENT 
+        GROUP BY date 
+        ORDER BY date DESC
+    """)
     fun getAllGroupByDayFlow(): Flow<MutableList<DataCountPair>>
 
-    @Query("SELECT *, strftime('%Y-%m', create_time/1000, 'unixepoch') as date,COUNT(*) as count FROM TABLE_STUDENT GROUP BY date ORDER BY date DESC")
+    @Query("SELECT strftime('%Y-%m', create_time/1000, 'unixepoch') as date,COUNT(*) as count FROM TABLE_STUDENT GROUP BY date ORDER BY date DESC")
     fun getAllGroupByMonthFlow(): Flow<MutableList<DataCountPair>>
 
-    @Query("SELECT *, strftime('%Y', create_time/1000, 'unixepoch') as date,COUNT(*) as count FROM TABLE_STUDENT GROUP BY date ORDER BY date DESC")
+    @Query("SELECT strftime('%Y', create_time/1000, 'unixepoch') as date,COUNT(*) as count  FROM TABLE_STUDENT GROUP BY date ORDER BY date DESC")
     fun getAllGroupByYearFlow(): Flow<MutableList<DataCountPair>>
 
     class DataCountPair(val date: String, val count: Int)
