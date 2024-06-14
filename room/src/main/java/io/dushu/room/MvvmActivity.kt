@@ -19,7 +19,7 @@ import io.dushu.room.entity.StudentEntity
 import io.dushu.room.entity.relation.StudentWithCourseEntity
 import io.dushu.room.viewmodel.StudentViewModel
 import java.util.Calendar
-import java.util.Random
+import kotlin.random.Random
 
 /**
  * @author zhangshuai
@@ -86,9 +86,9 @@ class MvvmActivity : AppCompatActivity() {
         val entity = StudentWithCourseEntity(
             student = StudentEntity(
                 name = studentName,
-                age = Random().nextInt(100), //index+TimeUnit.DAYS.toMillis(Random().nextInt(10).toLong())
+                age = Random.nextInt(1,100), //index+TimeUnit.DAYS.toMillis(Random().nextInt(10).toLong())
                 createTime = Calendar.getInstance().let {
-                it.set(2023,Random().nextInt(12), Random().nextInt(30))
+                it.set(Random.nextInt(1970,2024),Random.nextInt(1,12), Random.nextInt(1,30))
                     it.timeInMillis
                 }
 
@@ -97,7 +97,7 @@ class MvvmActivity : AppCompatActivity() {
             course = CourseEntity(
                 userName = studentName,
                 courseName = "数学",
-                score = Random().nextInt(100)
+                score = Random.nextInt(1,100)
             )
         )
         mStudentViewModel.insert(entity)
