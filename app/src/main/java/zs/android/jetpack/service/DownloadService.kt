@@ -39,8 +39,10 @@ class DownloadService : Service() {
         if (BuildConfig.DEBUG) {
             Log.i("print_logs", "DownloadService::onStartCommand: ${notificationManager.areNotificationsEnabled()}")
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            foregroundServiceType
+        }
         if (notificationManager.areNotificationsEnabled()) {
-//
             createNotification()
         }
         return super.onStartCommand(intent, flags, startId)
@@ -169,7 +171,7 @@ class DownloadService : Service() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+//        super.onDestroy()
         if (BuildConfig.DEBUG) {
             Log.i("print_logs", "DownloadService::onDestroy: ")
         }

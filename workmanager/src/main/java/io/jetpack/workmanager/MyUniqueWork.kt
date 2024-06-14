@@ -3,11 +3,14 @@ package io.jetpack.workmanager
 import android.content.Context
 import android.util.Log
 import androidx.annotation.NonNull
+import androidx.work.CoroutineWorker
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
+import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
-import androidx.work.Worker
 import androidx.work.WorkerParameters
+import kotlinx.coroutines.delay
+import java.util.concurrent.TimeUnit
 
 /**
  * @author zhangshuai
@@ -20,13 +23,19 @@ class MyUniqueWork(
     private val context: Context,
     @NonNull
     private val workerParameters: WorkerParameters
-) :
-    Worker(context, workerParameters) {
+) : CoroutineWorker(context, workerParameters) {
 
     companion object {
 
         private val mRequest by lazy {
             OneTimeWorkRequest.Builder(MyUniqueWork::class.java)
+                .addTag(MyUniqueWork::class.java.simpleName)
+                .build()
+
+        }
+
+        private val mPeriodicRequest by lazy {
+            PeriodicWorkRequest.Builder(MyUniqueWork::class.java,15,TimeUnit.MINUTES)
                 .addTag(MyUniqueWork::class.java.simpleName)
                 .build()
 
@@ -39,21 +48,30 @@ class MyUniqueWork(
                 ExistingWorkPolicy.KEEP,
                 mRequest
             )
+
+            //周期性
+//            WorkManager.getInstance(context.applicationContext).enqueueUniquePeriodicWork(
+//                MyUniqueWork::class.java.simpleName,
+//                ExistingPeriodicWorkPolicy.KEEP,
+//                mPeriodicRequest
+//            )
         }
     }
 
-    override fun doWork(): Result {
+
+
+    override suspend fun doWork(): Result {
         if (BuildConfig.DEBUG) {
             Log.i("print_logs", "TestWork::doWork: ${workerParameters.id}")
         }
 
-        if (true){
-            return stopSelf()
-        }
+//        if (true){
+//            return stopSelf()
+//        }
 
-        if (BuildConfig.DEBUG) {
-            Log.i("print_logs", "MyUniqueWork::doWork: ")
-        }
+        //增加耗时操作后，可以防止后续任务重复进入
+        delay(2000L)
+
         return Result.success()
     }
 

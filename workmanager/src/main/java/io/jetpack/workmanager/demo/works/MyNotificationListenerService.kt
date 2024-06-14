@@ -19,6 +19,13 @@ class MyNotificationListenerService : NotificationListenerService() {
      * }
      */
 
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(base)
+        if (BuildConfig.DEBUG) {
+            Log.i("print_logs", "MyNotificationListenerService::attachBaseContext: ")
+        }
+    }
+
     override fun onNotificationPosted(sbn: StatusBarNotification?) {
         super.onNotificationPosted(sbn)
         if (BuildConfig.DEBUG) {
@@ -55,20 +62,6 @@ class MyNotificationListenerService : NotificationListenerService() {
         super.onNotificationRemoved(sbn, rankingMap, reason)
         if (BuildConfig.DEBUG) {
             Log.i("print_logs", "MyNotificationListenerService::onNotificationRemoved: 3")
-        }
-    }
-
-    override fun attachBaseContext(base: Context?) {
-        super.attachBaseContext(base)
-        if (BuildConfig.DEBUG) {
-            Log.i("print_logs", "MyNotificationListenerService::attachBaseContext: ")
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        if (BuildConfig.DEBUG) {
-            Log.i("print_logs", "MyNotificationListenerService::onDestroy: ")
         }
     }
 
@@ -141,6 +134,13 @@ class MyNotificationListenerService : NotificationListenerService() {
         super.onInterruptionFilterChanged(interruptionFilter)
         if (BuildConfig.DEBUG) {
             Log.i("print_logs", "MyNotificationListenerService::onInterruptionFilterChanged: ")
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (BuildConfig.DEBUG) {
+            Log.i("print_logs", "MyNotificationListenerService::onDestroy: ")
         }
     }
 }

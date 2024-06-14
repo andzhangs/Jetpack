@@ -86,7 +86,12 @@ class MvvmActivity : AppCompatActivity() {
         val entity = StudentWithCourseEntity(
             student = StudentEntity(
                 name = studentName,
-                age = Random().nextInt(100)
+                age = Random().nextInt(100), //index+TimeUnit.DAYS.toMillis(Random().nextInt(10).toLong())
+                createTime = Calendar.getInstance().let {
+                it.set(2023,Random().nextInt(12), Random().nextInt(30))
+                    it.timeInMillis
+                }
+
 //                createTime = Date()
             ),
             course = CourseEntity(

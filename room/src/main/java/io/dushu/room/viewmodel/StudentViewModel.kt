@@ -47,8 +47,36 @@ class StudentViewModel(application: Application) : AndroidViewModel(application)
 //                            }
 //                        }
 
+//                        if (BuildConfig.DEBUG) {
+//                            Log.i("print_logs", "当前数据：$item")
+//                        }
+                    }
+                }
+            }
+
+            launch {
+                mStudentRepository.getAllGroupByDayFlow().collect{
+                    it.forEach {model->
                         if (BuildConfig.DEBUG) {
-                            Log.i("print_logs", "$item")
+                            Log.i("print_logs", "日: ${model.date}, ${model.count}")
+                        }
+                    }
+                }
+            }
+            launch {
+                mStudentRepository.getAllGroupByMonthFlow().collect{
+                    it.forEach {model->
+                        if (BuildConfig.DEBUG) {
+                            Log.i("print_logs", "月: ${model.date}, ${model.count}")
+                        }
+                    }
+                }
+            }
+            launch {
+                mStudentRepository.getAllGroupByYearFlow().collect{
+                    it.forEach {model->
+                        if (BuildConfig.DEBUG) {
+                            Log.i("print_logs", "年: ${model.date}, ${model.count}")
                         }
                     }
                 }
@@ -93,7 +121,7 @@ class StudentViewModel(application: Application) : AndroidViewModel(application)
         viewModelScope.launch(Dispatchers.IO) {
             mStudentRepository.getAllCourseByUser(userName).forEach { (t, u) ->
                 if (BuildConfig.DEBUG) {
-                    Log.i("print_logs", "$t, $u")
+                    Log.i("print_logs", "getAllCourseByUser：$t, $u")
                 }
             }
         }

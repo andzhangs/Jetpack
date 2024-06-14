@@ -8,13 +8,10 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.toPublisher
 import io.dushu.lifcycle.R
-import org.reactivestreams.Publisher
 import org.reactivestreams.Subscriber
 import org.reactivestreams.Subscription
-import java.util.concurrent.TimeUnit
 
 class LifeCycleServiceActivity : AppCompatActivity() {
 
@@ -84,20 +81,14 @@ class LifeCycleServiceActivity : AppCompatActivity() {
 //        }
     }
 
-    private var mIntent: Intent? = null
+    private val mIntent: Intent by lazy { Intent(this, MyLocationService::class.java) }
 
     fun startGpsLocation(view: View) {
-        if (mIntent == null) {
-            mIntent = Intent(this, MyLocationService::class.java)
-        }
         startService(mIntent)
     }
 
     fun stopGpsLocation(view: View) {
-        mIntent?.also {
-            stopService(it)
-            mIntent = null
-        }
+        stopService(mIntent)
     }
 
     override fun onDestroy() {
@@ -105,6 +96,5 @@ class LifeCycleServiceActivity : AppCompatActivity() {
         mIntent?.also {
             stopService(it)
         }
-        mIntent = null
     }
 }

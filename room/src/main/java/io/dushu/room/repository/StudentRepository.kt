@@ -96,4 +96,8 @@ class StudentRepository(private val context: Context) {
 
     suspend fun getStudentByDate(date: Date) = mStudentDao.getStudentByDate(date)
 
+
+    fun getAllGroupByDayFlow() = mStudentDao.getAllGroupByDayFlow()
+    fun getAllGroupByMonthFlow() = mStudentDao.getAllGroupByMonthFlow()
+    fun getAllGroupByYearFlow() = mStudentDao.getAllGroupByYearFlow()
 }

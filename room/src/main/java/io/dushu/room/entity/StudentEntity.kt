@@ -5,7 +5,6 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.google.gson.Gson
-import java.util.Date
 
 /**
  * author: zhangshuai 6/27/21 7:14 PM
@@ -30,9 +29,12 @@ data class StudentEntity constructor(
     @ColumnInfo(name = "age", typeAffinity = ColumnInfo.INTEGER)
     var age: Int = 0,
 
-//    @TypeConverters(DateConverter::class)
     @ColumnInfo(name = "create_time")
-    var createTime: Date = Date()
+    var createTime: Long = System.currentTimeMillis()
+
+    //    @TypeConverters(DateConverter::class)
+//    @ColumnInfo(name = "create_date")
+//    var createDate: Date = Date()
 
     //用户会员图标
 //    @ColumnInfo(name = "level_url")

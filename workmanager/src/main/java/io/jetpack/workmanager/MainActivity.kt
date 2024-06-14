@@ -46,7 +46,7 @@ class MainActivity : BaseActivity() {
         mBinding.acBtnGoTest.setOnClickListener {
             MyUniqueWork.start(this)
 //            test()
-//            load()
+            load()
         }
 
         WorkManager.getInstance(this).getWorkInfosByTagLiveData(MyUniqueWork::class.java.simpleName).observe(this){
@@ -88,6 +88,10 @@ class MainActivity : BaseActivity() {
             }
 
             cancel("取消了")
+
+            if (BuildConfig.DEBUG) {
+                Log.i("print_logs", "MainActivity::load: ....")
+            }
         }
     }
 }
