@@ -21,7 +21,7 @@ import jp.wasabeef.glide.transformations.gpu.SketchFilterTransformation
 import jp.wasabeef.glide.transformations.gpu.SwirlFilterTransformation
 import jp.wasabeef.glide.transformations.gpu.ToonFilterTransformation
 import jp.wasabeef.glide.transformations.gpu.VignetteFilterTransformation
-import java.util.Random
+import kotlin.random.Random
 
 /**
  *
@@ -31,55 +31,59 @@ import java.util.Random
  */
 object TransformationUtils {
 
-    private val transformations = arrayListOf<BitmapTransformation>().apply {
+    private val transformations = arrayListOf<TransformData>().apply {
         //裁剪自定义圆
-        add(CropTransformation(80, 80, CropTransformation.CropType.CENTER))
+        add(TransformData(name = "裁剪自定义圆", transform = CropTransformation(80, 80, CropTransformation.CropType.CENTER)))
+
         //裁剪圆形
-        add(CropCircleTransformation())
+        add(TransformData(name = "裁剪圆形", transform =CropCircleTransformation()))
         //裁剪带边框圆形
-        add(CropCircleWithBorderTransformation(1, Color.BLUE))
+        add(TransformData(name = "裁剪带边框圆形", transform =CropCircleWithBorderTransformation(1, Color.BLUE)))
         //裁剪正方形
-        add(CropSquareTransformation())
+        add(TransformData(name = "裁剪正方形", transform =CropSquareTransformation()))
         //裁边角
-        add(RoundedCornersTransformation(255, 0, RoundedCornersTransformation.CornerType.TOP_RIGHT))
+        add(TransformData(name = "裁边角", transform =RoundedCornersTransformation(255, 0, RoundedCornersTransformation.CornerType.TOP_RIGHT)))
         //外形轮廓
-        add(MaskTransformation(R.drawable.ic_launcher_foreground))
+        add(TransformData(name = "外形轮廓", transform =MaskTransformation(R.drawable.ic_launcher_foreground)))
         //颜色过滤
-        add(ColorFilterTransformation(Color.YELLOW))
+        add(TransformData(name = "颜色过滤", transform =ColorFilterTransformation(Color.YELLOW)))
         //添加高斯模糊
-        add(BlurTransformation(5))
+        add(TransformData(name = "添加高斯模糊", transform =BlurTransformation(5)))
         //色彩置灰
-        add(GrayscaleTransformation())
+        add(TransformData(name = "色彩置灰", transform =GrayscaleTransformation()))
 
         /**
          * 使用GPU
          */
         //卡通过滤
-        add(ToonFilterTransformation())
+        add(TransformData(name = "卡通过滤", transform =ToonFilterTransformation()))
         //棕色过滤
-        add(SepiaFilterTransformation())
+        add(TransformData(name = "棕色过滤", transform =SepiaFilterTransformation()))
         //对比度
-        add(ContrastFilterTransformation())
+        add(TransformData(name = "对比度", transform =ContrastFilterTransformation()))
         //反色
-        add(InvertFilterTransformation())
+        add(TransformData(name = "反色", transform =InvertFilterTransformation()))
         //像素化
-        add(PixelationFilterTransformation())
+        add(TransformData(name = "像素化", transform =PixelationFilterTransformation()))
         //素描
-        add(SketchFilterTransformation())
+        add(TransformData(name = "素描", transform =SketchFilterTransformation()))
         //画面旋转
-        add(SwirlFilterTransformation())
+        add(TransformData(name = "画面旋转", transform =SwirlFilterTransformation()))
         //亮度
-        add(BrightnessFilterTransformation(0.1f))
+        add(TransformData(name = "亮度", transform =BrightnessFilterTransformation(0.1f)))
         //加载
-        add(KuwaharaFilterTransformation(50))
+        add(TransformData(name = "加载", transform =KuwaharaFilterTransformation(50)))
         //边框阴影
-        add(VignetteFilterTransformation())
+        add(TransformData(name = "边框阴影", transform =VignetteFilterTransformation()))
     }
 
 
-    private val mRandom: Random by lazy { Random() }
-    fun getRandom(): BitmapTransformation {
-        val position = mRandom.nextInt(transformations.size - 1)
+    private val mRandom: Random by lazy { Random(transformations.size) }
+    fun getRandom(): TransformData {
+
+        val position = mRandom.nextInt(0,transformations.size - 1)
         return transformations[position]
     }
+
+    data class TransformData(val name: String, val transform: BitmapTransformation)
 }

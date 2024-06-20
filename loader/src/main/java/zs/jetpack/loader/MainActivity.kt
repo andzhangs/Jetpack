@@ -12,8 +12,10 @@ import androidx.loader.content.AsyncTaskLoader
 import androidx.loader.content.Loader
 
 /**
- * 加载配置更改后继续存在的界面数据。
+ * 加载配置更改后，继续存在的界面数据。
  * https://developer.android.google.cn/guide/components/loaders?hl=zh-cn
+ *
+ * 从 Android 9（API 级别 28）开始废弃了加载器
  */
 class MainActivity : AppCompatActivity() {
 

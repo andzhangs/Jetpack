@@ -123,7 +123,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun areContentsTheSame(oldItem: DataX, newItem: DataX): Boolean {
-                return oldItem.id == newItem.id
+                return oldItem == newItem
             }
         }) {
 
@@ -178,9 +178,12 @@ class MainActivity : AppCompatActivity() {
         fun load(data: DataX?) {
             data?.also {
                 itemBinding.data = it
+
+                val transformData = TransformationUtils.getRandom()
+                itemBinding.acTvTransformName.text = transformData.name
                 Glide.with(itemBinding.acIvIcon.context)
                     .load(it.envelopePic)
-                    .apply(RequestOptions.bitmapTransform(TransformationUtils.getRandom()))
+                    .apply(RequestOptions.bitmapTransform(transformData.transform))
                     .into(itemBinding.acIvIcon)
             }
         }

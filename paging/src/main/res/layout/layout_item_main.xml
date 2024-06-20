@@ -31,6 +31,20 @@
                 android:scaleType="centerCrop"/>
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/acTv_transform_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="转换"
+                android:textColor="@color/black_overlay"
+                android:padding="10dp"
+                android:textSize="10sp"
+                android:background="@color/white"
+                app:layout_constraintTop_toTopOf="@id/acIv_icon"
+                app:layout_constraintStart_toStartOf="@id/acIv_icon"
+                app:layout_constraintEnd_toEndOf="@id/acIv_icon"
+                app:layout_constraintBottom_toBottomOf="@id/acIv_icon"/>
+
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/acTv_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

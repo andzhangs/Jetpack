@@ -22,28 +22,28 @@ class MainActivity : AppCompatActivity() {
         val inflater = AsyncLayoutInflater(this)
 
 
-        inflater.inflate(R.layout.layout_child_view, null) { view, _, _ ->
+        inflater.inflate(R.layout.layout_child_view, parentView) { view, _, _ ->
             view.findViewById<AppCompatImageView>(R.id.acIv).setOnClickListener {
                 Toast.makeText(this, "点击我了", Toast.LENGTH_SHORT).show()
             }
             parentView.addView(view)
         }
-        inflater.inflate(R.layout.layout_child_view1, null) { view, _, _ ->
+        inflater.inflate(R.layout.layout_child_view1, parentView) { view, _, _ ->
             parentView.addView(view)
         }
-        inflater.inflate(R.layout.layout_child_view2, null) { view, _, _ ->
+        inflater.inflate(R.layout.layout_child_view2, parentView) { view, _, _ ->
             parentView.addView(view)
         }
-        inflater.inflate(R.layout.layout_child_view3, null) { view, _, _ ->
+        inflater.inflate(R.layout.layout_child_view3, parentView) { view, _, _ ->
             parentView.addView(view)
         }
-        inflater.inflate(R.layout.layout_child_view4, null) { view, _, _ ->
+        inflater.inflate(R.layout.layout_child_view4, parentView) { view, _, _ ->
             parentView.addView(view)
         }
-        inflater.inflate(R.layout.layout_child_view5, null) { view, _, _ ->
+        inflater.inflate(R.layout.layout_child_view5, parentView) { view, _, _ ->
             parentView.addView(view)
         }
-        inflater.inflate(R.layout.layout_child_view6, null) { view, _, _ ->
+        inflater.inflate(R.layout.layout_child_view6, parentView) { view, _, _ ->
             parentView.addView(view)
         }
     }

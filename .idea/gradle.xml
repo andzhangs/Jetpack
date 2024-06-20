@@ -18,6 +18,7 @@
             <option value="$PROJECT_DIR$/concurrent_futures" />
             <option value="$PROJECT_DIR$/contentpager" />
             <option value="$PROJECT_DIR$/databinding" />
+            <option value="$PROJECT_DIR$/datastore" />
             <option value="$PROJECT_DIR$/heifwriter" />
             <option value="$PROJECT_DIR$/hilt" />
             <option value="$PROJECT_DIR$/lifcycle" />

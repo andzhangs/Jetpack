@@ -1,0 +1,22 @@
+//@ 1 使用proto3语法
+syntax = "proto3";
+//@ 2 生成多个类（一个类便于管理）
+option java_multiple_files = false;
+//@ 3 定义调用时的java包名
+option java_package = "zs.android.datastore.proto";
+//@ 4 生成外部类名
+option java_outer_classname = "userBeanOuterProto";
+//@ 5. proto包名称（逻辑包名称）
+package zs.android.datastore;
+
+//运行命令：protoc --kotlin_out=src/main/java/ --proto_path=src/main/proto UserBean.proto
+
+//@ 8 定义请求数据结构
+//字符串数据类型
+//等号后面的数字即索引值（表示参数顺序，以防止参数传递顺序混乱），服务启动后无法更改
+//不能使用19000-1999保留数字
+message UserBean{
+  string userName = 1;
+  int32 age = 2;
+  int32 height = 3;
+}
