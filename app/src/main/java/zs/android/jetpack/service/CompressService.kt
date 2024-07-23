@@ -35,16 +35,17 @@ class CompressService : Service() {
         if (BuildConfig.DEBUG) {
             Log.d("print_logs", "CompressService::onCreate: ")
         }
-    }
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (BuildConfig.DEBUG) {
-            Log.d("print_logs", "CompressService::onStartCommand: ")
-        }
         if (notificationManager.areNotificationsEnabled()) {
             createNotification()
         }
-        return super.onStartCommand(intent, flags, startId)
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
+        if (BuildConfig.DEBUG) {
+            Log.d("print_logs", "CompressService::onStartCommand: ${intent?.getBooleanExtra("stop_service",false)}")
+        }
+        return START_STICKY//super.onStartCommand(intent, flags, startId)
     }
 
     private fun createNotification() {

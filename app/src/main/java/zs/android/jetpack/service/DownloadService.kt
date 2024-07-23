@@ -33,19 +33,18 @@ class DownloadService : Service() {
         if (BuildConfig.DEBUG) {
             Log.i("print_logs", "DownloadService::onCreate: ")
         }
-    }
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (BuildConfig.DEBUG) {
-            Log.i("print_logs", "DownloadService::onStartCommand: ${notificationManager.areNotificationsEnabled()}")
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            foregroundServiceType
-        }
         if (notificationManager.areNotificationsEnabled()) {
             createNotification()
         }
-        return super.onStartCommand(intent, flags, startId)
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
+        if (BuildConfig.DEBUG) {
+            Log.i("print_logs", "DownloadService::onStartCommand: ${notificationManager.areNotificationsEnabled()}")
+        }
+
+        return START_STICKY//super.onStartCommand(intent, flags, startId)
     }
 
     private fun createNotification() {

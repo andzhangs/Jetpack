@@ -32,16 +32,18 @@ class UploadService : Service() {
         if (BuildConfig.DEBUG) {
             Log.e("print_logs", "UploadService::onCreate: ")
         }
-    }
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (BuildConfig.DEBUG) {
-            Log.e("print_logs", "UploadService::onStartCommand: ")
-        }
         if (notificationManager.areNotificationsEnabled()) {
             createNotification()
         }
-        return super.onStartCommand(intent, flags, startId)
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
+        if (BuildConfig.DEBUG) {
+            Log.e("print_logs", "UploadService::onStartCommand: ")
+        }
+
+        return START_STICKY//super.onStartCommand(intent, flags, startId)
     }
 
     private fun createNotification() {

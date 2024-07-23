@@ -118,44 +118,57 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
     private val CLICK_TYPE_UPLOAD = "click_type_upload"
     private val CLICK_TYPE_DOWNLOAD = "click_type_download"
 
-    private lateinit var launchNotify :ActivityResultLauncher<Array<String>>
+    private lateinit var launchNotify: ActivityResultLauncher<Array<String>>
 //    private lateinit var customLaunch :ActivityResultLauncher<String>
 
     private fun loadService() {
-        launchNotify = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-            if (!it.values.contains(false)) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    val clz=when (clickType) {
-                        CLICK_TYPE_COMPRESS -> {
-                            CompressService::class.java
+        launchNotify =
+            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+                if (!it.values.contains(false)) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        val clz = when (clickType) {
+                            CLICK_TYPE_COMPRESS -> {
+                                CompressService::class.java
+                            }
+
+                            CLICK_TYPE_UPLOAD -> {
+                                UploadService::class.java
+                            }
+
+                            CLICK_TYPE_DOWNLOAD -> {
+                                DownloadService::class.java
+                            }
+
+                            else -> {
+                                CompressService::class.java
+                            }
                         }
-                        CLICK_TYPE_UPLOAD -> {
-                            UploadService::class.java
-                        }
-                        CLICK_TYPE_DOWNLOAD -> {
-                            DownloadService::class.java
-                        }
-                        else -> {
-                            CompressService::class.java
-                        }
+
+                        startForegroundService(Intent(this, clz))
+//                        startService(Intent(this, clz))
                     }
-
-                    startForegroundService(Intent(this,clz))
                 }
-
             }
-        }
         mDataBinding.acBtnStartCompress.setOnClickListener {
             clickType = CLICK_TYPE_COMPRESS
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                launchNotify.launch(arrayOf(Manifest.permission.POST_NOTIFICATIONS,Manifest.permission.FOREGROUND_SERVICE))
+                launchNotify.launch(
+                    arrayOf(
+                        Manifest.permission.POST_NOTIFICATIONS,
+                        Manifest.permission.FOREGROUND_SERVICE
+                    )
+                )
             }
         }
         mDataBinding.acBtnStartUpload.setOnClickListener {
             clickType = CLICK_TYPE_UPLOAD
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                launchNotify.launch(arrayOf(Manifest.permission.POST_NOTIFICATIONS,Manifest.permission.FOREGROUND_SERVICE))
-
+                launchNotify.launch(
+                    arrayOf(
+                        Manifest.permission.POST_NOTIFICATIONS,
+                        Manifest.permission.FOREGROUND_SERVICE
+                    )
+                )
             }
         }
 
@@ -170,32 +183,29 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
         mDataBinding.acBtnStartDownload.setOnClickListener {
             clickType = CLICK_TYPE_DOWNLOAD
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                launchNotify.launch(arrayOf(Manifest.permission.POST_NOTIFICATIONS,Manifest.permission.FOREGROUND_SERVICE))
+                launchNotify.launch(
+                    arrayOf(
+                        Manifest.permission.POST_NOTIFICATIONS,
+                        Manifest.permission.FOREGROUND_SERVICE
+                    )
+                )
 //                customLaunch.launch("params_value")
 
-            }else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P){
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 launchNotify.launch(arrayOf(Manifest.permission.FOREGROUND_SERVICE))
-            }else{
+            } else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    startService(Intent(this,DownloadService::class.java))
+                    startService(Intent(this, DownloadService::class.java))
                 }
             }
         }
 
-        mDataBinding.acBtnStopDownload.setOnClickListener {
-            stopService(Intent(this,DownloadService::class.java))
+        mDataBinding.acBtnStop.setOnClickListener {
+            stopService(Intent(this, CompressService::class.java))
+            stopService(Intent(this, UploadService::class.java))
+            stopService(Intent(this, DownloadService::class.java))
         }
     }
-
-//    private val customPermissionContract=object :ActivityResultContract<String,Boolean>(){
-//        override fun createIntent(context: Context, input: String): Intent {
-//            return Intent(this@MainActivity,LaunchActivity::class.java).putExtra("test",input)
-//        }
-//
-//        override fun parseResult(resultCode: Int, intent: Intent?): Boolean {
-//            return resultCode == Activity.RESULT_OK
-//        }
-//    }
 
     override fun onDestroy() {
         super.onDestroy()
