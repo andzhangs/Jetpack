@@ -2,7 +2,9 @@ package io.jetpack.workmanager
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.Log
+import androidx.lifecycle.lifecycleScope
 import androidx.work.WorkManager
 import com.android.jetpack.workmanager.works.TestWorker
 import io.jetpack.workmanager.base.BaseActivity
@@ -11,7 +13,6 @@ import io.jetpack.workmanager.demo.jobs.MainJobActivity
 import io.jetpack.workmanager.demo.works.WorkActivity
 import io.jetpack.workmanager.utils.viewBinding
 import io.jetpack.workmanager.video.MyWorkActivity
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
@@ -49,20 +50,23 @@ class MainActivity : BaseActivity() {
             load()
         }
 
-        WorkManager.getInstance(this).getWorkInfosByTagLiveData(MyUniqueWork::class.java.simpleName).observe(this){
-            it.forEach { workInfo ->
-                if (BuildConfig.DEBUG) {
-                    Log.i("print_logs", "MainActivity::onCreate: ${workInfo.state}")
+        WorkManager.getInstance(this).getWorkInfosByTagLiveData(MyUniqueWork::class.java.simpleName)
+            .observe(this) {
+                it.forEach { workInfo ->
+                    if (BuildConfig.DEBUG) {
+                        Log.i("print_logs", "MainActivity::onCreate: ${workInfo.state}")
+                    }
                 }
             }
-        }
 
 
         TestWorker.setWorkListener(this)
+
+
     }
 
-    private fun test(){
-        for (i in 1..3){
+    private fun test() {
+        for (i in 1..3) {
 //            TestWorker.start(this)
             MyUniqueWork.start(this)
         }
@@ -77,8 +81,8 @@ class MainActivity : BaseActivity() {
         Log.i("print_logs", "MainActivity::onCreate: ${service.getUser("你好")}")
     }
 
-    private fun load(){
-        CoroutineScope(Dispatchers.IO).launch {
+    private fun load() {
+        lifecycleScope.launch(Dispatchers.IO) {
             if (BuildConfig.DEBUG) {
                 Log.i("print_logs", "MainActivity::load: start")
             }
@@ -92,6 +96,45 @@ class MainActivity : BaseActivity() {
             if (BuildConfig.DEBUG) {
                 Log.i("print_logs", "MainActivity::load: ....")
             }
+        }
+//        CoroutineScope(Dispatchers.IO).launch {
+//            if (BuildConfig.DEBUG) {
+//                Log.i("print_logs", "MainActivity::load: start")
+//            }
+//            delay(2000L)
+//            if (BuildConfig.DEBUG) {
+//                Log.d("print_logs", "MainActivity::load: end")
+//            }
+//
+//            cancel("取消了")
+//
+//            if (BuildConfig.DEBUG) {
+//                Log.i("print_logs", "MainActivity::load: ....")
+//            }
+//        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mCountDownTimer.start()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mCountDownTimer.cancel()
+    }
+
+    private val mCountDownTimer = object : CountDownTimer(24 * 60 * 60 * 1000, 1000) {
+        override fun onTick(millisUntilFinished: Long) {
+            val hours = (millisUntilFinished / (1000 * 60 * 60)).toInt()
+            val minutes = ((millisUntilFinished % (1000 * 60 * 60)) / (1000 * 60)).toInt()
+            val seconds = ((millisUntilFinished % (1000 * 60)) / 1000).toInt()
+
+            mBinding.acTvTimer.text = String.format("%02d:%02d:%02d", hours, minutes, seconds)
+        }
+
+        override fun onFinish() {
+            mBinding.acTvTimer.text = "倒计时结束."
         }
     }
 }

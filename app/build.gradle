@@ -52,6 +52,7 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
@@ -67,6 +68,12 @@ dependencies {
     implementation 'com.github.florent37:viewanimator:1.1.2'
     //https://github.com/dromara/hutool
     implementation 'cn.hutool:hutool-all:5.7.17'
+
+//    implementation 'com.google.android.gms:play-services-cronet:18.0.1'
+
+    implementation 'org.chromium.net:cronet-embedded:98.4758.101'
+
+//    implementation 'com.google.android.cronet:cronet:1.10.0'
 
 
 

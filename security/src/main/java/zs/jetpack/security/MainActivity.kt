@@ -1,9 +1,14 @@
 package zs.jetpack.security
 
+import android.Manifest
+import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
+import android.os.Environment
+import android.provider.Settings
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -16,108 +21,120 @@ import java.io.File
 
 /**
  * 安全地管理密钥并对文件和 sharedpreferences 进行加密。
+ *
+ * Jetpack 安全加密库已被废弃
+ * @author zhangshuai
  */
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mDataBinding: ActivityMainBinding
 
-    private lateinit var documentLauncher: ActivityResultLauncher<Array<String>>
-    private var mFilePath: String? = null
+    private lateinit var readWritePermissionsLauncher: ActivityResultLauncher<Array<String>>
+    private lateinit var managerFilesPermissionsLauncher: ActivityResultLauncher<Intent>
+
+    private val mFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)?.absolutePath + "/HelloWorld.txt"
+
+    private val mEncryptedFile :EncryptedFile by lazy {
+        EncryptedFile.Builder(
+            File(mFilePath), //要加密的文件
+            this@MainActivity,
+            MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC),  // 生成主密钥
+            EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB
+        ).build()
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
-
-        documentLauncher = registerForActivityResult(ActivityResultContracts.OpenDocument()) {
-            Log.i("print_logs", "MainActivity::onCreate:uri= $it")
-            it?.apply {
-                getPathByUri(this)?.also { filePath ->
-                    Log.i("print_logs", "MainActivity::onCreate: $filePath")
+        //Android11以下版本
+        readWritePermissionsLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+                Log.i("print_logs", "onCreate:uri= $it")
+                it?.apply {
+                    encryptFile()
                 }
-
-                encryptFile("/storage/emulated/0/Documents/HelloWorld.txt")
             }
 
-        }
+        //Android11以上版本
+        managerFilesPermissionsLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    if (Environment.isExternalStorageManager()) {
+                        encryptFile()
+                    } else {
+                        Toast.makeText(this, "授权失败！1", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
 
         mDataBinding.acBtnEncrypt.setOnClickListener {
-            documentLauncher.launch(arrayOf("text/plain"))
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                if (Environment.isExternalStorageManager()) {
+                    encryptFile()
+                }else{
+                    val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+                    intent.data = Uri.parse("package:$packageName")
+                    managerFilesPermissionsLauncher.launch(intent)
+                }
+            } else {
+                readWritePermissionsLauncher.launch(
+                    arrayOf(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+                )
+            }
         }
+
+
         mDataBinding.acBtnDecrypt.setOnClickListener {
-            mFilePath?.apply { decryptFile(this) }
+            decryptFile()
         }
     }
 
     /**
      * 编码
      */
-    private fun encryptFile(path: String) {
+    private fun encryptFile() {
         try {
-            mFilePath = path
-//            deleteEncryptedFile(path)
-            val encryptedFile = getEncryptedFile(path)
-            encryptedFile?.openFileOutput()?.use {
-                it.write("我是写入的数据：${System.currentTimeMillis()}".toByteArray())
+            mEncryptedFile.openFileOutput().use {
+                val content = "我是写入的数据：${System.currentTimeMillis()}".toByteArray(Charsets.UTF_8)
+                it.write(content)
+                it.flush()
+            }
+            if (BuildConfig.DEBUG) {
+                Log.i("print_logs", "MainActivity::encryptFile: 加密成功！")
             }
         } catch (e: Exception) {
             e.printStackTrace()
+            if (BuildConfig.DEBUG) {
+                Log.e("print_logs", "encryptFile: $e")
+            }
+            File(mFilePath).apply {
+                if (this.exists()) {
+                    this.delete()
+                }
+            }
+            encryptFile()
+            decryptFile()
         }
     }
 
     /**
      * 解码
      */
-    private fun decryptFile(path: String) {
+    private fun decryptFile() {
         try {
-
-            val encryptedFile = getEncryptedFile(path)
-            encryptedFile?.openFileInput()?.use {
-                Log.i("print_logs", "decryptFile: ${String(it.readBytes(), Charsets.UTF_8)}")
+            mEncryptedFile.openFileInput().use {
+                Log.d("print_logs", "decryptFile: ${String(it.readBytes(), Charsets.UTF_8)}")
             }
         } catch (e: Exception) {
             e.printStackTrace()
-        }
-    }
-
-    private fun getEncryptedFile(path: String): EncryptedFile? =
-        if (!File(path).exists()) {
-            null
-        } else {
-            EncryptedFile.Builder(
-                File(path),
-                this,
-                MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC),
-                EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB
-            ).build()
-        }
-
-    private fun deleteEncryptedFile(path: String) {
-        val file = File(path)
-        if (file.exists()) {
-            file.delete()
-        }
-    }
-
-    private fun getPathByUri(uri: Uri): String? {
-        return if (uri.scheme == "content") {
-            val cursor = contentResolver.query(uri, null, null, null, null)
-            cursor?.let {
-                if (it.moveToFirst()) {
-                    val columnIndex = it.getColumnIndex(MediaStore.MediaColumns.DATA)
-                    if (columnIndex != -1) {
-                        it.getString(columnIndex)
-                    } else {
-                        "1"
-                    }
-                } else {
-                    "2"
-                }
-            } ?: run {
-                "3"
+            if (BuildConfig.DEBUG) {
+                Log.e("print_logs", "decryptFile: $e")
             }
-        } else {
-            uri.path
+            Toast.makeText(this, "解码失败！", Toast.LENGTH_SHORT).show()
         }
     }
 

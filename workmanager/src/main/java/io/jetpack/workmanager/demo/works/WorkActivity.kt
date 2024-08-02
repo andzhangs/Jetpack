@@ -73,11 +73,11 @@ class WorkActivity : AppCompatActivity() {
 //                            startActivity(Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"))
 //                        }
 
-                        if (NotificationManagerCompat.getEnabledListenerPackages(this).contains(packageName)) {
-                            startService(Intent(this,MyNotificationListenerService::class.java))
-                        }else{
-                            startActivity(Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"))
-                        }
+//                        if (NotificationManagerCompat.getEnabledListenerPackages(this).contains(packageName)) {
+//                            startService(Intent(this,MyNotificationListenerService::class.java))
+//                        }else{
+//                            startActivity(Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"))
+//                        }
 
                     } else {
                         Log.e("print_logs", "WorkActivity::onCreate: 权限申请失败!")
@@ -100,9 +100,11 @@ class WorkActivity : AppCompatActivity() {
         }
 
         mBinding.acBtnCancelWork.setOnClickListener {
-            WorkManager.getInstance(this).cancelWorkById(mOneTimeWorkRequest.id)
+//            WorkManager.getInstance(this).cancelWorkById(mOneTimeWorkRequest.id)
             // or
             // WorkManager.getInstance().cancelAllWorkByTag(ID_MARK)
+
+            WorkManager.getInstance(this).cancelAllWorkByTag(ExpeditedWorker::class.java.simpleName)
         }
     }
 
