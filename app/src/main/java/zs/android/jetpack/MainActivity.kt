@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.AppCompatButton
-import com.github.florent37.viewanimator.ViewAnimator
 import zs.android.jetpack.base.BaseActivity
 import zs.android.jetpack.databinding.ActivityMainBinding
 import zs.android.jetpack.service.CompressService
@@ -94,7 +93,7 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
         val acBtnViewAnimator = findViewById<AppCompatButton>(R.id.acBtn_ViewAnimator)
         acBtnViewAnimator.setOnClickListener {
-            ViewAnimator.animate(it).apply {
+            com.github.florent37.viewanimator.ViewAnimator.animate(it).apply {
                 bounce()
                 textColor(R.color.purple_200)
                 backgroundColor(R.color.white)

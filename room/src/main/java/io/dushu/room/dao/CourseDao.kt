@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import io.dushu.room.entity.CourseEntity
+import kotlinx.coroutines.flow.Flow
 
 /**
  *
@@ -27,4 +28,7 @@ interface CourseDao {
 
     @Query("DELETE FROM TABLE_COURSE")
     fun clearAll()
+
+    @Query("SELECT COUNT(*) FROM TABLE_COURSE")
+    fun getAllCourseCountFlow(): Flow<Int>
 }

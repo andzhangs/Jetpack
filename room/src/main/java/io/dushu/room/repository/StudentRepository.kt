@@ -1,7 +1,10 @@
 package io.dushu.room.repository
 
 import android.content.Context
+import android.database.sqlite.SQLiteDatabase
+import androidx.core.content.contentValuesOf
 import androidx.lifecycle.LiveData
+import androidx.sqlite.db.SupportSQLiteDatabase
 import io.dushu.room.database.StudentDataBase
 import io.dushu.room.entity.CourseEntity
 import io.dushu.room.entity.StudentEntity
@@ -20,6 +23,29 @@ class StudentRepository(private val context: Context) {
     private val mStudentDao = mDataBase.getStudentDao()
     private val mCourseDao = mDataBase.getCourseDao()
 
+    private val getSqliteDb: SupportSQLiteDatabase by lazy{mDataBase.openHelper.writableDatabase}
+
+    /**
+     * 使用ByContentValues新增数据
+     */
+    fun insertByContentValues(){
+        val userName ="你好"+kotlin.random.Random.nextInt(1,100)
+        val studentContentValues= contentValuesOf(
+            "name" to userName,
+            "age" to kotlin.random.Random.nextInt(1,100),
+            "create_time" to System.currentTimeMillis()
+        )
+        getSqliteDb.insert("table_student",SQLiteDatabase.CONFLICT_REPLACE,studentContentValues)
+
+        val courseContentValues= contentValuesOf(
+            "user_name" to userName,
+            "course_name" to "数学",
+            "score" to kotlin.random.Random.nextInt(1,100)
+        )
+        getSqliteDb.insert("table_course",SQLiteDatabase.CONFLICT_REPLACE,courseContentValues)
+
+    }
+
     private fun getEntity(
         entity: StudentWithCourseEntity?,
         studentBlock: (StudentEntity) -> Unit,
@@ -33,7 +59,7 @@ class StudentRepository(private val context: Context) {
     /**
      * 精确查找
      */
-    fun selectStudentById(id: Int): LiveData<List<StudentWithCourseEntity>> =
+    fun selectStudentById(id: Int): LiveData<StudentWithCourseEntity> =
         mStudentDao.getStudentByIdLiveData(id)
 
     /**
@@ -41,15 +67,18 @@ class StudentRepository(private val context: Context) {
      */
     fun getAllLiveData() = mStudentDao.getAllLiveData()
 
-    fun getCountFlow() = mStudentDao.getCountFlow()
+    fun getAllStudentCountFlow() = mStudentDao.getAllStudentCountFlow()
+
+    fun getAllCourseCountFlow() = mCourseDao.getAllCourseCountFlow()
 
     //----------------------------------------------------------------------------------------------
     /**
      * 添加
      */
     suspend fun insertStudent(entity: StudentWithCourseEntity) {
-        mStudentDao.insert(entity.student,entity.course)
-//        mStudentDao.insertOrUpdate(entity.student,entity.course)
+//        insertByContentValues()
+
+        mStudentDao.insert(entity.student, entity.course)
     }
 
     /**
@@ -69,7 +98,9 @@ class StudentRepository(private val context: Context) {
     /**
      * 修改
      */
-    private val courseNameArray= arrayOf("语文","英语","化学","物理","生物","体育","政治","地理","历史")
+    private val courseNameArray =
+        arrayOf("语文", "英语", "化学", "物理", "生物", "体育", "政治", "地理", "历史")
+
     suspend fun updateStudent(id: Int) {
         mStudentDao.getById(id = id)?.also { entity ->
             getEntity(entity,

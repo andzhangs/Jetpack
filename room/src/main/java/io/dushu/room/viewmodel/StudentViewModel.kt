@@ -12,7 +12,7 @@ import io.dushu.room.BuildConfig
 import io.dushu.room.entity.relation.StudentWithCourseEntity
 import io.dushu.room.repository.StudentRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 /**
@@ -28,17 +28,11 @@ class StudentViewModel(application: Application) : AndroidViewModel(application)
     val mCountField = ObservableField("总数：0")
 
     init {
+
         viewModelScope.launch {
-            launch(Dispatchers.IO) {
-                mStudentRepository.getCountFlow().collectLatest {
-                    mCountField.set("总数：$it")
-                }
-            }
-
-            launch(Dispatchers.IO) {
-                mStudentRepository.getAllViewFlow().collect {
-                    it.forEachIndexed { index, item ->
-
+//            launch(Dispatchers.IO) {
+//                mStudentRepository.getAllViewFlow().collect {
+//                    it.forEachIndexed { index, item ->
 //                        if (index == 0) {
 //                            mStudentRepository.getStudentByDate(item.createTime)?.also {entity->
 //                                if (BuildConfig.DEBUG) {
@@ -46,45 +40,61 @@ class StudentViewModel(application: Application) : AndroidViewModel(application)
 //                                }
 //                            }
 //                        }
-
 //                        if (BuildConfig.DEBUG) {
 //                            Log.i("print_logs", "当前数据：$item")
 //                        }
-                    }
-                }
-            }
+//                    }
+//                }
+//            }
+//
+//            launch {
+//                mStudentRepository.getAllGroupByDayFlow().collect{
+//                    it.forEach {model->
+//                        if (BuildConfig.DEBUG) {
+//                            Log.d("print_logs", "日-${model.count}条: ${model.date}, ${model.dataList}")
+//                        }
+//                    }
+//                }
+//            }
+//            launch {
+//                mStudentRepository.getAllGroupByMonthFlow().collect{
+//                    it.forEach {model->
+//                        if (BuildConfig.DEBUG) {
+//                            Log.w("print_logs", "月-${model.count}条: ${model.date}, ${model.dataList}")
+//                        }
+//                    }
+//                }
+//            }
+//            launch {
+//                mStudentRepository.getAllGroupByYearFlow().collect{
+//                    it.forEach {model->
+//                        if (BuildConfig.DEBUG) {
+//                            Log.i("print_logs", "年-${model.count}条: ${model.date}, ${model.dataList}")
+//                        }
+//                    }
+//                }
+//            }
 
             launch {
-                mStudentRepository.getAllGroupByDayFlow().collect{
-                    it.forEach {model->
-                        if (BuildConfig.DEBUG) {
-                            Log.i("print_logs", "日: ${model.date}, ${model.count}")
-                        }
+                //combine 将多个流的最新值结合起来，每当任何流发射新值时都会触发。
+                val studentFlow=mStudentRepository.getAllStudentCountFlow()
+                val courseFlow=mStudentRepository.getAllCourseCountFlow()
+                studentFlow.combine(courseFlow){ studentCount, courseCount ->
+                    if (BuildConfig.DEBUG) {
+                        Log.i("print_logs", "当前线程：${Thread.currentThread().name}")
                     }
-                }
-            }
-            launch {
-                mStudentRepository.getAllGroupByMonthFlow().collect{
-                    it.forEach {model->
-                        if (BuildConfig.DEBUG) {
-                            Log.i("print_logs", "月: ${model.date}, ${model.count}")
-                        }
-                    }
-                }
-            }
-            launch {
-                mStudentRepository.getAllGroupByYearFlow().collect{
-                    it.forEach {model->
-                        if (BuildConfig.DEBUG) {
-                            Log.i("print_logs", "年: ${model.date}, ${model.count}")
-                        }
+                    mCountField.set("总数：$studentCount")
+                    "学生：$studentCount， 课程：$courseCount"
+                }.collect{
+                    if (BuildConfig.DEBUG) {
+                        Log.i("print_logs", "总数量: $it")
                     }
                 }
             }
         }
     }
 
-    fun getStudentById(id: Int): LiveData<List<StudentWithCourseEntity>> {
+    fun getStudentById(id: Int): LiveData<StudentWithCourseEntity> {
         return mStudentRepository.selectStudentById(id)
     }
 

@@ -1,5 +1,6 @@
 package zs.jetpack.biometric
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -51,7 +52,7 @@ class MainActivity : AppCompatActivity() {
     /**
      * 检测设备支持生物识别功能
      */
-    private fun isSupport(): Boolean {
+    private fun Context.isSupport(): Boolean {
         return BiometricManager.from(this)
             .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) == BiometricManager.BIOMETRIC_SUCCESS
     }

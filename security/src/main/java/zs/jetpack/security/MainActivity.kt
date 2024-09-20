@@ -7,6 +7,8 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
+import android.security.keystore.KeyGenParameterSpec
+import android.security.keystore.KeyProperties
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -14,9 +16,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.security.crypto.EncryptedFile
-import androidx.security.crypto.MasterKeys
+import androidx.security.crypto.MasterKey
 import zs.jetpack.security.databinding.ActivityMainBinding
 import java.io.File
+import java.io.FileNotFoundException
 
 
 /**
@@ -32,13 +35,29 @@ class MainActivity : AppCompatActivity() {
     private lateinit var readWritePermissionsLauncher: ActivityResultLauncher<Array<String>>
     private lateinit var managerFilesPermissionsLauncher: ActivityResultLauncher<Intent>
 
-    private val mFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)?.absolutePath + "/HelloWorld.txt"
+    private val mFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)?.absolutePath + "/JetpackSecurity.txt"
 
+    /**
+     * setKeyScheme()和setKeyGenParameterSpec()二选一
+     *
+     */
     private val mEncryptedFile :EncryptedFile by lazy {
         EncryptedFile.Builder(
-            File(mFilePath), //要加密的文件
             this@MainActivity,
-            MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC),  // 生成主密钥
+            File(mFilePath),
+            MasterKey.Builder(this@MainActivity)
+//                .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                .setUserAuthenticationRequired(true,10 * 60)
+                .setRequestStrongBoxBacked(true)
+                .setKeyGenParameterSpec(
+                    KeyGenParameterSpec.Builder(MasterKey.DEFAULT_MASTER_KEY_ALIAS,
+                        KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT)
+                        .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+                        .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+                        .setKeySize(MasterKey.DEFAULT_AES_GCM_MASTER_KEY_SIZE)
+                        .build()
+                )
+                .build(),  // 生成主密钥
             EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB
         ).build()
     }
@@ -98,6 +117,12 @@ class MainActivity : AppCompatActivity() {
      */
     private fun encryptFile() {
         try {
+            //先读取原有内容并与新内容合并后再写入
+            if (File(mFilePath).exists()) {
+
+            }
+
+
             mEncryptedFile.openFileOutput().use {
                 val content = "我是写入的数据：${System.currentTimeMillis()}".toByteArray(Charsets.UTF_8)
                 it.write(content)
@@ -106,6 +131,8 @@ class MainActivity : AppCompatActivity() {
             if (BuildConfig.DEBUG) {
                 Log.i("print_logs", "MainActivity::encryptFile: 加密成功！")
             }
+        }catch (e:FileNotFoundException){
+
         } catch (e: Exception) {
             e.printStackTrace()
             if (BuildConfig.DEBUG) {

@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.annotation.NonNull
 import androidx.work.CoroutineWorker
-import androidx.work.ExistingWorkPolicy
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
@@ -43,18 +43,20 @@ class MyUniqueWork(
 
         @JvmStatic
         fun start(context: Context) {
-            WorkManager.getInstance(context.applicationContext).enqueueUniqueWork(
-                MyUniqueWork::class.java.simpleName,
-                ExistingWorkPolicy.KEEP,
-                mRequest
-            )
-
-            //周期性
-//            WorkManager.getInstance(context.applicationContext).enqueueUniquePeriodicWork(
+            //此处2秒内只会执行一次
+            //它允许你创建一个一次性执行的任务，确保每次只有一个实例在运行，即使先前的工作请求尚未完成
+//            WorkManager.getInstance(context.applicationContext).enqueueUniqueWork(
 //                MyUniqueWork::class.java.simpleName,
-//                ExistingPeriodicWorkPolicy.KEEP,
-//                mPeriodicRequest
+//                ExistingWorkPolicy.KEEP,
+//                mRequest
 //            )
+
+            //它允许你创建一个周期性执行的任务，确保每次只有一个实例在运行，即使先前的工作请求尚未完成
+            WorkManager.getInstance(context.applicationContext).enqueueUniquePeriodicWork(
+                MyUniqueWork::class.java.simpleName,
+                ExistingPeriodicWorkPolicy.KEEP,
+                mPeriodicRequest
+            )
         }
     }
 
@@ -62,7 +64,7 @@ class MyUniqueWork(
 
     override suspend fun doWork(): Result {
         if (BuildConfig.DEBUG) {
-            Log.i("print_logs", "TestWork::doWork: ${workerParameters.id}")
+            Log.i("print_logs", "MyUniqueWork::doWork: ${workerParameters.id}")
         }
 
 //        if (true){

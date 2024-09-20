@@ -3,7 +3,6 @@ package io.dushu.room
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -66,9 +65,9 @@ class MvvmActivity : AppCompatActivity() {
         val month=calendar.get(Calendar.MONTH)
         val day= calendar.get(Calendar.DAY_OF_MONTH)
 
-        if (BuildConfig.DEBUG) {
-            Log.i("print_logs", "onCreate: year = $year, month = $month, day = $day")
-        }
+//        if (BuildConfig.DEBUG) {
+//            Log.i("print_logs", "onCreate: year = $year, month = $month, day = $day")
+//        }
     }
 
     private fun getAll() {
@@ -122,7 +121,8 @@ class MvvmActivity : AppCompatActivity() {
         val inputText = mDataBinding.acEtId.text.toString()
         if (inputText.isNotEmpty()) {
             mStudentViewModel.getStudentById(inputText.toInt()).observe(this) {
-                mAdapter.setData(it)
+                mAdapter.setData(listOf(it))
+
             }
         } else {
             getAll()

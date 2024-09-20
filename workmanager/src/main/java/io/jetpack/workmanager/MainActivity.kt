@@ -38,6 +38,10 @@ class MainActivity : BaseActivity() {
             startActivity(Intent(this, MyWorkActivity::class.java))
         }
 
+        val api = fun(userName: String): String {
+            return "哈哈哈 $userName"
+        }
+
         val aPiService = Api.APiService {
             return@APiService "回调信息：name= $it, age= 18, sex= 男"
         }
@@ -46,15 +50,16 @@ class MainActivity : BaseActivity() {
 
         mBinding.acBtnGoTest.setOnClickListener {
             MyUniqueWork.start(this)
+            mCountDownTimer.start()
 //            test()
-            load()
+//            load()
         }
 
         WorkManager.getInstance(this).getWorkInfosByTagLiveData(MyUniqueWork::class.java.simpleName)
             .observe(this) {
                 it.forEach { workInfo ->
                     if (BuildConfig.DEBUG) {
-                        Log.i("print_logs", "MainActivity::onCreate: ${workInfo.state}")
+                        Log.i("print_logs", "MyUniqueWorker状态: ${workInfo.state}")
                     }
                 }
             }
@@ -116,15 +121,16 @@ class MainActivity : BaseActivity() {
 
     override fun onStart() {
         super.onStart()
-        mCountDownTimer.start()
+//        mCountDownTimer.start()
     }
 
     override fun onStop() {
         super.onStop()
-        mCountDownTimer.cancel()
+//        mCountDownTimer.cancel()
     }
 
-    private val mCountDownTimer = object : CountDownTimer(24 * 60 * 60 * 1000, 1000) {
+    //24小时倒计时
+    private val mCountDownTimer = object : CountDownTimer(15 * 60 * 1000, 1000) {
         override fun onTick(millisUntilFinished: Long) {
             val hours = (millisUntilFinished / (1000 * 60 * 60)).toInt()
             val minutes = ((millisUntilFinished % (1000 * 60 * 60)) / (1000 * 60)).toInt()
@@ -136,5 +142,10 @@ class MainActivity : BaseActivity() {
         override fun onFinish() {
             mBinding.acTvTimer.text = "倒计时结束."
         }
+    }
+
+    override fun onDestroy() {
+        mCountDownTimer.cancel()
+        super.onDestroy()
     }
 }

@@ -9,7 +9,7 @@
         android:id="@+id/acTv_timer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="23:59:59"
+        android:text="24:00:00"
         android:textColor="@color/black"
         android:textSize="18sp"
         android:gravity="center"

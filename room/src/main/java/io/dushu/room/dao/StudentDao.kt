@@ -37,18 +37,17 @@ interface StudentDao {
     @Query("SELECT * FROM TABLE_STUDENT WHERE id =:id")
     suspend fun getById(id: Int): StudentWithCourseEntity?
 
-    @Transaction
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Query("SELECT * FROM TABLE_STUDENT WHERE id =:id")
-    fun getStudentByIdLiveData(id: Int): LiveData<List<StudentWithCourseEntity>>
+    fun getStudentByIdLiveData(id: Int): LiveData<StudentWithCourseEntity>
 
     @Transaction
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
-    @Query("SELECT * FROM table_student ORDER BY id")
+    @Query("SELECT * FROM table_student ORDER BY id ASC")
     fun getAllLiveData(): LiveData<List<StudentWithCourseEntity>>
 
-    @Query("SELECT COUNT(*) FROM TABLE_STUDENT ORDER BY id")
-    fun getCountFlow(): Flow<Int>
+    @Query("SELECT COUNT(*) FROM TABLE_STUDENT")
+    fun getAllStudentCountFlow(): Flow<Int>
 
     //----------------------------------------------------------------------------------------------
 
@@ -93,18 +92,18 @@ interface StudentDao {
 
     //----------------------------------------------------------------------------------------------
     @Query("""
-        SELECT strftime('%Y-%m-%d', create_time/1000, 'unixepoch') as date,COUNT(*) as count 
+        SELECT strftime('%Y-%m-%d', create_time/1000, 'unixepoch') as date, COUNT(*) as count, group_concat(name || ',' || create_time) as dataList
         FROM TABLE_STUDENT 
         GROUP BY date 
         ORDER BY date DESC
     """)
     fun getAllGroupByDayFlow(): Flow<MutableList<DataCountPair>>
 
-    @Query("SELECT strftime('%Y-%m', create_time/1000, 'unixepoch') as date,COUNT(*) as count FROM TABLE_STUDENT GROUP BY date ORDER BY date DESC")
+    @Query("SELECT strftime('%Y-%m', create_time/1000, 'unixepoch') as date,COUNT(*) as count, group_concat(name || ',' || create_time) as dataList FROM TABLE_STUDENT GROUP BY date ORDER BY date DESC")
     fun getAllGroupByMonthFlow(): Flow<MutableList<DataCountPair>>
 
-    @Query("SELECT strftime('%Y', create_time/1000, 'unixepoch') as date,COUNT(*) as count  FROM TABLE_STUDENT GROUP BY date ORDER BY date DESC")
+    @Query("SELECT strftime('%Y', create_time/1000, 'unixepoch') as date,COUNT(*) as count, group_concat(name || ',' || create_time) as dataList  FROM TABLE_STUDENT GROUP BY date ORDER BY date DESC")
     fun getAllGroupByYearFlow(): Flow<MutableList<DataCountPair>>
 
-    class DataCountPair(val date: String, val count: Int)
+    class DataCountPair(val date: String, val count: Int,val dataList:String)
 }
