@@ -75,11 +75,20 @@ class StudentRepository(private val context: Context) {
     /**
      * 添加
      */
+    suspend fun insertCourse(studentEntity: StudentEntity) {
+        mStudentDao.insert(studentEntity)
+    }
+
+    suspend fun insertCourse(courseEntity: CourseEntity) {
+        mCourseDao.insert(courseEntity)
+    }
     suspend fun insertStudent(entity: StudentWithCourseEntity) {
 //        insertByContentValues()
 
         mStudentDao.insert(entity.student, entity.course)
     }
+
+
 
     /**
      * 删除

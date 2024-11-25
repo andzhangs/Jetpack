@@ -20,6 +20,8 @@
         <!--    文案为深色  -->
         <item name="android:windowLightStatusBar">true</item>
 
+        <item name="android:windowTranslucentStatus">true</item>
+
         <!--
             单独使用导航栏背景为半透明黑色
             优先级最低

@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
+import androidx.core.os.CancellationSignal
 import androidx.databinding.DataBindingUtil
 import zs.jetpack.biometric.databinding.ActivityMainBinding
 
@@ -24,38 +25,72 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        mDataBinding.acBtnAuth.setOnClickListener {
-            if (isSupport()) {
-                startAuth()
+        mDataBinding.acBtnAuthWeak.setOnClickListener {
+            if (isSupportWeak()) {
+                val promptInfo = BiometricPrompt.PromptInfo.Builder()
+                    .setTitle("指纹认证")
+                    .setSubtitle("请进行指纹认证")
+                    .setDescription("请将您的指纹放在指纹传感器上")
+                    .setNegativeButtonText("取消")
+                    .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK)
+                    .build()
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    BiometricPrompt(this, mainExecutor, mAuthenticationCallback).authenticate(promptInfo)
+                } else {
+                    BiometricPrompt(this, mAuthenticationCallback).authenticate(promptInfo)
+                }
             } else {
                 Toast.makeText(this, "未开启生物识别功能", Toast.LENGTH_SHORT).show()
             }
         }
-    }
 
-    private fun startAuth() {
-        val promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle("指纹认证")
-            .setSubtitle("请进行指纹认证")
-            .setDescription("请将您的指纹放在指纹传感器上")
-            .setNegativeButtonText("取消")
-            .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK)
-            .build()
+        mDataBinding.acBtnAuthStrong.setOnClickListener {
+            if (isSupportStrong()) {
+                val promptInfo = BiometricPrompt.PromptInfo.Builder()
+                    .setTitle("虹膜识别")
+                    .setSubtitle("请进行虹膜识别")
+                    .setDescription("请将您的眼睛直视采集摄像头")
+                    .setNegativeButtonText("取消")
+                    .setAllowedAuthenticators(BiometricManager.Authenticators.BIOMETRIC_WEAK)
+                    .build()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            BiometricPrompt(this, mainExecutor, mAuthenticationCallback).authenticate(promptInfo)
-        } else {
-            BiometricPrompt(this, mAuthenticationCallback).authenticate(promptInfo)
+                val cancellationSignal=CancellationSignal()
+                cancellationSignal.setOnCancelListener {
+
+                }
+
+
+                val mBiometricPrompt=if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    BiometricPrompt(this, mainExecutor, mAuthenticationCallback)
+                } else {
+                    BiometricPrompt(this, mAuthenticationCallback)
+                }
+
+                mBiometricPrompt.authenticate(promptInfo)
+
+
+            } else {
+                Toast.makeText(this, "未开启虹膜识别功能", Toast.LENGTH_SHORT).show()
+            }
         }
     }
+
 
     /**
      * 检测设备支持生物识别功能
      */
-    private fun Context.isSupport(): Boolean {
+    private fun Context.isSupportWeak(): Boolean {
         return BiometricManager.from(this)
             .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) == BiometricManager.BIOMETRIC_SUCCESS
     }
+
+
+    private fun isSupportStrong(): Boolean {
+        return BiometricManager.from(this)
+            .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) == BiometricManager.BIOMETRIC_SUCCESS
+    }
+    
 
     private val mAuthenticationCallback = object : BiometricPrompt.AuthenticationCallback() {
         override fun onAuthenticationError(errorCode: Int, errString: CharSequence) {

@@ -55,6 +55,7 @@ class MainActivity : AppCompatActivity() {
 
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         mDataBinding.lifecycleOwner = this
+        setSupportActionBar(mDataBinding.toolbar)
         lifecycle.addObserver(mViewModel)
         initRecyclerView()
 

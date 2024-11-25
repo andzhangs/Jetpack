@@ -17,6 +17,9 @@ import java.util.Date
 @Dao
 interface StudentDao {
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(student: StudentEntity)
+
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(student: StudentEntity?, courseEntity: CourseEntity?)

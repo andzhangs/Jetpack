@@ -5,11 +5,11 @@ option java_multiple_files = false;
 //@ 3 定义调用时的java包名
 option java_package = "zs.android.datastore.proto";
 //@ 4 生成外部类名
-option java_outer_classname = "userBeanOuterProto";
+//option java_outer_classname = "UserBeanOuterClass";
 //@ 5. proto包名称（逻辑包名称）
 package zs.android.datastore;
 
-//运行命令：protoc --kotlin_out=src/main/java/ --proto_path=src/main/proto UserBean.proto
+//运行命令：protoc --kotlin_out=datastore/src/main/java/ --proto_path=datastore/src/main/proto UserBean.proto
 
 //@ 8 定义请求数据结构
 //字符串数据类型

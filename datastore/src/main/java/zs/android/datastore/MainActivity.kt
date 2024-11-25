@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import zs.android.datastore.databinding.ActivityMainBinding
+import zs.android.datastore.proto.UserBeanOuterClass
 
 /**
  * https://developer.android.com/topic/libraries/architecture/datastore?hl=zh-cn
@@ -26,9 +27,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var mDataBinding: ActivityMainBinding
 
-    private val mDataStore: DataStore<Preferences> by lazy {
-        DataStoreApplication.getInstance().getDataStore()
-    }
+    private val mDataStore: DataStore<Preferences> = DataStoreApplication.getInstance().getDataStore()
     private val USER_NAME_KEY = stringPreferencesKey("user_name")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,9 +64,8 @@ class MainActivity : AppCompatActivity() {
                 it[USER_NAME_KEY]
             }.stateIn(lifecycleScope, SharingStarted.Eagerly, null)
                 .collect {
-                    if (BuildConfig.DEBUG) {
-                        Log.i("print_logs", "打印: $it")
-                    }
+                    Log.i("print_logs", "打印: $it")
+
                     mDataBinding.acEtText.text = null
                 }
         }
@@ -76,5 +74,6 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         mDataBinding.unbind()
+        UserBeanOuterClass.UserBean.newBuilder().build()
     }
 }

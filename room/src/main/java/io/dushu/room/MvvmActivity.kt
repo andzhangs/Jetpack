@@ -79,27 +79,37 @@ class MvvmActivity : AppCompatActivity() {
         }
     }
 
+    private val mStudentEntity by lazy { StudentEntity() }
+    private val mCourseEntity by lazy { CourseEntity() }
+
     fun InsertClick(view: View) {
         val index = System.currentTimeMillis()
-        val studentName = "用户$index"
-        val entity = StudentWithCourseEntity(
-            student = StudentEntity(
-                name = studentName,
-                age = Random.nextInt(1,100), //index+TimeUnit.DAYS.toMillis(Random().nextInt(10).toLong())
-                createTime = Calendar.getInstance().let {
-                it.set(Random.nextInt(1970,2024),Random.nextInt(1,12), Random.nextInt(1,30))
-                    it.timeInMillis
-                }
+        val studentName = "用户2024"
 
-//                createTime = Date()
-            ),
-            course = CourseEntity(
-                userName = studentName,
-                courseName = "数学",
-                score = Random.nextInt(1,100)
-            )
+        mStudentEntity.apply {
+            name = studentName
+            age = Random.nextInt(1,100)
+             createTime = Calendar.getInstance().let {
+                it.set(Random.nextInt(1970,2024),Random.nextInt(1,12), Random.nextInt(1,30))
+                it.timeInMillis
+            }
+        }
+
+//        mStudentViewModel.insert(mStudentEntity)
+
+        mCourseEntity.apply {
+            userName = studentName
+            courseName = "数学"
+            score = Random.nextInt(1,100)
+        }
+
+        mStudentViewModel.insert(mCourseEntity)
+
+        val entity = StudentWithCourseEntity(
+            student = mStudentEntity,
+            course = mCourseEntity
         )
-        mStudentViewModel.insert(entity)
+//        mStudentViewModel.insert(entity)
     }
 
 

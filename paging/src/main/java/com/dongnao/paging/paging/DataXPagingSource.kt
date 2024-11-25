@@ -70,4 +70,6 @@ class DataXPagingSource(private val apiService: ApiService) : PagingSource<Int, 
 
     override val keyReuseSupported: Boolean = true
 
+    override val jumpingSupported: Boolean = true
+
 }

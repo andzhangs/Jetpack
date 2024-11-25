@@ -35,14 +35,15 @@ android {
         dataBinding true
     }
 
-    sourceSets {
-        main {
-            //实际测试指不指定无所谓，不影响 Java 文件生成
-            proto {
-                srcDir 'src/main/proto'
-            }
-        }
-    }
+    //指定 protobuf 文件所在路径
+//    sourceSets {
+//        main {
+//            //实际测试指不指定无所谓，不影响 Java 文件生成
+//            proto {
+//                srcDir 'src/main/proto'
+//            }
+//        }
+//    }
 }
 
 protobuf {
@@ -55,16 +56,16 @@ protobuf {
     generatedFilesBaseDir = "$projectDir/src/main/java"
 
     //配置生成目录，编译后会在 build 的目录下生成对应的java文件
-//    generateProtoTasks {
-//        all().each { task ->
-//            task.builtins {
-//                remove java
-//            }
-//            task.builtins {
-//                java {}
-//            }
-//        }
-//    }
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                remove java
+            }
+            task.builtins {
+                java {}
+            }
+        }
+    }
 }
 
 dependencies {

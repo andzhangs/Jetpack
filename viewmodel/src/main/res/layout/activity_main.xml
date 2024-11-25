@@ -11,43 +11,65 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
-        android:text="隐藏"
         android:onClick="hideSystemBar"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="隐藏"
+        app:layout_constraintBottom_toTopOf="@id/guide_line"
         app:layout_constraintEnd_toStartOf="@id/acBtn_show"
-        app:layout_constraintBottom_toTopOf="@id/guide_line"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/acBtn_show"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
-        android:text="显示"
         android:onClick="showSystemBar"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@id/acBtn_hide"
+        android:text="显示"
+        app:layout_constraintBottom_toTopOf="@id/guide_line"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/guide_line"/>
+        app:layout_constraintStart_toEndOf="@id/acBtn_hide"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:id="@+id/guide_line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_child"
         android:name="io.dushu.viewmodel.ChildFragment"
         android:layout_width="match_parent"
-        android:tag="ChildFragment"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/guide_line"
-        app:layout_constraintStart_toStartOf="parent"
+        android:tag="ChildFragment"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guide_line" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/acBtn_portrait"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="竖屏"
+        android:textSize="18sp"
+        android:onClick="togglePortrait"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/acBtn_landscape"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/acBtn_landscape"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="横屏"
+        android:textSize="18sp"
+        android:onClick="toggleLandscape"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/acBtn_portrait" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

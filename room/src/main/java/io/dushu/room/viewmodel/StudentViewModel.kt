@@ -9,6 +9,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import io.dushu.room.BuildConfig
+import io.dushu.room.entity.CourseEntity
+import io.dushu.room.entity.StudentEntity
 import io.dushu.room.entity.relation.StudentWithCourseEntity
 import io.dushu.room.repository.StudentRepository
 import kotlinx.coroutines.Dispatchers
@@ -100,6 +102,18 @@ class StudentViewModel(application: Application) : AndroidViewModel(application)
 
     fun getAllStudent(): LiveData<List<StudentWithCourseEntity>> =
         mStudentRepository.getAllLiveData()
+
+    fun insert(studentEntity: StudentEntity) {
+        viewModelScope.launch(Dispatchers.IO) {
+            mStudentRepository.insertCourse(studentEntity)
+        }
+    }
+
+    fun insert(course: CourseEntity) {
+        viewModelScope.launch(Dispatchers.IO) {
+            mStudentRepository.insertCourse(course)
+        }
+    }
 
     fun insert(student: StudentWithCourseEntity) {
         viewModelScope.launch(Dispatchers.IO) {

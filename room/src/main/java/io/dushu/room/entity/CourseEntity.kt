@@ -32,15 +32,15 @@ data class CourseEntity(
     //学生名
     @PrimaryKey
     @ColumnInfo(name = "user_name")
-    var userName: String,
+    var userName: String = "",
 
     //课程名
     @ColumnInfo(name = "course_name")
-    var courseName: String,
+    var courseName: String = "",
 
     //分数
     @ColumnInfo(name = "score")
-    var score: Int,
+    var score: Int = 0,
 ) {
     override fun toString(): String = Gson().toJson(this)
 }

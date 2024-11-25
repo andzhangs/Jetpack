@@ -14,6 +14,12 @@ import androidx.lifecycle.AndroidViewModel
  */
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
+    init {
+        if (BuildConfig.DEBUG) {
+            Log.i("print_logs", "MainViewModel::: ")
+        }
+    }
+    
     var number: Int = 0
 
     fun showToast(string: String) {
@@ -21,7 +27,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     override fun onCleared() {
-        super.onCleared()
         Log.i("print_logs", "MyViewModel::onCleared: ")
+        super.onCleared()
     }
 }
