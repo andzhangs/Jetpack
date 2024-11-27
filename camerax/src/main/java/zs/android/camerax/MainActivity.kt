@@ -30,10 +30,13 @@ class MainActivity : AppCompatActivity() {
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+            if (BuildConfig.DEBUG) {
+                Log.i("print_logs", "MainActivity::onCreate: ${!it.values.contains(false)}")
+            }
             if (!it.values.contains(false)) {
                 getCameraListInfo()
             }
-        }.launch(arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+        }.launch(arrayOf(Manifest.permission.CAMERA)) // Manifest.permission.WRITE_EXTERNAL_STORAGE
 
         mDataBinding.acBtnPreviewView.setOnClickListener {
             startActivity(Intent(this@MainActivity,PreviewActivity::class.java))
