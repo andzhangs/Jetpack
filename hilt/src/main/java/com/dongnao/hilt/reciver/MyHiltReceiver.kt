@@ -19,16 +19,19 @@ class MyHiltReceiver : BroadcastReceiver() {
         const val ACTION_SEND = "com.dongnao.hilt.reciver.ACTION_SEND"
     }
 
+
+
     //方式一
     @Inject
     lateinit var analyticsService: AnalyticsService
 
-    //方式一
+    //方式二：适合在自定义类中注入
     @EntryPoint
     @InstallIn(SingletonComponent::class)
     interface AnalyticsServiceEntryPoint {
         fun analyticsService(): AnalyticsService
     }
+
 
 
     init {

@@ -8,4 +8,5 @@ package com.dongnao.hilt.di
  */
 interface AnalyticsService {
     fun analyticsMethods(info: String)
+    fun load()
 }

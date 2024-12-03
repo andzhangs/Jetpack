@@ -77,7 +77,6 @@ dependencies {
 
 
 
-
     // Optional - to support backwards compatibility of RemoteViews
 //    implementation "androidx.core:core-remoteviews:1.0.0"
 

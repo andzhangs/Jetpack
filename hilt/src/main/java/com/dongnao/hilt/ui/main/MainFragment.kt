@@ -9,9 +9,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.dongnao.hilt.R
+import com.dongnao.hilt.TestHelper
 import com.dongnao.hilt.databinding.FragmentMainBinding
 import com.dongnao.hilt.reciver.MyHiltReceiver
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainFragment : Fragment() {
@@ -23,6 +25,9 @@ class MainFragment : Fragment() {
     private lateinit var mDataBinding: FragmentMainBinding
 
     private val mViewModel: MainViewModel by viewModels()
+
+    @Inject
+    lateinit var mTestHelper: TestHelper
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,6 +47,8 @@ class MainFragment : Fragment() {
                 action = MyHiltReceiver.ACTION_SEND
             })
         }
+
+        mTestHelper.loadPrint()
     }
 
     override fun onDestroyView() {

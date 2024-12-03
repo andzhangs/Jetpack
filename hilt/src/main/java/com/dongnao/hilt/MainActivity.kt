@@ -27,6 +27,9 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var mApplicationBean: ApplicationBean
 
+    @Inject
+    lateinit var mTestHelper: TestHelper
+
     //----------------------------------------------------------------------------------------------
 
     @Inject
@@ -56,6 +59,8 @@ class MainActivity : AppCompatActivity() {
 
         mApplicationContextBean.showCode()
         mApplicationBean.showCode()
+
+        mTestHelper.loadPrint()
 
         mActivityContextBean.showCode()
         mActivityBean.showCode()

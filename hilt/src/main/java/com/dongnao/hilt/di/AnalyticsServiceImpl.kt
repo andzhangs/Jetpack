@@ -1,6 +1,7 @@
 package com.dongnao.hilt.di
 
 import android.util.Log
+import com.dongnao.hilt.BuildConfig
 import com.dongnao.hilt.model.ApplicationContextBean
 import javax.inject.Inject
 
@@ -14,6 +15,10 @@ class AnalyticsServiceImpl @Inject constructor(private val appBean: ApplicationC
 
     override fun analyticsMethods(info: String) {
         Log.e("print_logs", "analyticsMethods: $info ${appBean.printLog()}")
-
+    }
+    override fun load(){
+        if (BuildConfig.DEBUG) {
+            Log.e("print_logs", "AnalyticsServiceImpl::load: ")
+        }
     }
 }
