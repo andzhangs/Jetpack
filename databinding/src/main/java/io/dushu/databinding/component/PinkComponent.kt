@@ -12,7 +12,6 @@ import androidx.databinding.BindingAdapter
 class PinkComponent {
     @BindingAdapter("android:bindName")
     fun AppCompatTextView.setBindName(name:String?){
-
         if (!name.isNullOrEmpty() && name != text) {
             text = "数据体"
         }
