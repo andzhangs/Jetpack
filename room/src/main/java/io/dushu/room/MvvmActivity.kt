@@ -33,6 +33,8 @@ class MvvmActivity : AppCompatActivity() {
 
     private val mStudentViewModel: StudentViewModel by viewModels()
 
+    private val courseNameArray =arrayOf("语文", "英语", "化学", "物理", "生物", "体育", "政治", "地理", "历史")
+
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,11 +85,11 @@ class MvvmActivity : AppCompatActivity() {
     private val mCourseEntity by lazy { CourseEntity() }
 
     fun InsertClick(view: View) {
-        val index = System.currentTimeMillis()
+        val index = "${System.currentTimeMillis()}"
         val studentName = "用户2024"
 
         mStudentEntity.apply {
-            name = studentName
+            name = index //studentName
             age = Random.nextInt(1,100)
              createTime = Calendar.getInstance().let {
                 it.set(Random.nextInt(1970,2024),Random.nextInt(1,12), Random.nextInt(1,30))
@@ -98,18 +100,21 @@ class MvvmActivity : AppCompatActivity() {
 //        mStudentViewModel.insert(mStudentEntity)
 
         mCourseEntity.apply {
-            userName = studentName
-            courseName = "数学"
+            userName = index //studentName
+            courseName = courseNameArray[Random.nextInt(0,courseNameArray.size-1)]
             score = Random.nextInt(1,100)
         }
 
-        mStudentViewModel.insert(mCourseEntity)
+        //若关联的主表没有先插入数据，则会报错：
+        // android.database.sqlite.SQLiteConstraintException: UNIQUE constraint failed: table_course.user_name (code 2067 SQLITE_CONSTRAINT_UNIQUE[2067])
+        //  at android.database.sqlite.SQLiteConnection.nativeExecuteForLastInsertedRowId(Native Method)
+//        mStudentViewModel.insert(mCourseEntity)
 
         val entity = StudentWithCourseEntity(
             student = mStudentEntity,
             course = mCourseEntity
         )
-//        mStudentViewModel.insert(entity)
+        mStudentViewModel.insert(entity)
     }
 
 

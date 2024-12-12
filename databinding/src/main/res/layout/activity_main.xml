@@ -24,32 +24,35 @@
         <variable
             name="user2"
             type="io.dushu.databinding.UserViewModel2" />
+
+        <variable
+            name="componentText"
+            type="java.lang.String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".MainActivity">
+        android:layout_height="match_parent">
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/acEtText"
             android:layout_width="match_parent"
             android:layout_height="?android:actionBarSize"
+            android:text="@={user.userName}"
+            android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:textSize="18sp"
-            android:text="@={user.userName}"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/acEtText2"
             android:layout_width="match_parent"
             android:layout_height="?android:actionBarSize"
+            android:text="@={user2.userName}"
+            android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/acEtText"
-            android:textSize="18sp"
-            android:text="@={user2.userName}"/>
+            app:layout_constraintTop_toBottomOf="@id/acEtText" />
 
         <!--加载网络 app:httpUrl="@{networkImage}"-->
         <!--加载asset app:assetUrl="@{networkImage}"-->
@@ -80,7 +83,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:data="@{data}"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/guideline" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:bindName="@{componentText}"
+            android:textColor="@android:color/holo_red_light"
+            android:textSize="18sp"
+            android:textStyle="italic"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/sub_layout" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

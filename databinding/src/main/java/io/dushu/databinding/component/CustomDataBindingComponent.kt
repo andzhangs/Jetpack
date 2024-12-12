@@ -1,4 +1,4 @@
-package io.dushu.databinding
+package io.dushu.databinding.component
 
 import androidx.databinding.DataBindingComponent
 

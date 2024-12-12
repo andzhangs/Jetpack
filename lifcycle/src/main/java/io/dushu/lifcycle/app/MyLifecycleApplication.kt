@@ -13,6 +13,8 @@ internal class MyLifecycleApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         ProcessLifecycleOwner.get().lifecycle.addObserver(MyApplicationObserver())
+        ProcessLifecycleOwner.get().lifecycle.addObserver(MyLifecycleEventObserver())
+        registerActivityLifecycleCallbacks(MyActivityLifecycleCallbacks.newInstance())
     }
 
 }
