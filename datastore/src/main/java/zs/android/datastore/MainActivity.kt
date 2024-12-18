@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import zs.android.datastore.databinding.ActivityMainBinding
-import zs.android.datastore.proto.UserBeanOuterClass
 
 /**
  * https://developer.android.com/topic/libraries/architecture/datastore?hl=zh-cn
@@ -74,6 +73,6 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         mDataBinding.unbind()
-        UserBeanOuterClass.UserBean.newBuilder().build()
+//        UserBeanOuterClass.UserBean.newBuilder().build()
     }
 }

@@ -101,7 +101,7 @@ class MvvmActivity : AppCompatActivity() {
 
         mCourseEntity.apply {
             userName = index //studentName
-            courseName = courseNameArray[Random.nextInt(0,courseNameArray.size-1)]
+            courseName = courseNameArray.random()
             score = Random.nextInt(1,100)
         }
 
