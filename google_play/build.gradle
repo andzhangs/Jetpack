@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -24,11 +25,16 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
+    }
+    buildFeatures {
+        viewBinding true
+        dataBinding true
+        buildConfig true
     }
 }
 
@@ -45,4 +51,22 @@ dependencies {
     implementation 'com.google.android.play:app-update-ktx:2.1.0'
 
     implementation 'com.google.android.play:review-ktx:2.0.1'
+
+    def facebook_version = "17.0.1"
+//    implementation "com.facebook.android:facebook-android-sdk:$facebook_version"
+    implementation "com.facebook.android:facebook-applinks:$facebook_version"
+    implementation "com.facebook.android:facebook-common:$facebook_version"
+    implementation "com.facebook.android:facebook-core:$facebook_version"
+    implementation "com.facebook.android:facebook-gamingservices:$facebook_version"
+    implementation "com.facebook.android:facebook-login:$facebook_version"
+    implementation "com.facebook.android:facebook-messenger:$facebook_version"
+    implementation "com.facebook.android:facebook-share:$facebook_version"
+    implementation "com.facebook.android:facebook-bolts:$facebook_version"
+
+
+//    implementation 'com.google.android.gms:play-services-auth:21.3.0'
+    def google_version='1.0.0-alpha09'
+    implementation "androidx.credentials:credentials:$google_version"
+    implementation "androidx.credentials:credentials-play-services-auth:$google_version"
+    implementation "com.google.android.libraries.identity.googleid:googleid:1.0.0"
 }

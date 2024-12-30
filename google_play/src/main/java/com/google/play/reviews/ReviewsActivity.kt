@@ -39,7 +39,5 @@ class ReviewsActivity : AppCompatActivity() {
                 @ReviewErrorCode val reviewErrorCode = (it.exception as ReviewException).errorCode
             }
         }
-
-
     }
 }
