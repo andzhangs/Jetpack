@@ -21,23 +21,17 @@
             android:text="谷歌 应用内评价" />
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/acBtn_face_book"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FaceBook" />
+
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/acBtn_google_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="谷歌 登录" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/acBtn_facebook_login"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="FaceBook 登录" />
-
-        <com.facebook.login.widget.LoginButton
-            android:id="@+id/login_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="30dp"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="showLinkButton"
+            type="java.lang.Boolean" />
+
+        <variable
+            name="showPhotoButton"
+            type="java.lang.Boolean" />
+
+        <variable
+            name="showVideoButton"
+            type="java.lang.Boolean" />
+
+        <variable
+            name="showMediaButton"
+            type="java.lang.Boolean" />
+
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/acBtn_facebook_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FaceBook 登录" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/acBtn_share_link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Facebook分享：链接"
+            android:visibility="@={showLinkButton ? View.VISIBLE : View.GONE}"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/acBtn_share_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Facebook分享到：图片"
+            android:visibility="@={showPhotoButton ? View.VISIBLE : View.GONE}"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/acBtn_share_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Facebook分享：视频"
+            android:visibility="@={showVideoButton ? View.VISIBLE : View.GONE}"/>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/acBtn_share_media"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Facebook分享：多媒体"
+            android:visibility="@={showMediaButton ? View.VISIBLE : View.GONE}"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

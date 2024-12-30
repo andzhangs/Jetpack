@@ -10,15 +10,16 @@
         tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
-
     <uses-permission
         android:name="com.google.android.gms.permission.AD_ID"
         tools:node="remove" />
 
-    <queries> <package android:name="com.facebook.katana" /> </queries>
-
-    <queries><provider android:authorities="com.facebook.katana.provider.PlatformProvider" /></queries>
+    <queries>
+        <package android:name="com.facebook.katana" />
+    </queries>
+    <queries>
+        <provider android:authorities="com.facebook.katana.provider.PlatformProvider" />
+    </queries>
 
     <application
         android:name=".app.GoogleApplication"
@@ -28,6 +29,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Jetpack">
+        <activity
+            android:name=".facebook.FaceBookActivity"
+            android:exported="false" />
         <activity
             android:name=".reviews.ReviewsActivity"
             android:exported="false" />
@@ -66,14 +70,11 @@
 
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
-        </activity>
-
-        <!--   Facebook分享     -->
+        </activity> <!-- Facebook分享 -->
         <provider
             android:name="com.facebook.FacebookContentProvider"
-            android:authorities="com.facebook.app.FacebookContentProvider3500701500064930"
+            android:authorities="com.facebook.app.FacebookContentProvider1510048669684058"
             android:exported="true" />
-
     </application>
 
 </manifest>
