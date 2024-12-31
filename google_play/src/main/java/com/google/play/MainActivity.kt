@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity() {
                     val googleIdOption = GetGoogleIdOption.Builder()
                         .setFilterByAuthorizedAccounts(false)
                         .setAutoSelectEnabled(true)
-                        .setServerClientId("137852293720-f1sr8ro68e89gi29fcf0c95s5k2k51ba.apps.googleusercontent.com")
+                        .setServerClientId(resources.getString(R.string.google_oauth_web))
 //            .setNonce("")
                         .build()
 
