@@ -2,18 +2,7 @@
     <string name="app_name">AttrDemo</string>
 
 
-    <string name="facebook_app_id">1510048669684058</string>
-    <string name="fb_login_protocol_scheme">fb1510048669684058</string>
-    <string name="facebook_client_token">21d53c64e993c334d933e63372ce73c1</string>
 
-    <string name="key_sha1">ES5czcP6wEUTzdj4h7jNF/vjUtM=</string>
-
-    <string name="google_api_key">AIzaSyBbnGaxmRz0sDGeu7IBlGHECt2ldS__6QQ</string>
-    <string name="google_oauth">137852293720-chd8fqadfk9mbjhhh2kglohqsot8c4tp.apps.googleusercontent.com</string>
-
-    <!--    <string name="facebook_app_id">3500701500064930</string>-->
-    <!--    <string name="fb_login_protocol_scheme">fb3500701500064930</string>-->
-    <!--    <string name="facebook_client_token">6e21817465f2a09b82da160f1d7f5594</string>-->
 
 
 </resources>
