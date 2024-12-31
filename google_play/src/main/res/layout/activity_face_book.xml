@@ -47,28 +47,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Facebook分享：链接"
-            android:visibility="@={showLinkButton ? View.VISIBLE : View.GONE}"/>
+            android:visibility="@{showLinkButton ? View.VISIBLE : View.GONE}"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/acBtn_share_photo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Facebook分享到：图片"
-            android:visibility="@={showPhotoButton ? View.VISIBLE : View.GONE}"/>
+            android:visibility="@{showPhotoButton ? View.VISIBLE : View.GONE}"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/acBtn_share_video"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Facebook分享：视频"
-            android:visibility="@={showVideoButton ? View.VISIBLE : View.GONE}"/>
+            android:visibility="@{showVideoButton ? View.VISIBLE : View.GONE}"/>
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/acBtn_share_media"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Facebook分享：多媒体"
-            android:visibility="@={showMediaButton ? View.VISIBLE : View.GONE}"/>
+            android:visibility="@{showMediaButton ? View.VISIBLE : View.GONE}"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

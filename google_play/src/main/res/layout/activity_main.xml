@@ -32,6 +32,10 @@
             android:layout_height="wrap_content"
             android:text="谷歌 登录" />
 
-
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/acBtn_google_logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="谷歌 退出登录" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

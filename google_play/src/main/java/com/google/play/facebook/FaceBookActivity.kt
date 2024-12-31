@@ -190,15 +190,16 @@ class FaceBookActivity : AppCompatActivity() {
 
     fun printLoginInfo(accessToken: AccessToken){
         if (BuildConfig.DEBUG) {
-            Log.i("print_logs", "检测登录状态: token：${accessToken.token}, \n" +
-                    "isExpired：${accessToken.isExpired},\n" +
-                    "expires：${accessToken.expires},\n" +
-                    "isInstagramToken：${accessToken.isInstagramToken},\n" +
-                    "userId：${accessToken.userId},\n"+
-                    "source：${accessToken.source},\n"+
-                    "dataAccessExpirationTime：${accessToken.dataAccessExpirationTime},\n"+
-                    "graphDomain：${accessToken.graphDomain},\n"+
-                    "applicationId：${accessToken.applicationId},\n"+
+            Log.i("print_logs", "检测登录状态: \n" +
+                    "token：${accessToken.token}\n" +
+                    "isExpired：${accessToken.isExpired}\n" +
+                    "expires：${accessToken.expires}\n" +
+                    "isInstagramToken：${accessToken.isInstagramToken}\n" +
+                    "userId：${accessToken.userId}\n"+
+                    "source：${accessToken.source}\n"+
+                    "dataAccessExpirationTime：${accessToken.dataAccessExpirationTime}\n"+
+                    "graphDomain：${accessToken.graphDomain}\n"+
+                    "applicationId：${accessToken.applicationId}\n"+
                     "lastRefresh：${accessToken.lastRefresh}")
         }
         mDataBinding.acBtnFacebookLogin.text="退出 FaceBook"
