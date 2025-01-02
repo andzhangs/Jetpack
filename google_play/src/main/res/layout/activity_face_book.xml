@@ -8,6 +8,10 @@
         <import type="android.view.View" />
 
         <variable
+            name="showStoryButton"
+            type="java.lang.Boolean" />
+
+        <variable
             name="showLinkButton"
             type="java.lang.Boolean" />
 
@@ -47,28 +51,58 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Facebook分享：链接"
-            android:visibility="@{showLinkButton ? View.VISIBLE : View.GONE}"/>
+            android:visibility="@{showLinkButton ? View.VISIBLE : View.GONE}" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/acBtn_share_photo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Facebook分享到：图片"
-            android:visibility="@{showPhotoButton ? View.VISIBLE : View.GONE}"/>
+            android:visibility="@{showPhotoButton ? View.VISIBLE : View.GONE}" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/acBtn_share_video"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Facebook分享：视频"
-            android:visibility="@{showVideoButton ? View.VISIBLE : View.GONE}"/>
+            android:visibility="@{showVideoButton ? View.VISIBLE : View.GONE}" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/acBtn_share_media"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Facebook分享：多媒体"
-            android:visibility="@{showMediaButton ? View.VISIBLE : View.GONE}"/>
+            android:visibility="@{showMediaButton ? View.VISIBLE : View.GONE}" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/acBtn_facebook_story_background_bitmap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FaceBook分享-快拍：背景Bitmap"
+            android:visibility="@{showStoryButton ? View.VISIBLE : View.GONE}" />
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/acBtn_facebook_story_background_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FaceBook分享-快拍：背景图片"
+            android:visibility="@{showStoryButton ? View.VISIBLE : View.GONE}" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/acBtn_facebook_story_background_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FaceBook分享-快拍：背景视频"
+            android:visibility="@{showStoryButton ? View.VISIBLE : View.GONE}" />
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/acBtn_facebook_story_background_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FaceBook分享-快拍：背景色"
+            android:visibility="@{showStoryButton ? View.VISIBLE : View.GONE}" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>
