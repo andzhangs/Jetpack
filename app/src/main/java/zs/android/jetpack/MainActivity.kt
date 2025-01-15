@@ -93,13 +93,13 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
 
         val acBtnViewAnimator = findViewById<AppCompatButton>(R.id.acBtn_ViewAnimator)
         acBtnViewAnimator.setOnClickListener {
-            com.github.florent37.viewanimator.ViewAnimator.animate(it).apply {
-                bounce()
-                textColor(R.color.purple_200)
-                backgroundColor(R.color.white)
-                duration(500)
-                start()
-            }
+//            com.github.florent37.viewanimator.ViewAnimator.animate(it).apply {
+//                bounce()
+//                textColor(R.color.purple_200)
+//                backgroundColor(R.color.white)
+//                duration(500)
+//                start()
+//            }
         }
 
         Looper.myQueue().addIdleHandler {

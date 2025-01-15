@@ -1,11 +1,13 @@
 package com.google.play.facebook
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.MediaStore.Audio.Media
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -67,6 +69,9 @@ class FaceBookActivity : AppCompatActivity() {
         faceBookShareStoryBackgroundImage()
         faceBookShareStoryBackgroundVideo()
         faceBookShareStoryBackgroundColor()
+
+        this.applicationContext.cacheDir
+        this.applicationContext.externalCacheDir
     }
 
     private val callbackManager by lazy{ CallbackManager.Factory.create() }
@@ -177,7 +182,6 @@ class FaceBookActivity : AppCompatActivity() {
      * 分享照片
      */
     private fun faceBookShareImage() {
-
         val mLauncherPhoto=registerForActivityResult(ActivityResultContracts.PickVisualMedia()){
             getFileUri(it)?.let {mFileUri->
                 val photo = SharePhoto.Builder()

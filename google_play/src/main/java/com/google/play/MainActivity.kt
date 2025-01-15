@@ -98,7 +98,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mPermissionsLauncher: ActivityResultLauncher<Array<String>>
     private lateinit var mAllFileLauncher: ActivityResultLauncher<Intent>
     private fun loadFacebook(){
-        //申请拍照和读文件权限
+        //读文件权限
         mPermissionsLauncher =
             registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
                 if (!it.values.contains(false)) {

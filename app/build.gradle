@@ -65,7 +65,7 @@ dependencies {
     implementation "androidx.core:core-role:1.0.0"
 
     //https://github.com/florent37/ViewAnimator
-    implementation 'com.github.florent37:viewanimator:1.1.2'
+//    implementation 'com.github.florent37:viewanimator:1.1.0'
     //https://github.com/dromara/hutool
     implementation 'cn.hutool:hutool-all:5.7.17'
 
