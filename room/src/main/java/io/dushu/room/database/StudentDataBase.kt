@@ -9,12 +9,13 @@ import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import io.dushu.room.BuildConfig
 import io.dushu.room.dao.CourseDao
+import io.dushu.room.dao.ProjectDao
 import io.dushu.room.dao.StudentDao
 import io.dushu.room.database.converters.CourseJsonConverter
 import io.dushu.room.database.converters.DateConverter
 import io.dushu.room.entity.CourseEntity
+import io.dushu.room.entity.ProjectEntity
 import io.dushu.room.entity.StudentEntity
-import io.dushu.room.entity.relation.StudentCourseJoin
 import io.dushu.room.entity.view.StudentEntityView
 import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SupportFactory
@@ -28,7 +29,7 @@ import net.sqlcipher.database.SupportFactory
     entities = [
         StudentEntity::class,
         CourseEntity::class,
-        StudentCourseJoin::class
+        ProjectEntity::class
     ],
     views = [
         StudentEntityView::class
@@ -53,11 +54,11 @@ abstract class StudentDataBase : RoomDatabase() {
                     Room.databaseBuilder(
                         context.applicationContext,
                         StudentDataBase::class.java,
-                        "student_db.db"
+                        "school.db"
                     )
                         .fallbackToDestructiveMigration() //在升级异常时，重建数据表，同时数据也会丢失
                         .addCallback(CALLBACK)
-//                        .addMigrations(*DbHelper.createMigration())
+                        .addMigrations(*DbHelper.createMigration())
                         .apply {
                             if (!BuildConfig.DEBUG) {  //加密
                                 val secret = "attr_20230418".toCharArray()
@@ -103,4 +104,6 @@ abstract class StudentDataBase : RoomDatabase() {
     abstract fun getStudentDao(): StudentDao
 
     abstract fun getCourseDao(): CourseDao
+
+    abstract fun getProjectDao(): ProjectDao
 }

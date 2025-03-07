@@ -5,6 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.core.app.NotificationManagerCompat
+import zs.android.jetpack.service.CompressService
+import zs.android.jetpack.service.DownloadService
+import zs.android.jetpack.service.UploadService
 
 class NotificationsReceiver : BroadcastReceiver() {
 
@@ -18,7 +21,21 @@ class NotificationsReceiver : BroadcastReceiver() {
 
         val notifyId = intent.getIntExtra(KEY_NOTIFY_ID, -1)
         if (notifyId != -1) {
+            //停止通知，没有通知服务
             NotificationManagerCompat.from(context).cancel(notifyId)
+
+            when (notifyId) {
+                1 -> {
+                    context.stopService(Intent(context,CompressService::class.java))
+                }
+                2 -> {
+                    context.stopService(Intent(context,DownloadService::class.java))
+                }
+                3 -> {
+                    context.stopService(Intent(context,UploadService::class.java))
+                }
+                else -> {}
+            }
         }
 
         val msg = intent.getStringExtra(KEY_NOTIFY_MESSAGE)

@@ -17,7 +17,7 @@
         tools:text="0"
         android:textSize="18sp"
         android:textAllCaps="false"
-        android:text="@{String.valueOf(data.student.id)}"/>
+        android:text="@{String.valueOf(data.student.name)}"/>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"

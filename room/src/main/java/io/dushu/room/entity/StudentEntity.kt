@@ -13,7 +13,7 @@ import com.google.gson.Gson
  */
 @Entity(
     tableName = "table_student",
-    indices = [Index(value = ["name"], unique = true)] //设置了unique = true，表示"title"列的值必须是唯一的。
+    indices = [Index(value = ["name"], unique = true)] //设置了unique = true，表示"name"列的值必须是唯一的。
 )
 data class StudentEntity constructor(
 
@@ -23,7 +23,7 @@ data class StudentEntity constructor(
 
     //学生名
     @ColumnInfo(name = "name", typeAffinity = ColumnInfo.TEXT)
-    var name: String? = "",
+    var name: String = "",
 
     //年纪
     @ColumnInfo(name = "age", typeAffinity = ColumnInfo.INTEGER)

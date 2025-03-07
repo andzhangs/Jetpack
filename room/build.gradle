@@ -11,7 +11,7 @@ plugins {
 android {
 
     namespace 'io.dushu.room'
-    compileSdk 33
+    compileSdk 34
 
 
     defaultConfig {
@@ -101,8 +101,8 @@ dependencies {
     //Debug数据库 https://github.com/amitshekhariitbhu/Android-Debug-Database
     //Step-1：terminal：adb forward tcp:8080 tcp:8080
     //Step-2：open http://localhost:8080
-//    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
-//    debugImplementation 'com.amitshekhar.android:debug-db-encrypt:1.0.6'
+    debugImplementation 'com.github.amitshekhariitbhu.Android-Debug-Database:debug-db:1.0.7'
+    debugImplementation 'com.github.amitshekhariitbhu.Android-Debug-Database:debug-db-encrypt:1.0.7'
 
     //加密库：https://github.com/sqlcipher/android-database-sqlcipher
     implementation 'net.zetetic:android-database-sqlcipher:4.5.3'

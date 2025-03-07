@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace 'zs.module.bluetooth'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "zs.module.bluetooth"

@@ -13,8 +13,8 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 object DbHelper {
 
     @JvmStatic
-    fun createMigration() = arrayOf(
-        MIGRATION_1_2
+    fun createMigration() :Array<Migration> = arrayOf(
+//        MIGRATION_1_2
     )
 
     /**
@@ -32,7 +32,10 @@ object DbHelper {
 //            database.execSQL("ALTER TABLE table_student ADD COLUMN level_url TEXT NOT NULL")
 
             //修复
-            database.execSQL("ALTER TABLE table_student ADD COLUMN level_url TEXT NOT NULL DEFAULT ''")
+//            database.execSQL("ALTER TABLE table_student ADD COLUMN level_url TEXT NOT NULL DEFAULT ''")
+
+            database.execSQL("DELETE FROM table_project WHERE id NOT IN (SELECT MAX(ID) FROM table_project GROUP BY project_name)")
+            database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS index_table_project_project_name ON table_project (project_name)")
         }
     }
 }

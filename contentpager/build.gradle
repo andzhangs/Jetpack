@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace 'zs.android.contentpager'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "zs.android.contentpager"

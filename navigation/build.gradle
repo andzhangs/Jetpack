@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace 'com.apk.downloadinstall.navigation'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.apk.downloadinstall.navigation"

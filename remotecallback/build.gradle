@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace 'zs.jetpack.remotecallback'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "zs.jetpack.remotecallback"

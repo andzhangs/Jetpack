@@ -2,13 +2,16 @@ package io.dushu.room.repository
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
+import android.util.Log
 import androidx.core.content.contentValuesOf
 import androidx.lifecycle.LiveData
 import androidx.sqlite.db.SupportSQLiteDatabase
 import io.dushu.room.database.StudentDataBase
 import io.dushu.room.entity.CourseEntity
+import io.dushu.room.entity.ProjectEntity
 import io.dushu.room.entity.StudentEntity
 import io.dushu.room.entity.relation.StudentWithCourseEntity
+import io.dushu.room.entity.relation.StudentWithCoursesEntity
 import java.util.Date
 import java.util.Random
 
@@ -22,27 +25,28 @@ class StudentRepository(private val context: Context) {
     private val mDataBase = StudentDataBase.getInstance(context)
     private val mStudentDao = mDataBase.getStudentDao()
     private val mCourseDao = mDataBase.getCourseDao()
+    private val mProjectDao = mDataBase.getProjectDao()
 
-    private val getSqliteDb: SupportSQLiteDatabase by lazy{mDataBase.openHelper.writableDatabase}
+    private val getSqliteDb: SupportSQLiteDatabase by lazy { mDataBase.openHelper.writableDatabase }
 
     /**
      * 使用ByContentValues新增数据
      */
-    fun insertByContentValues(){
-        val userName ="你好"+kotlin.random.Random.nextInt(1,100)
-        val studentContentValues= contentValuesOf(
+    fun insertByContentValues() {
+        val userName = "你好" + kotlin.random.Random.nextInt(1, 100)
+        val studentContentValues = contentValuesOf(
             "name" to userName,
-            "age" to kotlin.random.Random.nextInt(1,100),
+            "age" to kotlin.random.Random.nextInt(1, 100),
             "create_time" to System.currentTimeMillis()
         )
-        getSqliteDb.insert("table_student",SQLiteDatabase.CONFLICT_REPLACE,studentContentValues)
+        getSqliteDb.insert("table_student", SQLiteDatabase.CONFLICT_REPLACE, studentContentValues)
 
-        val courseContentValues= contentValuesOf(
+        val courseContentValues = contentValuesOf(
             "user_name" to userName,
             "course_name" to "数学",
-            "score" to kotlin.random.Random.nextInt(1,100)
+            "score" to kotlin.random.Random.nextInt(1, 100)
         )
-        getSqliteDb.insert("table_course",SQLiteDatabase.CONFLICT_REPLACE,courseContentValues)
+        getSqliteDb.insert("table_course", SQLiteDatabase.CONFLICT_REPLACE, courseContentValues)
 
     }
 
@@ -80,14 +84,25 @@ class StudentRepository(private val context: Context) {
     }
 
     suspend fun insertCourse(courseEntity: CourseEntity) {
-        mCourseDao.insert(courseEntity)
+        mStudentDao.getByName(courseEntity.userName)?.let {
+            mCourseDao.insert(courseEntity)
+        }
     }
-    suspend fun insertStudent(entity: StudentWithCourseEntity) {
-//        insertByContentValues()
 
+    suspend fun insertStudent(entity: StudentWithCourseEntity) {
+//        mProjectDao.insert(ProjectEntity(projectName = entity.student.name))
+
+
+        insertByContentValues()
         mStudentDao.insert(entity.student, entity.course)
     }
 
+    /**
+     * 同时添加多个Course
+     */
+    suspend fun inserts(entity: StudentWithCoursesEntity) {
+        mStudentDao.inserts(entity.student, entity.courses)
+    }
 
 
     /**
@@ -111,18 +126,21 @@ class StudentRepository(private val context: Context) {
         arrayOf("语文", "英语", "化学", "物理", "生物", "体育", "政治", "地理", "历史")
 
     suspend fun updateStudent(id: Int) {
-        mStudentDao.getById(id = id)?.also { entity ->
-            getEntity(entity,
-                studentBlock = {
-                    it.age = Random().nextInt(100)
-                }, courseBlock = {
-                    it.score = Random().nextInt(100)
-                    it.courseName = courseNameArray[Random().nextInt(9)]
-                }
-            )
-            mStudentDao.update(entity.student, entity.course)
-        }
+//        mStudentDao.getById(id = id)?.also { entity ->
+//            getEntity(entity,
+//                studentBlock = {
+//                    it.age = Random().nextInt(100)
+//                }, courseBlock = {
+//                    it.score = Random().nextInt(100)
+//                    it.courseName = courseNameArray[Random().nextInt(9)]
+//                }
+//            )
+//            mStudentDao.update(entity.student, entity.course)
+//        }
     }
+
+
+    //----------------------------------------------------------------------------------------------
 
     //----------------------------------------------------------------------------------------------
 

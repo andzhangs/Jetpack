@@ -5,6 +5,7 @@ import androidx.room.*
 import io.dushu.room.entity.CourseEntity
 import io.dushu.room.entity.StudentEntity
 import io.dushu.room.entity.relation.StudentWithCourseEntity
+import io.dushu.room.entity.relation.StudentWithCoursesEntity
 import io.dushu.room.entity.view.StudentEntityView
 import kotlinx.coroutines.flow.Flow
 import java.util.Date
@@ -25,12 +26,19 @@ interface StudentDao {
     suspend fun insert(student: StudentEntity?, courseEntity: CourseEntity?)
 
     @Transaction
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun inserts(student: StudentEntity?, courseEntity: MutableList<CourseEntity>?)
+
+    @Transaction
     @Update
     suspend fun update(student: StudentEntity?, courseEntity: CourseEntity?)
 
     @Transaction
     @Upsert
     suspend fun insertOrUpdate(student: StudentEntity?, courseEntity: CourseEntity?)
+
+    @Query("SELECT * FROM TABLE_STUDENT WHERE name=:name")
+    suspend fun getByName(name: String?): StudentEntity?
 
     @Query("DELETE FROM TABLE_STUDENT WHERE id=:id")
     suspend fun deleteById(id: Int)
@@ -40,13 +48,15 @@ interface StudentDao {
     @Query("SELECT * FROM TABLE_STUDENT WHERE id =:id")
     suspend fun getById(id: Int): StudentWithCourseEntity?
 
+    @Transaction
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     @Query("SELECT * FROM TABLE_STUDENT WHERE id =:id")
     fun getStudentByIdLiveData(id: Int): LiveData<StudentWithCourseEntity>
 
+    //
     @Transaction
     @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
-    @Query("SELECT * FROM table_student ORDER BY id ASC")
+    @Query("SELECT * FROM table_student") //ORDER BY id ASC
     fun getAllLiveData(): LiveData<List<StudentWithCourseEntity>>
 
     @Query("SELECT COUNT(*) FROM TABLE_STUDENT")
@@ -94,12 +104,14 @@ interface StudentDao {
 
 
     //----------------------------------------------------------------------------------------------
-    @Query("""
+    @Query(
+        """
         SELECT strftime('%Y-%m-%d', create_time/1000, 'unixepoch') as date, COUNT(*) as count, group_concat(name || ',' || create_time) as dataList
         FROM TABLE_STUDENT 
         GROUP BY date 
         ORDER BY date DESC
-    """)
+    """
+    )
     fun getAllGroupByDayFlow(): Flow<MutableList<DataCountPair>>
 
     @Query("SELECT strftime('%Y-%m', create_time/1000, 'unixepoch') as date,COUNT(*) as count, group_concat(name || ',' || create_time) as dataList FROM TABLE_STUDENT GROUP BY date ORDER BY date DESC")
@@ -108,5 +120,5 @@ interface StudentDao {
     @Query("SELECT strftime('%Y', create_time/1000, 'unixepoch') as date,COUNT(*) as count, group_concat(name || ',' || create_time) as dataList  FROM TABLE_STUDENT GROUP BY date ORDER BY date DESC")
     fun getAllGroupByYearFlow(): Flow<MutableList<DataCountPair>>
 
-    class DataCountPair(val date: String, val count: Int,val dataList:String)
+    class DataCountPair(val date: String, val count: Int, val dataList: String)
 }

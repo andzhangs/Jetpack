@@ -16,6 +16,7 @@ import io.dushu.room.databinding.ActivityMainBinding
 import io.dushu.room.entity.CourseEntity
 import io.dushu.room.entity.StudentEntity
 import io.dushu.room.entity.relation.StudentWithCourseEntity
+import io.dushu.room.entity.relation.StudentWithCoursesEntity
 import io.dushu.room.viewmodel.StudentViewModel
 import java.util.Calendar
 import kotlin.random.Random
@@ -85,30 +86,28 @@ class MvvmActivity : AppCompatActivity() {
     private val mCourseEntity by lazy { CourseEntity() }
 
     fun InsertClick(view: View) {
+//        extracted()
+//        insertException()
+        inserts()
+    }
+
+    private fun extracted() {
         val index = "${System.currentTimeMillis()}"
-        val studentName = "用户2024"
 
         mStudentEntity.apply {
-            name = index //studentName
-            age = Random.nextInt(1,100)
-             createTime = Calendar.getInstance().let {
-                it.set(Random.nextInt(1970,2024),Random.nextInt(1,12), Random.nextInt(1,30))
+            name = "用户2024"
+            age = Random.nextInt(1, 100)
+            createTime = Calendar.getInstance().let {
+                it.set(Random.nextInt(1970, 2024), Random.nextInt(1, 12), Random.nextInt(1, 30))
                 it.timeInMillis
             }
         }
 
-//        mStudentViewModel.insert(mStudentEntity)
-
         mCourseEntity.apply {
-            userName = index //studentName
+            userName = "用户2024"
             courseName = courseNameArray.random()
-            score = Random.nextInt(1,100)
+            score = Random.nextInt(1, 100)
         }
-
-        //若关联的主表没有先插入数据，则会报错：
-        // android.database.sqlite.SQLiteConstraintException: UNIQUE constraint failed: table_course.user_name (code 2067 SQLITE_CONSTRAINT_UNIQUE[2067])
-        //  at android.database.sqlite.SQLiteConnection.nativeExecuteForLastInsertedRowId(Native Method)
-//        mStudentViewModel.insert(mCourseEntity)
 
         val entity = StudentWithCourseEntity(
             student = mStudentEntity,
@@ -117,6 +116,58 @@ class MvvmActivity : AppCompatActivity() {
         mStudentViewModel.insert(entity)
     }
 
+    private fun insertException(){
+        val studentName = "用户2024"
+
+        mStudentEntity.apply {
+            name = studentName
+            age = Random.nextInt(1,100)
+            createTime = Calendar.getInstance().let {
+                it.set(Random.nextInt(1970,2024),Random.nextInt(1,12), Random.nextInt(1,30))
+                it.timeInMillis
+            }
+        }
+
+        mStudentViewModel.insert(mStudentEntity)
+
+        mCourseEntity.apply {
+            userName =  studentName
+            courseName = courseNameArray.random()
+            score = Random.nextInt(1,100)
+        }
+
+        //若关联的主表没有先插入数据，则会报错：
+        // android.database.sqlite.SQLiteConstraintException: UNIQUE constraint failed: table_course.user_name (code 2067 SQLITE_CONSTRAINT_UNIQUE[2067])
+        //  at android.database.sqlite.SQLiteConnection.nativeExecuteForLastInsertedRowId(Native Method)
+        mStudentViewModel.insert(mCourseEntity)
+    }
+
+
+    private fun inserts() {
+
+        mStudentEntity.apply {
+            name = "用户2024"
+            age = Random.nextInt(1, 100)
+            createTime = Calendar.getInstance().let {
+                it.set(Random.nextInt(1970, 2024), Random.nextInt(1, 12), Random.nextInt(1, 30))
+                it.timeInMillis
+            }
+        }
+
+        val mList= mutableListOf<CourseEntity>(
+            CourseEntity( userName = "用户2024", courseName = courseNameArray[1], score = 9),
+            CourseEntity( userName = "用户2024", courseName = courseNameArray[2], score = 19),
+            CourseEntity( userName = "用户2024", courseName = courseNameArray[3], score = 29),
+            CourseEntity( userName = "用户2024", courseName = courseNameArray[4], score = 39),
+            CourseEntity( userName = "用户2024", courseName = courseNameArray[5], score = 49),
+        )
+
+        val entity = StudentWithCoursesEntity(
+            student = mStudentEntity,
+            courses = mList
+        )
+        mStudentViewModel.inserts(entity)
+    }
 
     fun DeleteClick(view: View) {
         val inputText = mDataBinding.acEtId.text.toString()

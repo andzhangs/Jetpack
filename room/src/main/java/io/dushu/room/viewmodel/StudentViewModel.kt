@@ -12,6 +12,7 @@ import io.dushu.room.BuildConfig
 import io.dushu.room.entity.CourseEntity
 import io.dushu.room.entity.StudentEntity
 import io.dushu.room.entity.relation.StudentWithCourseEntity
+import io.dushu.room.entity.relation.StudentWithCoursesEntity
 import io.dushu.room.repository.StudentRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
@@ -121,6 +122,12 @@ class StudentViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    fun inserts(student: StudentWithCoursesEntity) {
+        viewModelScope.launch(Dispatchers.IO) {
+            mStudentRepository.inserts(student)
+        }
+    }
+
     fun deleteById(id: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             mStudentRepository.deleteById(id)
@@ -138,6 +145,9 @@ class StudentViewModel(application: Application) : AndroidViewModel(application)
             mStudentRepository.clearAll()
         }
     }
+
+    //----------------------------------------------------------------------------------------------
+
 
     //----------------------------------------------------------------------------------------------
 

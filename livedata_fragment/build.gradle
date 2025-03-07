@@ -11,7 +11,7 @@ plugins {
 
 android {
     namespace 'io.dushu.livedata'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "io.dushu.livedata"

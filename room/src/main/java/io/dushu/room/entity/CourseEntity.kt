@@ -15,7 +15,7 @@ import com.google.gson.Gson
  */
 @Entity(
     tableName = "table_course",
-    indices = [Index(value = ["user_name"], unique = true)],
+    indices = [Index(value = ["user_name", "course_name"], unique = true)],
     foreignKeys =
     [
         ForeignKey(
@@ -30,7 +30,11 @@ import com.google.gson.Gson
 data class CourseEntity(
 
     //学生名
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id", typeAffinity = ColumnInfo.INTEGER)
+    var id: Int = 0,
+
+//    @PrimaryKey
     @ColumnInfo(name = "user_name")
     var userName: String = "",
 
@@ -40,7 +44,7 @@ data class CourseEntity(
 
     //分数
     @ColumnInfo(name = "score")
-    var score: Int = 0,
+    var score: Int = 0
 ) {
     override fun toString(): String = Gson().toJson(this)
 }
