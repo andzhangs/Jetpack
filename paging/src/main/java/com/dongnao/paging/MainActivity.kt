@@ -1,9 +1,9 @@
 package com.dongnao.paging
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -13,31 +13,54 @@ import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.LoadState
-import androidx.paging.PagingDataAdapter
-import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.dongnao.paging.bean.DataX
+import com.dongnao.paging.adapter.PagingListAdapter
+import com.dongnao.paging.adapter.SheetBottomLoadMoreAdapter
+import com.dongnao.paging.adapter.TopRefreshAdapter
 import com.dongnao.paging.databinding.ActivityMainBinding
-import com.dongnao.paging.databinding.LayoutItemMainBinding
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mDataBinding: ActivityMainBinding
     private val mViewModel: MainViewModel by viewModels()
 
-    private val mWindowInsetsControllerCompat: WindowInsetsControllerCompat by lazy {
-        WindowCompat.getInsetsController(
-            window,
-            window.decorView
-        )
+    private val mWindowInsetsControllerCompat:WindowInsetsControllerCompat by lazy{
+        WindowCompat.getInsetsController(window, window.decorView)
+    }
+
+    private val mAdapter = PagingListAdapter{
+        //通过手动设置切换
+        val isNavBarVisible = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val windowInsets = window.decorView.rootWindowInsets
+            windowInsets.isVisible(WindowInsetsCompat.Type.navigationBars())
+        } else {
+            false
+        }
+
+        with(mWindowInsetsControllerCompat) {
+            if (isNavBarVisible) {
+                hide(WindowInsetsCompat.Type.statusBars())
+                hide(WindowInsetsCompat.Type.navigationBars())
+                mDataBinding.showBottomView = true
+            } else {
+                show(WindowInsetsCompat.Type.statusBars())
+                show(WindowInsetsCompat.Type.navigationBars())
+                mDataBinding.showBottomView = false
+            }
+        }
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+//        Log.i("print_logs", "MainActivity::onWindowFocusChanged: hasFocus= $hasFocus")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,31 +73,11 @@ class MainActivity : AppCompatActivity() {
 //        mWindowInsetsControllerCompat.isAppearanceLightStatusBars = true
 //        mWindowInsetsControllerCompat.isAppearanceLightNavigationBars = true
 
-        mWindowInsetsControllerCompat.systemBarsBehavior =
-            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        mWindowInsetsControllerCompat.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         mDataBinding.lifecycleOwner = this
-        setSupportActionBar(mDataBinding.toolbar)
         lifecycle.addObserver(mViewModel)
-        initRecyclerView()
-
-//        lifecycleScope.launch {
-//            repeatOnLifecycle(Lifecycle.State.STARTED) {
-//                mAdapter.loadStateFlow.collect {
-//                    mDataBinding.prependProgress.isVisible = it.source.prepend is LoadState.Loading
-//                    mDataBinding.appendProgress.isVisible = it.source.prepend is LoadState.Loading
-//                }
-//            }
-//        }
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                mViewModel.pagingDataFlow.collectLatest {
-                    mAdapter.submitData(it)
-                }
-            }
-        }
 
         //通过监听切换
         window.decorView.setOnApplyWindowInsetsListener { v, insets ->
@@ -97,102 +100,87 @@ class MainActivity : AppCompatActivity() {
             v.onApplyWindowInsets(insets)
         }
 
+        val params=mDataBinding.toolbar.layoutParams as ViewGroup.MarginLayoutParams
+        params.setMargins(0,getStatusBarHeight(this),0,0)
+
+        initRecyclerView()
+
+//        mDataBinding.swipeRefreshLayout.setOnRefreshListener {
+//            mAdapter.refresh()
+//        }
+
+        lifecycleScope.launch {
+            mViewModel.pagingDataFlow
+                .flowWithLifecycle(lifecycle,Lifecycle.State.STARTED)
+                .collectLatest {
+                    mAdapter.submitData(it)
+                }
+        }
+
+        lifecycleScope.launch {
+            mViewModel.getCurrentPageFlow.collectLatest {
+                Log.i("print_logs", "prevKey: ${it.first}, currentKey：${it.second}, nextKey：${it.third}")
+            }
+        }
     }
 
     private fun initRecyclerView() {
         with(mAdapter) {
             addLoadStateListener {
-                mDataBinding.appendProgress.isVisible = it.source.prepend is LoadState.Loading
+//                if (BuildConfig.DEBUG) { Log.i("print_logs", "Load-2: $it, ") }
+                mDataBinding.appendProgress.isVisible = it.append is LoadState.Loading
+//                mDataBinding.swipeRefreshLayout.isRefreshing = it.refresh is LoadState.Loading
+
+                when (it.append) {
+                    is LoadState.NotLoading -> {
+//                        Log.i("print_logs", "LoadState.NotLoading！")
+                    }
+                    is LoadState.Loading -> {
+//                        Log.i("print_logs", "LoadState.Loading！")
+                    }
+                    is LoadState.Error -> {
+                        Log.e("print_logs", "LoadState.Error: ${(it.append as LoadState.Error).error}")
+                    }
+                }
+            }
+
+            when (stateRestorationPolicy) {
+                RecyclerView.Adapter.StateRestorationPolicy.ALLOW -> {
+                    Log.i("print_logs", "stateRestorationPolicy: ALLOW")
+                }
+                RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY -> {
+                    Log.i("print_logs", "stateRestorationPolicy: PREVENT_WHEN_EMPTY")
+                }
+                RecyclerView.Adapter.StateRestorationPolicy.PREVENT -> {
+                    Log.i("print_logs", "stateRestorationPolicy: PREVENT")
+                }
             }
 
             addOnPagesUpdatedListener {
-                Log.i("print_logs", "mAdapter.addOnPagesUpdatedListener")
+//                Log.i("print_logs", "mAdapter.addOnPagesUpdatedListener")
             }
         }
 
         with(mDataBinding.recyclerView) {
             layoutManager = LinearLayoutManager(this@MainActivity, RecyclerView.VERTICAL, false)
-            adapter = mAdapter
-        }
-
-    }
-
-    private val mAdapter = object :
-        PagingDataAdapter<DataX, ImageItemViewHolder>(object : DiffUtil.ItemCallback<DataX>() {
-            override fun areItemsTheSame(oldItem: DataX, newItem: DataX): Boolean {
-                return oldItem.id == newItem.id
-            }
-
-            override fun areContentsTheSame(oldItem: DataX, newItem: DataX): Boolean {
-                return oldItem == newItem
-            }
-        }) {
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageItemViewHolder {
-            val binding = DataBindingUtil.inflate<LayoutItemMainBinding>(
-                LayoutInflater.from(parent.context),
-                R.layout.layout_item_main,
-                parent,
-                false
-            )
-            return ImageItemViewHolder(binding)
-        }
-
-        override fun onBindViewHolder(holder: ImageItemViewHolder, position: Int) {
-            holder.load(getItem(position))
-
-            holder.itemView.setOnClickListener {
-
-                //通过手动设置切换
-                val isNavBarVisible = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                    val windowInsets = window.decorView.rootWindowInsets
-                    windowInsets.isVisible(WindowInsetsCompat.Type.navigationBars())
-                } else {
-                    false
-                }
-                mWindowInsetsControllerCompat.apply {
-                    if (isNavBarVisible) {
-//                        hide(WindowInsetsCompat.Type.statusBars())
-                        hide(WindowInsetsCompat.Type.navigationBars())
-                        mDataBinding.showBottomView = true
-                    } else {
-//                        show(WindowInsetsCompat.Type.statusBars())
-                        show(WindowInsetsCompat.Type.navigationBars())
-                        mDataBinding.showBottomView = false
-                    }
-                }
-            }
+            adapter = mAdapter.withLoadStateHeaderAndFooter(TopRefreshAdapter(),SheetBottomLoadMoreAdapter())
+//            addItemDecoration(DividerItemDecoration(this@MainActivity,RecyclerView.VERTICAL))
         }
     }
 
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-        if (BuildConfig.DEBUG) {
-            Log.i("print_logs", "MainActivity::onWindowFocusChanged: hasFocus= $hasFocus")
+    private fun getStatusBarHeight(context: Context): Int {
+        var statusBarHeight = 0
+        val resources = context.resources
+        val resourceId = resources.getIdentifier("status_bar_height", "dimen", "android")
+        if (resourceId > 0) {
+            statusBarHeight = resources.getDimensionPixelSize(resourceId)
         }
-    }
-
-
-    private inner class ImageItemViewHolder(private val itemBinding: LayoutItemMainBinding) :
-        RecyclerView.ViewHolder(itemBinding.root) {
-
-        fun load(data: DataX?) {
-            data?.also {
-                itemBinding.data = it
-
-                val transformData = TransformationUtils.getRandom()
-                itemBinding.acTvTransformName.text = transformData.name
-                Glide.with(itemBinding.acIvIcon.context)
-                    .load(it.envelopePic)
-                    .apply(RequestOptions.bitmapTransform(transformData.transform))
-                    .into(itemBinding.acIvIcon)
-            }
-        }
+        return statusBarHeight
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         lifecycle.removeObserver(mViewModel)
         mDataBinding.unbind()
+        super.onDestroy()
     }
 }

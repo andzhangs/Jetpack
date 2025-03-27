@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
 //    id 'com.google.protobuf'
+    id 'org.jetbrains.kotlin.plugin.serialization'
 }
 
 android {
@@ -11,7 +12,7 @@ android {
     defaultConfig {
         applicationId "zs.android.datastore"
         minSdk 24
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -33,6 +34,7 @@ android {
     }
     buildFeatures {
         dataBinding true
+        buildConfig true
     }
 
     //指定 protobuf 文件所在路径
@@ -80,6 +82,11 @@ dependencies {
 
     implementation "androidx.datastore:datastore:1.0.0"
     implementation "androidx.datastore:datastore-preferences:1.0.0"
+
+    implementation 'com.google.code.gson:gson:2.12.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0'
+
+
 
 //    implementation 'com.google.protobuf:protoc:3.24.4'
 //    implementation 'com.google.protobuf:protobuf-java:3.24.4'

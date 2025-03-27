@@ -3,9 +3,11 @@ package com.dongnao.paging.paging
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import com.dongnao.paging.app.PagingApplication
 import com.dongnao.paging.bean.DataX
 import com.dongnao.paging.http.ApiService
 import com.orhanobut.logger.Logger
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlin.math.max
 
 /**
@@ -14,15 +16,15 @@ import kotlin.math.max
  * @date 2023/11/21 14:51
  * @mark 定义数据源
  */
-class DataXPagingSource(private val apiService: ApiService) : PagingSource<Int, DataX>() {
+class DataXPagingSource(private val mCurrentPage: MutableSharedFlow<Triple<Int?,Int,Int?>>) : PagingSource<Int, DataX>() {
 
     private val STARTING_KEY = 1
 
     //刷新的起始页码位置
     override fun getRefreshKey(state: PagingState<Int, DataX>): Int? {
-        val anchorPosition = state.anchorPosition ?: return null
-        Log.i("print_logs", "getRefreshKey: anchorPosition= $anchorPosition")
-        return state.closestItemToPosition(anchorPosition)?.id ?: return null
+//        val anchorPosition = state.anchorPosition ?: return null
+//        Log.i("print_logs", "getRefreshKey: anchorPosition= $anchorPosition")
+//        return state.closestItemToPosition(anchorPosition)?.id ?: return null
 //        val refreshKey = state.anchorPosition?.let {
 //            val anchorPage = state.closestPageToPosition(it)
 //            anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
@@ -30,10 +32,11 @@ class DataXPagingSource(private val apiService: ApiService) : PagingSource<Int, 
 //        if (BuildConfig.DEBUG) {
 //            Log.i("print_logs", "上一页: $refreshKey")
 //        }
+            Log.i("print_logs", "getRefreshKey: 刷新列表.")
         return STARTING_KEY
     }
 
-    private fun ensureValidKey(key: Int) = max(STARTING_KEY, key)
+//    private fun ensureValidKey(key: Int) = max(STARTING_KEY, key)
 
     /**
      * 以异步方式提取更多数据，用于在用户滚动过程中显示
@@ -45,25 +48,26 @@ class DataXPagingSource(private val apiService: ApiService) : PagingSource<Int, 
      */
     override suspend fun load(params: LoadParams<Int>): PagingSource.LoadResult<Int, DataX> {
         return try {
-            val page = params.key ?: STARTING_KEY
+            val currentPage = params.key ?: STARTING_KEY
 
-            Log.i("print_logs", "DataXPagingSource::load: ${params.key}, $page")
-
-            val response = apiService.getWanData(page, 1)
-
+            val response = PagingApplication.getInstance().getApiService().getWanData(currentPage, 1)
 
 //            Log.i("print_logs", "response: $response")
-            Logger.json(response.toString())
+//            Logger.json(response.toString())
 
-            val items = response.data.datas
-            val prevKey = if (page > 1) page - 1 else null
-            val nextKey = if (items.isNotEmpty()) page + 1 else null
+            val items = response?.data?.datas
 
-            Log.i("print_logs", "prevKey: $prevKey, nextKey= $nextKey")
+            val prevKey = if (currentPage > 1) currentPage - 1 else null
+            val nextKey = if ( response?.data?.over == false) currentPage + 1 else null
 
-            LoadResult.Page(items, prevKey, nextKey)
+//            Log.d("print_logs", "prevKey: $prevKey, currentKey：$currentPage, nextKey：$nextKey")
+
+            mCurrentPage.emit(Triple(prevKey,currentPage,nextKey))
+
+            LoadResult.Page(items as List<DataX>, prevKey, nextKey)
         } catch (e: Exception) {
             e.printStackTrace()
+//            Log.e("print_logs", "load: $e")
             LoadResult.Error(e)
         }
     }

@@ -30,7 +30,7 @@ data class DataX(
     val publishTime: Long,
     val realSuperChapterId: Int,
     val selfVisible: Int,
-    val shareDate: Long,
+    val shareDate: Long?,
     val shareUser: String,
     val superChapterId: Int,
     val superChapterName: String,
@@ -40,6 +40,6 @@ data class DataX(
     val userId: Int,
     val visible: Int,
     val zan: Int
-){
+) {
     override fun toString(): String = Gson().toJson(this)
 }

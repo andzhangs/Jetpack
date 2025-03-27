@@ -1,6 +1,7 @@
-package com.dongnao.paging
+package com.dongnao.paging.util
 
 import android.graphics.Color
+import com.dongnao.paging.R
 import jp.wasabeef.glide.transformations.BitmapTransformation
 import jp.wasabeef.glide.transformations.BlurTransformation
 import jp.wasabeef.glide.transformations.ColorFilterTransformation
@@ -81,7 +82,7 @@ object TransformationUtils {
     private val mRandom: Random by lazy { Random(transformations.size) }
     fun getRandom(): TransformData {
 
-        val position = mRandom.nextInt(0,transformations.size - 1)
+        val position = mRandom.nextInt(0, transformations.size - 1)
         return transformations[position]
     }
 

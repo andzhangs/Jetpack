@@ -9,10 +9,13 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import zs.android.datastore.databinding.ActivityMainBinding
 
 /**
@@ -29,6 +32,8 @@ class MainActivity : AppCompatActivity() {
     private val mDataStore: DataStore<Preferences> = DataStoreApplication.getInstance().getDataStore()
     private val USER_NAME_KEY = stringPreferencesKey("user_name")
 
+    private val mUserDataStore by lazy { UserDataStore.init(this.applicationContext) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mDataBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
@@ -38,6 +43,23 @@ class MainActivity : AppCompatActivity() {
             save()
         }
         printData()
+
+
+        lifecycleScope.launch{
+            //写入数据
+            withContext(Dispatchers.IO){
+                mUserDataStore.updateData {
+                    return@updateData User("你好",10000)
+                }
+            }
+
+            //读取数据
+            withContext(Dispatchers.IO){
+                if (BuildConfig.DEBUG) {
+                    Log.i("print_logs", "MainActivity::onCreate: ${mUserDataStore.data.first()}")
+                }
+            }
+        }
     }
 
     /**

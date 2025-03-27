@@ -17,6 +17,6 @@ interface ApiService {
     suspend fun getWanData(
         @Path("pager") pager: Int,
         @Query("cid") cid: Int
-    ): WanAndroidBean
+    ): WanAndroidBean?
 
 }

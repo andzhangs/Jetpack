@@ -35,6 +35,7 @@ android {
         aidl true
         dataBinding = true
         viewBinding = true
+        buildConfig true
     }
 
     sourceSets{
