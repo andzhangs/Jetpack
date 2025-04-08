@@ -11,7 +11,7 @@ class MyLocationService : LifecycleService() {
 
     init {
         Log.i("print_logs", "MyLocationService is init.")
-        lifecycle.addObserver(observer)
+
     }
 
     override fun attachBaseContext(newBase: Context?) {
@@ -21,6 +21,7 @@ class MyLocationService : LifecycleService() {
 
     override fun onCreate() {
         super.onCreate()
+        lifecycle.addObserver(observer)
         Log.i("print_logs", "MyLocationService::onCreate: ")
     }
 

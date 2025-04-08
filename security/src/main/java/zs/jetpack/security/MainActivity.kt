@@ -39,7 +39,6 @@ class MainActivity : AppCompatActivity() {
 
     /**
      * setKeyScheme()和setKeyGenParameterSpec()二选一
-     *
      */
     private val mEncryptedFile :EncryptedFile by lazy {
         EncryptedFile.Builder(

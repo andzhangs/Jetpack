@@ -14,11 +14,21 @@ import androidx.lifecycle.ViewModel
  */
 class Main2ViewModel : ViewModel() {
 
+    init {
+        if (BuildConfig.DEBUG) {
+            Log.i("print_logs", "Main2ViewModel::: ${hashCode()}")
+        }
+    }
+
     private val mLivedata = MutableLiveData<String>()
     val getLivedata: LiveData<String> = mLivedata
 
     fun sendMsg(info: String) {
         mLivedata.value = info
+    }
+
+    fun printLog(){
+        Log.d("print_logs", "Main2ViewModel::printLog: ")
     }
 
     override fun onCleared() {

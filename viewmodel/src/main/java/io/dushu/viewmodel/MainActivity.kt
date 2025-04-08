@@ -10,15 +10,21 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.findViewTreeViewModelStoreOwner
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mMainViewModel: MainViewModel
 
     private val mMain2ViewModel: Main2ViewModel by viewModels()
+
+
+    private val macBtnLandscape by lazy { findViewById<AppCompatButton>(R.id.acBtn_landscape) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -29,14 +35,25 @@ class MainActivity : AppCompatActivity() {
             this,
             ViewModelProvider.AndroidViewModelFactory(application)
         )[MainViewModel::class.java]
-        
     }
 
     @SuppressLint("WrongConstant")
     @RequiresApi(Build.VERSION_CODES.R)
-    fun hideSystemBar(view: Int) {
+    fun hideSystemBar(view: View) {
         mMain2ViewModel.sendMsg("数据：${System.currentTimeMillis()}")
         WindowCompat.getInsetsController(window,window.decorView).hide(WindowInsetsCompat.Type.systemBars())
+
+        //findViewTreeViewModelStoreOwner的使用
+        macBtnLandscape.findViewTreeViewModelStoreOwner()?.let {storeOwner->
+            val getMain2ViewModel=ViewModelProvider(storeOwner)[Main2ViewModel::class.java]
+            getMain2ViewModel.printLog()
+
+            if (BuildConfig.DEBUG) {
+                Log.i("print_logs", "mMain2ViewModel == getMain2ViewModel : ${mMain2ViewModel === getMain2ViewModel}")
+            }
+        } ?: kotlin.run {
+            Log.e("print_logs", "it.findViewTreeViewModelStoreOwner() is null.")
+        }
     }
 
     @SuppressLint("WrongConstant")

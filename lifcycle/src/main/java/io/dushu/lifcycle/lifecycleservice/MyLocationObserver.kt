@@ -10,8 +10,10 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 
 /**
@@ -19,7 +21,7 @@ import androidx.lifecycle.OnLifecycleEvent
  * email: zhangshuai@dushu365.com
  * mark:
  */
-class MyLocationObserver constructor(private val context: Context) : LifecycleObserver {
+class MyLocationObserver constructor(private val context: Context) : DefaultLifecycleObserver {
 
     private lateinit var mLocationManager: LocationManager
     private var mLocationListener: MyLocationListener? = null
@@ -28,8 +30,8 @@ class MyLocationObserver constructor(private val context: Context) : LifecycleOb
         Log.i("print_log", "MyLocationObserver is init.")
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    fun startLocation() {
+    override fun onCreate(owner: LifecycleOwner) {
+        super.onCreate(owner)
         Log.i("print_log", "startLocation：")
         if (ActivityCompat.checkSelfPermission(
                 this.context,
@@ -54,8 +56,8 @@ class MyLocationObserver constructor(private val context: Context) : LifecycleOb
         )
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun stopLocation() {
+    override fun onDestroy(owner: LifecycleOwner) {
+        super.onDestroy(owner)
         Log.i("print_log", "stopLocation：")
         mLocationListener?.let {
             mLocationManager.removeUpdates(it)

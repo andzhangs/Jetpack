@@ -16,7 +16,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         if (BuildConfig.DEBUG) {
-            Log.i("print_logs", "MainViewModel::: ")
+            Log.i("print_logs", "MainViewModel::: ${hashCode()}")
         }
     }
     
