@@ -2,6 +2,7 @@ package zs.android.jetpack
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.core.splashscreen.SplashScreen
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
@@ -40,7 +41,7 @@ class LaunchActivity : BaseActivity<ActivitySplashBinding>() {
         }
 
 
-        lifecycleScope.launch(Dispatchers.IO) {
+        val job =lifecycleScope.launch(Dispatchers.IO) {
 //            Log.i("print_logs", "SplashActivity::onCreate: before")
             delay(1000)
 //            Log.i("print_logs", "SplashActivity::onCreate: after")

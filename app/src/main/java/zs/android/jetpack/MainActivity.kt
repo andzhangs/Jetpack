@@ -11,9 +11,17 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatButton
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import zs.android.jetpack.base.BaseActivity
 import zs.android.jetpack.databinding.ActivityMainBinding
+import zs.android.jetpack.databinding.DialogCustomViewBinding
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 class MainActivity : BaseActivity<ActivityMainBinding>() {
 
@@ -104,6 +112,47 @@ class MainActivity : BaseActivity<ActivityMainBinding>() {
                 .show()
             // 最后返回false，后续不用再监听了。
             false
+        }
+
+        mDataBinding.acBtnShowDialog.setOnClickListener {
+            lifecycleScope.launch {
+                val result= getSelectionByDialog()
+                val toastText=if (result) "点击了确认按钮" else "点击了取消按钮"
+
+                Toast.makeText(this@MainActivity, toastText, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    suspend fun getSelectionByDialog():Boolean{
+        return suspendCancellableCoroutine {continuation ->
+            val builder=AlertDialog.Builder(this).apply {
+                title="提示"
+                setMessage("这是一个弹框！")
+                setPositiveButton("确认"){_,_->
+//                    continuation.resumeWith(Result.success(true))
+                    continuation.resume(true)
+                }
+                setNeutralButton("取消"){_,_->
+                    continuation.resumeWith(Result.success(false))
+//                    continuation.resumeWithException(Throwable("爆粗"))
+                }
+            }
+            val mViewBinding=DataBindingUtil.inflate<DialogCustomViewBinding>(layoutInflater,R.layout.dialog_custom_view,null,false)
+            builder.setView(mViewBinding.root)
+
+            val dialog=builder.create()
+
+            mViewBinding.acBtnSure.setOnClickListener {
+                dialog.dismiss()
+            }
+            dialog.setOnDismissListener {
+//                continuation.resumeWith(Result.success(false))
+            }
+            dialog.show()
+            continuation.invokeOnCancellation {
+                dialog.dismiss()
+            }
         }
     }
 }

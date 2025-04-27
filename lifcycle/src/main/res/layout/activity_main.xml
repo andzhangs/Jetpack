@@ -15,7 +15,6 @@
             android:layout_height="wrap_content"
             android:text="Lifecycle" />
 
-
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/acBtn_lifecycle_service"
             android:layout_width="wrap_content"

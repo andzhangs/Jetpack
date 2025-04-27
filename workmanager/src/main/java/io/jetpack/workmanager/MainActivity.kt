@@ -1,9 +1,12 @@
 package io.jetpack.workmanager
 
+import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import androidx.work.WorkManager
 import com.android.jetpack.workmanager.works.TestWorker
@@ -17,6 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class MainActivity : BaseActivity() {
 
@@ -42,17 +46,23 @@ class MainActivity : BaseActivity() {
             return "哈哈哈 $userName"
         }
 
-        val aPiService = Api.APiService {
-            return@APiService "回调信息：name= $it, age= 18, sex= 男"
-        }
+//        val aPiService = Api.APiService {
+//            return@APiService "回调信息：name= $it, age= 18, sex= 男"
+//        }
+//
+//        getService(aPiService)
 
-        getService(aPiService)
 
-        mBinding.acBtnGoTest.setOnClickListener {
-            MyUniqueWork.start(this)
-            mCountDownTimer.start()
+        val notifyLauncher=registerForActivityResult(ActivityResultContracts.RequestPermission()){
+            if (it){
+                MyUniqueWork.start(this)
+                mCountDownTimer.start()
 //            test()
 //            load()
+            }
+        }
+        mBinding.acBtnGoTest.setOnClickListener {
+            notifyLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
 
         WorkManager.getInstance(this).getWorkInfosByTagLiveData(MyUniqueWork::class.java.simpleName)
@@ -82,9 +92,9 @@ class MainActivity : BaseActivity() {
 //        }
     }
 
-    private fun getService(service: Api.APiService) {
-        Log.i("print_logs", "MainActivity::onCreate: ${service.getUser("你好")}")
-    }
+//    private fun getService(service: Api.APiService) {
+//        Log.i("print_logs", "MainActivity::onCreate: ${service.getUser("你好")}")
+//    }
 
     private fun load() {
         lifecycleScope.launch(Dispatchers.IO) {
@@ -136,7 +146,7 @@ class MainActivity : BaseActivity() {
             val minutes = ((millisUntilFinished % (1000 * 60 * 60)) / (1000 * 60)).toInt()
             val seconds = ((millisUntilFinished % (1000 * 60)) / 1000).toInt()
 
-            mBinding.acTvTimer.text = String.format("%02d:%02d:%02d", hours, minutes, seconds)
+            mBinding.acTvTimer.text = String.format(Locale.CHINA, "%02d:%02d:%02d", hours, minutes, seconds)
         }
 
         override fun onFinish() {

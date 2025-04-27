@@ -52,5 +52,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/counstryside" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/acBtn_show_dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="显示弹框"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
