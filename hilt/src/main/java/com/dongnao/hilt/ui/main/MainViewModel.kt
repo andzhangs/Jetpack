@@ -5,17 +5,36 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.switchMap
-import com.dongnao.hilt.di.AnalyticsService
+import com.dongnao.hilt.analytics.AnalyticsService
+import com.dongnao.hilt.intomap.Service
+import com.dongnao.hilt.intoset.Plugin
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import javax.inject.Inject
+import javax.inject.Provider
 
+
+/**
+ * @JvmSuppressWildcards 看到具体的 Set<Plugin> 而不是 Set<? extends Plugin>
+ * @JvmWildcard Java 中显式地看到 Set<? extends Plugin>
+ */
 @HiltViewModel
-class MainViewModel @Inject constructor(private val analyticsService: AnalyticsService) :
-    ViewModel() {
+class MainViewModel @Inject constructor(
+    private val analyticsService: AnalyticsService,
+    private val mPluginSet: Set<@JvmSuppressWildcards Plugin>,
+    private val setString: Set<String>,
+    private val mProvideServices: Map<Class<out Service>, @JvmSuppressWildcards Provider<Service>>,
+    private val mClassServices: Map<Class<out Service>, @JvmSuppressWildcards Service>,
+    private val mIntServices: Map<Int, @JvmSuppressWildcards Service>,
+    private val bindMultiPlugins: Set<@JvmSuppressWildcards Plugin>,
+    private val bindMultiServices: Map<Class<out Service>, @JvmSuppressWildcards Service>
+) : ViewModel() {
 
     init {
         analyticsService.analyticsMethods("I am from MainViewModel.init.")
+        loadIntoSet()
+        loadElementIntoSet()
+        loadIntoMap()
     }
 
     fun clickInfo() {
@@ -23,7 +42,6 @@ class MainViewModel @Inject constructor(private val analyticsService: AnalyticsS
     }
 
     val mShowMsg: LiveData<String> = liveData {
-        Log.i("print_logs", "MainViewModel::: mShowMsg")
         while (true) {
             emit("当前时间：${System.currentTimeMillis()}")
             delay(1000)
@@ -31,6 +49,33 @@ class MainViewModel @Inject constructor(private val analyticsService: AnalyticsS
     }.switchMap {
         liveData {
             emit("展示：$it")
+        }
+    }
+
+    fun loadIntoSet() {
+        mPluginSet.forEach { plugin ->
+            plugin.execute()
+        }
+    }
+
+    fun loadElementIntoSet() {
+        Log.i("print_logs", "loadElementIntoSet: $setString")
+    }
+
+    fun loadIntoMap() {
+        mProvideServices.forEach { (t, u) ->
+            Log.i("print_logs", "mProvideServices: ${t.simpleName}, ${t.hashCode()}， ${u.get().perform()}")
+        }
+        mClassServices.forEach { (t, u) ->
+            Log.w("print_logs", "mClassServices: ${t.simpleName},${t.hashCode()}， ${u.perform()}")
+        }
+
+        mIntServices.forEach { (t, u) ->
+            Log.d("print_logs", "IntKey: $t, ${u.perform()}")
+        }
+
+        bindMultiServices.forEach { t, u ->
+            Log.w("print_logs", "bindMultiServices: ${t.simpleName},${t.hashCode()}， ${u.perform()}")
         }
     }
 }

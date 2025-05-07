@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="vm"
             type="com.dongnao.hilt.ui.main.MainViewModel" />
@@ -18,9 +19,8 @@
             android:id="@+id/message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="@{()->vm.clickInfo()}"
+            android:onClick="@{() -> vm.clickInfo()}"
             android:text="点击我"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -29,13 +29,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{vm.mShowMsg}"
-            android:textSize="18sp"
             android:textColor="@color/black"
-            tools:text="真好"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/message"
+            tools:text="真好" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

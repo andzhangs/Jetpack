@@ -4,6 +4,8 @@ import android.app.Application
 import android.util.Log
 import com.dongnao.hilt.BuildConfig
 import com.dongnao.hilt.assisted.DataServiceFactory
+import com.dongnao.hilt.component.AppModel
+import com.dongnao.hilt.component.DaggerMyComponent
 import com.dongnao.hilt.early.Foo
 import com.dongnao.hilt.early.FooEarlyPoint
 import dagger.hilt.android.EarlyEntryPoints
@@ -25,12 +27,18 @@ class ExampleApplication : Application() {
     @Inject
     lateinit var dataServiceFactory: DataServiceFactory
 
+
+    @Inject
+    lateinit var appModel: AppModel
+
     //    @Inject
     lateinit var foo: Foo
 
     companion object {
         private lateinit var mInstance: ExampleApplication
-        fun getInstance() : ExampleApplication {return mInstance}
+        fun getInstance(): ExampleApplication {
+            return mInstance
+        }
     }
 
     override fun onCreate() {
@@ -48,6 +56,10 @@ class ExampleApplication : Application() {
 
         val dataService = dataServiceFactory.create("I'm from ExampleApplication.")
         dataService.load()
+
+        DaggerMyComponent.builder().provideContext(this).build().inject(this)
+
+        Log.i("print_logs", "MyComponent: ${appModel.packet}")
     }
 
     private fun doSomethingBeforeInjection() {

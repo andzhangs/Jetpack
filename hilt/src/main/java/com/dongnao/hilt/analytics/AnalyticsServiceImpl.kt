@@ -1,4 +1,4 @@
-package com.dongnao.hilt.di
+package com.dongnao.hilt.analytics
 
 import android.util.Log
 import com.dongnao.hilt.BuildConfig

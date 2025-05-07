@@ -1,7 +1,7 @@
 package com.dongnao.hilt
 
 import android.util.Log
-import com.dongnao.hilt.di.AnalyticsService
+import com.dongnao.hilt.analytics.AnalyticsService
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -17,10 +17,8 @@ class TestHelper @Inject constructor(
 ) {
 
     fun loadPrint() {
-        if (BuildConfig.DEBUG) {
             Log.i("print_logs", "TestHelper::>>>>> ${this.hashCode()} <<<<<< ")
             mAnalyticsService.load()
-        }
     }
 
 }

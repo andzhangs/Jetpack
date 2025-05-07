@@ -10,30 +10,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/asynclayoutinflater" />
-            <option value="$PROJECT_DIR$/biometric" />
-            <option value="$PROJECT_DIR$/camerax" />
-            <option value="$PROJECT_DIR$/concurrent_futures" />
-            <option value="$PROJECT_DIR$/contentpager" />
-            <option value="$PROJECT_DIR$/databinding" />
-            <option value="$PROJECT_DIR$/datastore" />
-            <option value="$PROJECT_DIR$/google_play" />
-            <option value="$PROJECT_DIR$/heifwriter" />
             <option value="$PROJECT_DIR$/hilt" />
-            <option value="$PROJECT_DIR$/lifcycle" />
-            <option value="$PROJECT_DIR$/livedata" />
-            <option value="$PROJECT_DIR$/livedata_fragment" />
-            <option value="$PROJECT_DIR$/loader" />
-            <option value="$PROJECT_DIR$/navigation" />
-            <option value="$PROJECT_DIR$/paging" />
-            <option value="$PROJECT_DIR$/remotecallback" />
-            <option value="$PROJECT_DIR$/room" />
-            <option value="$PROJECT_DIR$/security" />
-            <option value="$PROJECT_DIR$/sharing" />
-            <option value="$PROJECT_DIR$/versionedparcelable" />
-            <option value="$PROJECT_DIR$/viewmodel" />
-            <option value="$PROJECT_DIR$/workmanager" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

@@ -1,4 +1,4 @@
-package com.dongnao.hilt.di
+package com.dongnao.hilt.analytics
 
 import dagger.Binds
 import dagger.Module

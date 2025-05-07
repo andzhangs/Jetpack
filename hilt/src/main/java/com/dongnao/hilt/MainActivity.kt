@@ -8,7 +8,9 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.dongnao.hilt.databinding.ActivityMainBinding
-import com.dongnao.hilt.di.AnalyticsService
+import com.dongnao.hilt.analytics.AnalyticsService
+import com.dongnao.hilt.intoset.PluginA
+import com.dongnao.hilt.intoset.PluginB
 import com.dongnao.hilt.model.ActivityBean
 import com.dongnao.hilt.model.ActivityContextBean
 import com.dongnao.hilt.model.ApplicationBean
@@ -71,7 +73,6 @@ class MainActivity : AppCompatActivity() {
         }
         registerReceiver(mReceiver, intentFilter)
     }
-
 
     fun printMsg() {
         Log.d("print_logs", "MainActivity::printMsg")
