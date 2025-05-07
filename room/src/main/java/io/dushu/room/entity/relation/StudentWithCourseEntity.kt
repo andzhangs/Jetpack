@@ -13,7 +13,7 @@ import io.dushu.room.entity.StudentEntity
  */
 data class StudentWithCourseEntity(
     @Embedded
-    val student: StudentEntity?,
+    val student: StudentEntity,
 
     @Relation(
         parentColumn = "name",
@@ -25,5 +25,5 @@ data class StudentWithCourseEntity(
 //            entityColumn = "user_name"
 //        )
     )
-    val course: CourseEntity?
+    val course: CourseEntity
 )

@@ -15,7 +15,7 @@ import com.google.gson.Gson
     tableName = "table_student",
     indices = [Index(value = ["name"], unique = true)] //设置了unique = true，表示"name"列的值必须是唯一的。
 )
-data class StudentEntity constructor(
+data class StudentEntity(
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id", typeAffinity = ColumnInfo.INTEGER)

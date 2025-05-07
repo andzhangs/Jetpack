@@ -23,19 +23,19 @@ interface StudentDao {
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(student: StudentEntity?, courseEntity: CourseEntity?)
+    suspend fun insert(student: StudentEntity, courseEntity: CourseEntity)
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun inserts(student: StudentEntity?, courseEntity: MutableList<CourseEntity>?)
+    suspend fun inserts(student: StudentEntity, courseEntity: MutableList<CourseEntity>)
 
     @Transaction
     @Update
-    suspend fun update(student: StudentEntity?, courseEntity: CourseEntity?)
+    suspend fun update(student: StudentEntity, courseEntity: CourseEntity)
 
     @Transaction
     @Upsert
-    suspend fun insertOrUpdate(student: StudentEntity?, courseEntity: CourseEntity?)
+    suspend fun insertOrUpdate(student: StudentEntity, courseEntity: CourseEntity)
 
     @Query("SELECT * FROM TABLE_STUDENT WHERE name=:name")
     suspend fun getByName(name: String?): StudentEntity?

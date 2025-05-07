@@ -15,12 +15,12 @@ import io.dushu.room.entity.StudentEntity
 @Entity
 data class StudentWithCoursesEntity(
     @Embedded
-    val student: StudentEntity?,
+    val student: StudentEntity,
 
     @Relation(
         parentColumn = "name",
         entity = CourseEntity::class,
         entityColumn = "user_name",
     )
-    val courses: MutableList<CourseEntity>?
+    val courses: MutableList<CourseEntity>
 )
