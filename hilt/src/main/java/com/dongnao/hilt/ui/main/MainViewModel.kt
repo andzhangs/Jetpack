@@ -27,7 +27,7 @@ class MainViewModel @Inject constructor(
     private val mProvideServices: Map<Class<out Service>, @JvmSuppressWildcards Provider<Service>>,
     private val mClassServices: Map<Class<out Service>, @JvmSuppressWildcards Service>,
     private val mIntServices: Map<Int, @JvmSuppressWildcards Service>,
-    private val bindPlugins: Map<Class<*>, @JvmSuppressWildcards Provider<Plugin>>,
+    private val bindPlugins: Map<Class<*>, @JvmSuppressWildcards Plugin>,
     private val bindClassMultiServices: Map<Class<out Service>, @JvmSuppressWildcards Service>,
     private val bindIntMultiServices: Map<Class<out Service>, @JvmSuppressWildcards Service>
 
@@ -80,7 +80,7 @@ class MainViewModel @Inject constructor(
         }
 
         bindPlugins.forEach {( t, u) ->
-           u.get().execute()
+           u.execute()
         }
 
         bindClassMultiServices.forEach { t, u ->
