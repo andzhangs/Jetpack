@@ -55,8 +55,6 @@ class MainFragment : Fragment() {
         }
 
         mTestHelper.loadPrint()
-
-        mViewModel.loadIntoSet()
     }
 
 

@@ -30,42 +30,18 @@ class MainViewModel @Inject constructor(
     private val bindPlugins: Map<Class<*>, @JvmSuppressWildcards Plugin>,
     private val bindClassMultiServices: Map<Class<out Service>, @JvmSuppressWildcards Service>,
     private val bindIntMultiServices: Map<Class<out Service>, @JvmSuppressWildcards Service>
-
 ) : ViewModel() {
 
     init {
         analyticsService.analyticsMethods("I am from MainViewModel.init.")
-        loadIntoSet()
-        loadElementIntoSet()
-        loadIntoMap()
-    }
 
-    fun clickInfo() {
-        analyticsService.analyticsMethods("I am from MainViewModel.clickInfo")
-    }
 
-    val mShowMsg: LiveData<String> = liveData {
-        while (true) {
-            emit("当前时间：${System.currentTimeMillis()}")
-            delay(1000)
-        }
-    }.switchMap {
-        liveData {
-            emit("展示：$it")
-        }
-    }
-
-    fun loadIntoSet() {
         mPluginSet.forEach { plugin ->
             plugin.execute()
         }
-    }
 
-    fun loadElementIntoSet() {
         Log.i("print_logs", "loadElementIntoSet: $setString")
-    }
 
-    fun loadIntoMap() {
         mProvideServices.forEach { (t, u) ->
             Log.i("print_logs", "mProvideServices: ${t.simpleName}, ${t.hashCode()}， ${u.get().perform()}")
         }
@@ -80,7 +56,7 @@ class MainViewModel @Inject constructor(
         }
 
         bindPlugins.forEach {( t, u) ->
-           u.execute()
+            u.execute()
         }
 
         bindClassMultiServices.forEach { t, u ->
@@ -89,6 +65,21 @@ class MainViewModel @Inject constructor(
 
         bindIntMultiServices.forEach { t, u ->
             Log.d("print_logs", "bindIntMultiServices: ${t.simpleName},${t.hashCode()}， ${u.perform()}")
+        }
+    }
+
+    fun clickInfo() {
+        analyticsService.analyticsMethods("I am from MainViewModel.clickInfo")
+    }
+
+    val mShowMsg: LiveData<String> = liveData {
+        while (true) {
+            emit("当前时间：${System.currentTimeMillis()}")
+            delay(1000)
+        }
+    }.switchMap {
+        liveData {
+            emit("展示：$it")
         }
     }
 }

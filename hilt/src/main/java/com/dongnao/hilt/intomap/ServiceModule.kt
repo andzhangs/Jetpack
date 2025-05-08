@@ -28,6 +28,9 @@ abstract class ServiceModule {
     @ServiceClassKey(ServiceB::class)
     abstract fun bindServiceB(serviceB: ServiceB): Service
 
+    @Multibinds //生成的实例对应@IntoMap，即返回Map类型
+    abstract fun bindClassMultiServiceMap(): Map<Class<Service>, @JvmSuppressWildcards Service>
+
     @Binds
     @IntoMap
     @ServiceIntKey(1)
@@ -37,10 +40,6 @@ abstract class ServiceModule {
     @IntoMap
     @ServiceIntKey(2)
     abstract fun bindIntServiceB(serviceB: ServiceB): Service
-
-
-    @Multibinds //生成的实例对应@IntoMap，即返回Map类型
-    abstract fun bindClassMultiServiceMap(): Map<Class<Service>, @JvmSuppressWildcards Service>
 
     @Multibinds //生成的实例对应@IntoMap，即返回Map类型
     abstract fun bindIntMultiServiceMap(): Map<Int, @JvmSuppressWildcards Service>
