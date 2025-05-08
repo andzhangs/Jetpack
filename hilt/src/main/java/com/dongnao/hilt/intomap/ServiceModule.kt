@@ -6,6 +6,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dagger.multibindings.IntoMap
 import dagger.multibindings.Multibinds
+import javax.inject.Singleton
 
 /**
  *
@@ -39,5 +40,8 @@ abstract class ServiceModule {
 
 
     @Multibinds //生成的实例对应@IntoMap，即返回Map类型
-    abstract fun bindMultiServiceMap(): Map<Class<Service>, @JvmSuppressWildcards Service>
+    abstract fun bindClassMultiServiceMap(): Map<Class<Service>, @JvmSuppressWildcards Service>
+
+    @Multibinds //生成的实例对应@IntoMap，即返回Map类型
+    abstract fun bindIntMultiServiceMap(): Map<Int, @JvmSuppressWildcards Service>
 }

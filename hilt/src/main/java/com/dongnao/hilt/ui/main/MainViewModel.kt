@@ -7,6 +7,7 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.switchMap
 import com.dongnao.hilt.analytics.AnalyticsService
 import com.dongnao.hilt.intomap.Service
+import com.dongnao.hilt.intomap.ServiceA
 import com.dongnao.hilt.intoset.Plugin
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -26,8 +27,10 @@ class MainViewModel @Inject constructor(
     private val mProvideServices: Map<Class<out Service>, @JvmSuppressWildcards Provider<Service>>,
     private val mClassServices: Map<Class<out Service>, @JvmSuppressWildcards Service>,
     private val mIntServices: Map<Int, @JvmSuppressWildcards Service>,
-    private val bindMultiPlugins: Set<@JvmSuppressWildcards Plugin>,
-    private val bindMultiServices: Map<Class<out Service>, @JvmSuppressWildcards Service>
+    private val bindPlugins: Map<Class<*>, @JvmSuppressWildcards Provider<Plugin>>,
+    private val bindClassMultiServices: Map<Class<out Service>, @JvmSuppressWildcards Service>,
+    private val bindIntMultiServices: Map<Class<out Service>, @JvmSuppressWildcards Service>
+
 ) : ViewModel() {
 
     init {
@@ -70,12 +73,22 @@ class MainViewModel @Inject constructor(
             Log.w("print_logs", "mClassServices: ${t.simpleName},${t.hashCode()}， ${u.perform()}")
         }
 
+        Log.e("print_logs", "具体类ServiceA: ${mClassServices.get(ServiceA::class.java)?.perform()}")
+
         mIntServices.forEach { (t, u) ->
             Log.d("print_logs", "IntKey: $t, ${u.perform()}")
         }
 
-        bindMultiServices.forEach { t, u ->
-            Log.w("print_logs", "bindMultiServices: ${t.simpleName},${t.hashCode()}， ${u.perform()}")
+        bindPlugins.forEach {( t, u) ->
+           u.get().execute()
+        }
+
+        bindClassMultiServices.forEach { t, u ->
+            Log.w("print_logs", "bindClassMultiServices: ${t.simpleName},${t.hashCode()}， ${u.perform()}")
+        }
+
+        bindIntMultiServices.forEach { t, u ->
+            Log.d("print_logs", "bindIntMultiServices: ${t.simpleName},${t.hashCode()}， ${u.perform()}")
         }
     }
 }
